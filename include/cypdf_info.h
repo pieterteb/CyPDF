@@ -44,7 +44,7 @@ typedef struct _CYPDF_Obj_Info {
  * @param creation_date The date and time the document was created, in human-readable form.
  * @return CYPDF_Obj_Info* 
  */
-CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, CYPDF_UINT32 ID, const char* title, const char* author, const char* subject, const char* creator, const char* producer, const char* creation_date);
+CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, CYPDF_UINT32 onum, const char* title, const char* author, const char* subject, const char* creator, const char* producer, const char* creation_date);
 
 /**
  * @brief Writes obj to fp.

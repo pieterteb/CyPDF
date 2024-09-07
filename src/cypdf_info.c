@@ -11,8 +11,8 @@
 
 
 
-CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, CYPDF_UINT32 ID, const char* title, const char* author, const char* subject, const char* creator, const char* producer, const char* creation_date) {
-    CYPDF_Obj_Info* info = (CYPDF_Obj_Info*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_INFO, ID);
+CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, CYPDF_UINT32 onum, const char* title, const char* author, const char* subject, const char* creator, const char* producer, const char* creation_date) {
+    CYPDF_Obj_Info* info = (CYPDF_Obj_Info*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_INFO, onum);
 
     if (info) {
         snprintf(info->title, CYPDF_INFO_MAX_SIZE, "%s", title);

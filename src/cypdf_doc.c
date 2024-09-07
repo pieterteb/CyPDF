@@ -21,14 +21,14 @@ CYPDF_Doc* CYPDF_New_Doc() {
     CYPDF_Doc* pdf = CYPDF_smalloc(sizeof(CYPDF_Doc));
     if (pdf) {
         pdf->file_header = CYPDF_New_File_Header();
-        pdf->curr_ID = 1;
+        pdf->curr_onum = 1;
         pdf->offsets = NULL;
 
-        pdf->page_tree = CYPDF_New_PNode(CYPDF_TRUE, pdf->curr_ID++, NULL);                 /* Page root. */
-        pdf->catalog = CYPDF_New_Catalog(CYPDF_TRUE, pdf->curr_ID++, pdf->page_tree);
+        pdf->page_tree = CYPDF_New_PNode(CYPDF_TRUE, pdf->curr_onum++, NULL);                 /* Page root. */
+        pdf->catalog = CYPDF_New_Catalog(CYPDF_TRUE, pdf->curr_onum++, pdf->page_tree);
 
         char* creation_date = CYPDF_Get_Date();
-        pdf->info = CYPDF_New_Info(CYPDF_TRUE, pdf->curr_ID++, "Test", "Pieter", "Test", "CyPDF", "CyProducer", creation_date);
+        pdf->info = CYPDF_New_Info(CYPDF_TRUE, pdf->curr_onum++, "Test", "Pieter", "Test", "CyPDF", "CyProducer", creation_date);
         free(creation_date);
 
         pdf->obj_list = CYPDF_New_List();
@@ -41,7 +41,7 @@ CYPDF_Doc* CYPDF_New_Doc() {
 }
 
 void CYPDF_Append_Page(CYPDF_Doc* pdf) {
-    CYPDF_Obj_Page* page = CYPDF_Add_Page(pdf->page_tree, pdf->curr_ID++, CYPDF_A4_MEDIABOX);
+    CYPDF_Obj_Page* page = CYPDF_Add_Page(pdf->page_tree, pdf->curr_onum++, CYPDF_A4_MEDIABOX);
     CYPDF_List_Append(pdf->obj_list, page);
 }
 

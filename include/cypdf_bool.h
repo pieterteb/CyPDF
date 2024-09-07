@@ -20,15 +20,7 @@ typedef struct _CYPDF_Obj_Bool {
 } CYPDF_Obj_Bool;
 
 
-/**
- * @brief Creates new CYPDF_Obj_Bool initialized with value.
- * 
- * @param indirect 
- * @param ID 
- * @param value 
- * @return CYPDF_Obj_Bool* | Returns NULL if object creation fails.
- */
-CYPDF_Obj_Bool* CYPDF_New_Bool(CYPDF_BOOL indirect, CYPDF_UINT32 ID, CYPDF_BOOL value);
+CYPDF_Obj_Bool* CYPDF_New_Bool(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_BOOL val);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.

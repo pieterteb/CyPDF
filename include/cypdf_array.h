@@ -28,7 +28,7 @@ typedef struct _CYPDF_Obj_Array {
  * @param ID 
  * @return CYPDF_Obj_Array* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect, CYPDF_UINT32 ID);
+CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect, CYPDF_UINT32 onum);
 
 /**
  * @brief Creates new CYPDF_Obj_Array from a CYPDF_Rect.
@@ -38,7 +38,7 @@ CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect, CYPDF_UINT32 ID);
  * @param ID 
  * @return CYPDF_Obj_Array* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect, CYPDF_UINT32 ID);
+CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect, CYPDF_UINT32 onum);
 
 /**
  * @brief Appends obj to array.

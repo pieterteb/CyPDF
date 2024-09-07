@@ -42,7 +42,7 @@ typedef struct _CYPDF_String_obj {
  * @param valsize Size of value in bytes.
  * @return CYPDF_Obj_String* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_String* CPYDF_New_String(CYPDF_BOOL indirect, CYPDF_UINT32 ID, enum CYPDF_STRING_TYPE type, CYPDF_BYTE* value, CYPDF_SIZE valsize);
+CYPDF_Obj_String* CPYDF_New_String(CYPDF_BOOL indirect, CYPDF_UINT32 onum, enum CYPDF_STRING_TYPE type, CYPDF_BYTE* value, CYPDF_SIZE valsize);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.

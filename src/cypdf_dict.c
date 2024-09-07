@@ -12,8 +12,8 @@
 
 
 
-CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect, CYPDF_UINT32 ID) {
-    CYPDF_Obj_Dict* dict = (CYPDF_Obj_Dict*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_DICT, ID);
+CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect, CYPDF_UINT32 onum) {
+    CYPDF_Obj_Dict* dict = (CYPDF_Obj_Dict*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_DICT, onum);
     if (dict) {
         dict->keys = CYPDF_New_List();
         dict->values = CYPDF_New_List();
@@ -25,7 +25,7 @@ CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect, CYPDF_UINT32 ID) {
 
 void CYPDF_Dict_Append(CYPDF_Obj_Dict* dict, const char* key_name, CYPDF_Object* value) {
     if (dict) {
-        CYPDF_Obj_Name* key = CYPDF_New_Name(CYPDF_FALSE, CYPDF_DEFAULT_OID, key_name);
+        CYPDF_Obj_Name* key = CYPDF_New_Name(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, key_name);
         CYPDF_List_Append(dict->keys, key);
         CYPDF_List_Append(dict->values, value);
         ++dict->count;

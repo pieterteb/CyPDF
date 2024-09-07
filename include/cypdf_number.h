@@ -28,7 +28,7 @@ typedef struct _CYPDF_Obj_Number {
  * @param value 
  * @return CYPDF_Obj_Number* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Number* CYPDF_New_Number(CYPDF_BOOL indirect, CYPDF_UINT32 ID, CYPDF_INT value);
+CYPDF_Obj_Number* CYPDF_New_Number(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_INT value);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.

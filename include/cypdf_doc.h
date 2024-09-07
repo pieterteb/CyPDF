@@ -22,7 +22,7 @@ typedef struct _CYPDF_Doc {
     CYPDF_Obj_Info*         info;
     
     CYPDF_Obj_List*         obj_list;
-    CYPDF_UINT32            curr_ID;
+    CYPDF_UINT32            curr_onum;
 
     CYPDF_INT64*            offsets; /* Byte offsets of the objects in obj_list. */
 } CYPDF_Doc;

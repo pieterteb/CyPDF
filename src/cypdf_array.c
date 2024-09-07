@@ -10,8 +10,8 @@
 
 
 
-CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect, CYPDF_UINT32 ID) {
-    CYPDF_Obj_Array* array = (CYPDF_Obj_Array*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_ARRAY, ID);
+CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect, CYPDF_UINT32 onum) {
+    CYPDF_Obj_Array* array = (CYPDF_Obj_Array*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_ARRAY, onum);
     if (array) {
         array->list = CYPDF_New_List();
     }
@@ -19,16 +19,16 @@ CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect, CYPDF_UINT32 ID) {
     return array;
 }
 
-CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect, CYPDF_UINT32 ID) {
-    CYPDF_Obj_Array* array = CYPDF_New_Array(indirect, ID);
+CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect, CYPDF_UINT32 onum) {
+    CYPDF_Obj_Array* array = CYPDF_New_Array(indirect, onum);
     if (array) {
-        CYPDF_Obj_Real* coord = CYPDF_New_Real(CYPDF_FALSE, CYPDF_DEFAULT_OID, rect.lowleftx);
+        CYPDF_Obj_Real* coord = CYPDF_New_Real(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, rect.lowleftx);
         CYPDF_Array_Append(array, coord);
-        coord = CYPDF_New_Real(CYPDF_FALSE, CYPDF_DEFAULT_OID, rect.lowlefty);
+        coord = CYPDF_New_Real(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, rect.lowlefty);
         CYPDF_Array_Append(array, coord);
-        coord = CYPDF_New_Real(CYPDF_FALSE, CYPDF_DEFAULT_OID, rect.uprightx);
+        coord = CYPDF_New_Real(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, rect.uprightx);
         CYPDF_Array_Append(array, coord);
-        coord = CYPDF_New_Real(CYPDF_FALSE, CYPDF_DEFAULT_OID, rect.uprighty);
+        coord = CYPDF_New_Real(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, rect.uprighty);
         CYPDF_Array_Append(array, coord);
     }
 

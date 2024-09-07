@@ -11,10 +11,10 @@
 
 
 
-CYPDF_Obj_Catalog* CYPDF_New_Catalog(CYPDF_BOOL indirect, CYPDF_UINT32 ID, CYPDF_Obj_PNode* pages) {
-    CYPDF_Obj_Catalog* catalog = (CYPDF_Obj_Catalog*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_CATALOG, ID);
+CYPDF_Obj_Catalog* CYPDF_New_Catalog(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_Obj_PNode* pages) {
+    CYPDF_Obj_Catalog* catalog = (CYPDF_Obj_Catalog*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_CATALOG, onum);
     if (catalog) {
-        catalog->dict = CYPDF_New_Dict(CYPDF_TRUE, ID);
+        catalog->dict = CYPDF_New_Dict(CYPDF_TRUE, CYPDF_DEFAULT_ONUM);
         if (catalog->dict) {
             /* The type of PDF object that this dictionary describes. */
             CYPDF_Obj_Name* type = CYPDF_New_Name(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, "Catalog");

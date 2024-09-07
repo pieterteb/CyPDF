@@ -9,8 +9,8 @@
 
 
 
-CYPDF_Obj_Name* CYPDF_New_Name(CYPDF_BOOL indirect, CYPDF_UINT32 ID, const char* value) {
-    CYPDF_Obj_Name* name = (CYPDF_Obj_Name*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_NAME, ID);
+CYPDF_Obj_Name* CYPDF_New_Name(CYPDF_BOOL indirect, CYPDF_UINT32 onum, const char* value) {
+    CYPDF_Obj_Name* name = (CYPDF_Obj_Name*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_NAME, onum);
     if (name) {
         memcpy(name->value, value, MAX(strlen(value), CYPDF_MAX_NAME_LEN));
     }

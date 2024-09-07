@@ -31,7 +31,7 @@ typedef struct _CYPDF_Obj_Dict {
  * @param ID 
  * @return CYPDF_Obj_Dict* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect, CYPDF_UINT32 ID);
+CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect, CYPDF_UINT32 onum);
 
 /**
  * @brief Appends the key value pair to dict. Does nothing if dict is NULL.

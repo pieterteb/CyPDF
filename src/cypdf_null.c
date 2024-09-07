@@ -5,8 +5,8 @@
 
 
 
-CYPDF_Obj_Null* CYPDF_New_Null(CYPDF_BOOL indirect, CYPDF_UINT32 ID) {
-    CYPDF_Obj_Null* null = (CYPDF_Obj_Null*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_NULL, ID);
+CYPDF_Obj_Null* CYPDF_New_Null(CYPDF_BOOL indirect, CYPDF_UINT32 onum) {
+    CYPDF_Obj_Null* null = (CYPDF_Obj_Null*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_NULL, onum);
 
     return null;
 }
