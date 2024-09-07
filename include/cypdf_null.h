@@ -34,7 +34,7 @@ CYPDF_Obj_Null* CYPDF_New_Null(CYPDF_BOOL indirect, CYPDF_UINT32 ID);
  * @param fp Stream to be written to.
  * @param obj 
  */
-void CYPDF_Write_Null(FILE* fp __attribute_maybe_unused__, CYPDF_Object* obj __attribute_maybe_unused__);
+void CYPDF_Write_Null(FILE* fp, CYPDF_Object* obj __attribute_maybe_unused__);
 
 /**
  * @brief Frees NULL. Does nothing if obj is NULL.
