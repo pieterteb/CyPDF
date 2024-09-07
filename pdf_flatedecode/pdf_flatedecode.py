@@ -13,8 +13,9 @@
 # Any requests to decode a PDF will be ignored.
 import re
 import zlib
+import os
 
-pdf = open("C:\\Users\\pieterteb\\DuBaTeX\\PDF_testing\\pdf_flatedecode\\main.pdf", "rb").read()
+pdf = open(os.path.abspath("main.txt"), "rb").read()
 stream = re.compile(rb'.*?FlateDecode.*?stream(.*?)endstream', re.S)
 
 for s in stream.findall(pdf):
