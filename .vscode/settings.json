@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "cypdf_utils.h": "c",
-        "stdlib.h": "c",
-        "cypdf_object.h": "c"
-    }
-}
