@@ -20,7 +20,7 @@
 
 
 
-CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_UINT32 ID) {
+CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_UINT32 onum) {
     /* Assign size, write_func and free_func according to the object class. */
     CYPDF_SIZE size = 0;
     switch (class)
@@ -72,8 +72,8 @@ CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_
     CYPDF_Obj_Null* obj = (CYPDF_Obj_Null*)CYPDF_scalloc(1, size);
     if (obj) {
         /* If the given ID is invalid, the default ID is used. */
-        if (ID > CYPDF_INDIRECT_OBJ_MAX) {
-            ID = CYPDF_DEFAULT_OID;
+        if (onum > CYPDF_INDIRECT_OBJ_MAX) {
+            onum = CYPDF_DEFAULT_ONUM;
         }
 
         /* If the given class doesn't exist, it is set to unknown. */
@@ -83,8 +83,8 @@ CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_
 
         obj->header.indirect = indirect;
         obj->header.class = class;
-        obj->header.ID = ID;                    /* ID will always be less than 2^24 - 1. */
-        obj->header.gen = CYPDF_DEFAULT_OGEN;
+        obj->header.onum = onum;                    /* ID will always be less than 2^24 - 1. */
+        obj->header.ogen = CYPDF_DEFAULT_OGEN;
     }
 
     return (CYPDF_Object*)obj;
@@ -110,24 +110,24 @@ enum CYPDF_OCLASS CYPDF_Obj_Get_Class(CYPDF_Object* obj) {
     return class;
 }
 
-CYPDF_UINT32 CYPDF_Obj_Get_ID(CYPDF_Object* obj) {
-    CYPDF_UINT32 ID = CYPDF_DEFAULT_OID;
+CYPDF_UINT32 CYPDF_Obj_Get_Onum(CYPDF_Object* obj) {
+    CYPDF_UINT32 onum = CYPDF_DEFAULT_ONUM;
     if (obj) {
         CYPDF_Obj_Null* _obj = (CYPDF_Obj_Null*)obj;
-        ID = _obj->header.ID;
+        onum = _obj->header.onum;
     }
 
-    return ID;
+    return onum;
 }
 
-CYPDF_UINT16 CYPDF_Obj_Get_Gen(CYPDF_Object* obj) {
-    CYPDF_UINT16 gen = CYPDF_DEFAULT_OGEN;
+CYPDF_UINT16 CYPDF_Obj_Get_Ogen(CYPDF_Object* obj) {
+    CYPDF_UINT16 ogen = CYPDF_DEFAULT_OGEN;
     if (obj) {
         CYPDF_Obj_Null* _obj = (CYPDF_Obj_Null*)obj;
-        gen = _obj->header.gen;
+        ogen = _obj->header.ogen;
     }
 
-    return gen;
+    return ogen;
 }
 
 CYPDF_Write_Func CYPDF_Obj_Get_Write(CYPDF_Object* obj) {
@@ -162,6 +162,7 @@ CYPDF_Write_Func CYPDF_Obj_Get_Write(CYPDF_Object* obj) {
             write_func = CYPDF_WRITE_DICT;
             break;
         case CYPDF_OCLASS_STREAM:
+            write_func = CYPDF_WRITE_STREAM;
             break;
         case CYPDF_OCLASS_INFO:
             write_func = CYPDF_WRITE_INFO;
@@ -216,6 +217,7 @@ CYPDF_Free_Func CYPDF_Obj_Get_Free(CYPDF_Object* obj) {
             free_func = CYPDF_FREE_DICT;
             break;
         case CYPDF_OCLASS_STREAM:
+            free_func = CYPDF_FREE_STREAM;
             break;
         case CYPDF_OCLASS_INFO:
             free_func = CYPDF_FREE_INFO;
@@ -272,7 +274,7 @@ void CYPDF_Write_Obj_Ref(FILE* fp, CYPDF_Object* obj) {
     This is because it's onj_num and gen_num would be invalid. 
     An object that is indirect should never be written indirectly. */
     if (!CYPDF_Obj_isDirect(obj)) {
-        fprintf(fp, "%u %hu R", CYPDF_Obj_Get_ID(obj), CYPDF_Obj_Get_Gen(obj));
+        fprintf(fp, "%u %hu R", CYPDF_Obj_Get_Onum(obj), CYPDF_Obj_Get_Ogen(obj));
     }
 }
 

@@ -17,7 +17,7 @@ CYPDF_Obj_Catalog* CYPDF_New_Catalog(CYPDF_BOOL indirect, CYPDF_UINT32 ID, CYPDF
         catalog->dict = CYPDF_New_Dict(CYPDF_TRUE, ID);
         if (catalog->dict) {
             /* The type of PDF object that this dictionary describes. */
-            CYPDF_Obj_Name* type = CYPDF_New_Name(CYPDF_FALSE, CYPDF_DEFAULT_OID, "Catalog");
+            CYPDF_Obj_Name* type = CYPDF_New_Name(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, "Catalog");
             CYPDF_Dict_Append(catalog->dict, CYPDF_TYPE_NAME, type);
 
             /* The page tree node that is the root of the document’s page tree. */

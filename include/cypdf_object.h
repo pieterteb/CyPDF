@@ -29,16 +29,16 @@ enum CYPDF_OCLASS {
 };
 
 
-#define CYPDF_DEFAULT_OID           0x00000000          /* Used for direct objects. */
-#define CYPDF_DEFAULT_OGEN          0x0000
+#define CYPDF_DEFAULT_ONUM              0x00000000          /* Used for direct objects. */
+#define CYPDF_DEFAULT_OGEN              0x0000
 
 
 /* CYPDF_Obj_Header struct */
 typedef struct _CYPDF_Obj_Header {
     CYPDF_BOOL              indirect;
     enum CYPDF_OCLASS       class;
-    CYPDF_UINT32            ID;
-    CYPDF_UINT16            gen;
+    CYPDF_UINT32            onum;
+    CYPDF_UINT16            ogen;
 } CYPDF_Obj_Header;
 
 
@@ -47,10 +47,10 @@ typedef struct _CYPDF_Obj_Header {
  * 
  * @param indirect 
  * @param class
- * @param ID 
+ * @param onum 
  * @return CYPDF_Object* | Returns NULL if header creation fails.
  */
-CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_UINT32 ID);
+CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_UINT32 onum);
 
 /**
  * @brief Checks whether obj is direct or not.
@@ -74,7 +74,7 @@ enum CYPDF_OCLASS CYPDF_Obj_Get_Class(CYPDF_Object* obj);
  * @param obj 
  * @return CYPDF_UINT32 | Returns CYPDF_DEFAULT_OID if obj is NULL.
  */
-CYPDF_UINT32 CYPDF_Obj_Get_ID(CYPDF_Object* obj);
+CYPDF_UINT32 CYPDF_Obj_Get_Onum(CYPDF_Object* obj);
 
 /**
  * @brief Gets the generation number of obj.
@@ -82,7 +82,7 @@ CYPDF_UINT32 CYPDF_Obj_Get_ID(CYPDF_Object* obj);
  * @param obj 
  * @return CYPDF_UINT16 | Returns CYPDF_DEFAULT_OGEN if obj is NULL.
  */
-CYPDF_UINT16 CYPDF_Obj_Get_Gen(CYPDF_Object* obj);
+CYPDF_UINT16 CYPDF_Obj_Get_Ogen(CYPDF_Object* obj);
 
 /**
  * @brief Gets the write function belonging to obj.

@@ -9,8 +9,8 @@
 
 
 
-CYPDF_Obj_String* CPYDF_New_String(CYPDF_BOOL indirect, CYPDF_UINT32 ID, enum CYPDF_STRING_TYPE type, CYPDF_BYTE* value, CYPDF_SIZE valsize) {
-    CYPDF_Obj_String* string = (CYPDF_Obj_String*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_STRING, ID);
+CYPDF_Obj_String* CPYDF_New_String(CYPDF_BOOL indirect, CYPDF_UINT32 onum, enum CYPDF_STRING_TYPE type, CYPDF_BYTE* value, CYPDF_SIZE valsize) {
+    CYPDF_Obj_String* string = (CYPDF_Obj_String*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_STRING, onum);
     if (string) {
         string->type = type;
         string->value = CYPDF_smalloc(valsize);
