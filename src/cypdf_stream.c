@@ -33,6 +33,7 @@ void CYPDF_Write_Stream(FILE* fp, CYPDF_Object* obj) {
 
     fwrite(stream->val, sizeof(stream->val[0]), stream->val_size, fp);
 
+    CYPDF_Write_NL(fp);
     CYPDF_fprintf_NL(fp, "endstream");
 }
 
