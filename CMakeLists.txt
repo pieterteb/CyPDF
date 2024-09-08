@@ -23,6 +23,7 @@ add_executable(CyPDF
     src/cypdf_catalog.c
     src/cypdf_dict.c
     src/cypdf_doc.c
+    src/cypdf_graphics.c
     src/cypdf_header.c
     src/cypdf_info.c
     src/cypdf_list.c

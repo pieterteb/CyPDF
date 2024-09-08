@@ -55,7 +55,7 @@ typedef size_t              CYPDF_SIZE;
 typedef struct _CYPDF_Point {
     CYPDF_REAL x;
     CYPDF_REAL y;
-} CYPDF_POINT;
+} CYPDF_Point;
 
 
 /* CYPDF_Rect struct */
