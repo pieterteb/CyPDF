@@ -70,6 +70,7 @@ void CYPDF_Path_Print(FILE* fp, CYPDF_Path* path) {
             CYPDF_Write_NL(fp);
         }
 
+        fputc(' ', fp);
         switch (path->ppo)
         {
         case CYPDF_PPO_STROKE:
