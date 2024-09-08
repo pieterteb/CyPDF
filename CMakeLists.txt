@@ -5,6 +5,8 @@ project(CyPDF
     LANGUAGES C
 )
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 add_library(compiler_flags INTERFACE)
 target_compile_features(compiler_flags INTERFACE c_std_11)
 
