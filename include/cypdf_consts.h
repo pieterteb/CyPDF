@@ -3,7 +3,6 @@
 
 
 #include "cypdf_types.h"
-#include "cypdf_version.h"
 
 
 
