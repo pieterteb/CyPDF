@@ -13,6 +13,7 @@ set(msvc_c "$<COMPILE_LANG_AND_ID:C,MSVC>")
 
 target_compile_options(compiler_flags INTERFACE
     "$<${gcc_like_c}:$<BUILD_INTERFACE:-fdiagnostics-color=always;-Wall;-Wextra;-Wpedantic;-Werror;-Wshadow;-Wformat=2;-Wconversion;-Wunused-parameter>>"
+    "$<${msvc_c}:$<BUILD_INTERFACE:-W3>>"
 )
 
 set(gcc_like_cxx)
@@ -41,7 +42,6 @@ add_executable(CyPDF
     src/cypdf_xref.c
     src/md5.c
 )
-
 
 target_link_libraries(CyPDF PUBLIC compiler_flags)
 
