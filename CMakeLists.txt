@@ -16,8 +16,6 @@ target_compile_options(compiler_flags INTERFACE
     "$<${msvc_c}:$<BUILD_INTERFACE:-W3>>"
 )
 
-set(gcc_like_cxx)
-
 add_executable(CyPDF 
     src/main.c
     src/cypdf_array.c
