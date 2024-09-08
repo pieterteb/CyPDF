@@ -24,12 +24,18 @@ int main(void) {
         CYPDF_Append_Page(pdf);
     }
 
-    FILE* fp = fopen("CyPDF/test.txt", "wb");
-    CYPDF_Write_Doc(fp, pdf, "CyPDF/test.txt");
-    CYPDF_Free_Doc(pdf);
-    fclose(fp);
+    FILE* fp = fopen("../out/test.txt", "wb");
+    if (!fp) {
+        fprintf(stderr, "Failed to open text.txt.\n");
+    } else {
+        CYPDF_Write_Doc(fp, pdf, "CyPDF/test.txt");
+        fclose(fp);
+        CYPDF_Free_Doc(pdf);
+        printf("hello\n");
 
-    copy_file("CyPDF/test.txt", "CyPDF/test.pdf");
+        copy_file("../out/test.txt", "../out/test.pdf");
+        printf("hello2\n");
+    }
 
     return 0;
 }
