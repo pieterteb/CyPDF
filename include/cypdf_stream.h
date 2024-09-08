@@ -23,7 +23,7 @@ typedef struct _CYPDF_Obj_Stream {
 } CYPDF_Obj_Stream;
 
 
-CYPDF_Obj_Stream* CYPDF_New_Stream(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_BYTE val, CYPDF_SIZE val_size);
+CYPDF_Obj_Stream* CYPDF_New_Stream(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_BYTE* val, CYPDF_SIZE val_size);
 
 void CYPDF_Write_Stream(FILE* fp, CYPDF_Object* obj);
 

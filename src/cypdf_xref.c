@@ -19,7 +19,7 @@ void CYPDF_Write_Xref(FILE* fp, CYPDF_Doc* pdf) {
         CYPDF_fprintf_NL(fp, "%.10zu %.5hu f", 0UL, CYPDF_OGEN_MAX);
         for (size_t i = 0; i < count; ++i) {
             CYPDF_Object* obj = list->objects[i];
-            CYPDF_fprintf_NL(fp, "%.10llu %.5hu n", pdf->offsets[i], CYPDF_Obj_Get_Gen(obj));
+            CYPDF_fprintf_NL(fp, "%.10llu %.5hu n", pdf->offsets[i], CYPDF_Obj_Get_Ogen(obj));
         }
     }
 }
