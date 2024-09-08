@@ -25,17 +25,11 @@ int main(void) {
     }
 
     FILE* fp = fopen("../out/test.txt", "wb");
-    if (!fp) {
-        fprintf(stderr, "Failed to open text.txt.\n");
-    } else {
-        CYPDF_Write_Doc(fp, pdf, "CyPDF/test.txt");
-        fclose(fp);
-        CYPDF_Free_Doc(pdf);
-        printf("hello\n");
+    CYPDF_Write_Doc(fp, pdf, "CyPDF/test.txt");
+    fclose(fp);
+    CYPDF_Free_Doc(pdf);
 
-        copy_file("../out/test.txt", "../out/test.pdf");
-        printf("hello2\n");
-    }
+    copy_file("../out/test.txt", "../out/test.pdf");
 
     return 0;
 }
