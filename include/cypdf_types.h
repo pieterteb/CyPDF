@@ -57,6 +57,8 @@ typedef struct _CYPDF_Point {
     CYPDF_REAL y;
 } CYPDF_Point;
 
+#define CYPDF_TO_POINT(x, y)    (CYPDF_Point){ (CYPDF_REAL)(x), (CYPDF_REAL)(y) }
+
 
 /* CYPDF_Rect struct */
 typedef struct _CYPDF_Rect {

@@ -21,9 +21,9 @@
 
 
 /* Page sizes (UU: User Unit) */
-#define CYPDF_INCH_TO_UU(x)         (72 * (x))
+#define CYPDF_INCH_TO_UU(x)         (CYPDF_REAL)(72 * (x))
 #define CYPDF_UU_TO_INCH(x)         ((x) / 72)
-#define CYPDF_MM_TO_UU(x)           (72 / 25.4 * (x))
+#define CYPDF_MM_TO_UU(x)           (CYPDF_REAL)(72 / 25.4 * (x))
 #define CYPDF_UU_TO_MM(x)           (25.4 / 72 * (x))
 
 #define CYPDF_MAX_PAGE_SIZE         14400           /* In User Units which equals to 200 inches. */
@@ -72,6 +72,16 @@
 #define CYPDF_A10_WIDTH             ((CYPDF_REAL)CYPDF_MM_TO_UU(26))
 #define CYPDF_A10_HEIGHT            ((CYPDF_REAL)CYPDF_MM_TO_UU(37))
 #define CYPDF_A10_MEDIABOX          ((CYPDF_Rect){ 0.0, 0.0, CYPDF_A10_WIDTH, CYPDF_A10_HEIGHT })
+
+
+/* Default user space coordinate. */
+#define CYPDF_DEFAULT_POINT         CYPDF_TO_POINT(0, 0)
+
+
+/* PI */
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 
 

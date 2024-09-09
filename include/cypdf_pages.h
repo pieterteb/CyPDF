@@ -5,6 +5,7 @@
 #include "cypdf_array.h"
 #include "cypdf_dict.h"
 #include "cypdf_object.h"
+#include "cypdf_stream.h"
 #include "cypdf_types.h"
 
 
@@ -21,10 +22,12 @@ typedef struct _CYPDF_Obj_Page_Node CYPDF_Obj_PNode;
 /* CYPDF_Obj_Page struct */
 typedef struct _CYPDF_Obj_Page {
     CYPDF_Obj_Header        header;
+    CYPDF_INT               page_number;
 
     CYPDF_Obj_PNode*        parent;
     CYPDF_Obj_Dict*         resources;
     CYPDF_Obj_Array*        mediabox;
+    CYPDF_Obj_Array*        contents;
 
     CYPDF_Obj_Dict*         dict;
 } CYPDF_Obj_Page;
@@ -51,7 +54,7 @@ typedef struct _CYPDF_Obj_Page_Node {
  * @param mediabox 
  * @return CYPDF_Obj_Page* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_Obj_PNode* parent, CYPDF_Rect mediabox);
+CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_INT page_number, CYPDF_Obj_PNode* parent, CYPDF_Rect mediabox);
 
 /**
  * @brief Creates new CYPDF_Obj_PNode.
@@ -71,6 +74,10 @@ CYPDF_Obj_PNode* CYPDF_New_PNode(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_O
  * @param mediabox 
  */
 CYPDF_Obj_Page* CYPDF_Add_Page(CYPDF_Obj_PNode* page_tree, CYPDF_UINT32 onum, CYPDF_Rect mediabox);
+
+CYPDF_Obj_Page* CYPDF_Page_At_Number(CYPDF_Obj_PNode* page_tree, CYPDF_INT page_number);
+
+void CYPDF_Page_Add_Content(CYPDF_Obj_Page* page, CYPDF_Obj_Stream* stream);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.

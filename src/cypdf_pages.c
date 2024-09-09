@@ -6,18 +6,22 @@
 #include "cypdf_consts.h"
 #include "cypdf_dict.h"
 #include "cypdf_name.h"
+#include "cypdf_null.h"
 #include "cypdf_number.h"
 #include "cypdf_object.h"
+#include "cypdf_stream.h"
 #include "cypdf_types.h"
 
 
 
-CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_Obj_PNode* parent, CYPDF_Rect mediabox) {
+CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_INT page_number, CYPDF_Obj_PNode* parent, CYPDF_Rect mediabox) {
     CYPDF_Obj_Page* page = (CYPDF_Obj_Page*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_PAGE, onum);
     if (page) {
+        page->page_number = page_number;
         page->parent = parent;
         page->resources = CYPDF_New_Dict(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
         page->mediabox = CYPDF_Array_From_Rect(mediabox, CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+        page->contents = CYPDF_New_Array(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
 
         page->dict = CYPDF_New_Dict(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
         if (page->dict) {
@@ -53,7 +57,7 @@ CYPDF_Obj_PNode* CYPDF_New_PNode(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_O
 }
 
 CYPDF_Obj_Page* CYPDF_Add_Page(CYPDF_Obj_PNode* page_tree, CYPDF_UINT32 onum, CYPDF_Rect mediabox) {
-    CYPDF_Obj_Page* page = CYPDF_New_Page(CYPDF_TRUE, onum, page_tree, mediabox);
+    CYPDF_Obj_Page* page = CYPDF_New_Page(CYPDF_TRUE, onum, page_tree->leaf_count + 1, page_tree, mediabox);
 
     if (page) {
         CYPDF_Array_Append(page_tree->kids, page);
@@ -61,6 +65,33 @@ CYPDF_Obj_Page* CYPDF_Add_Page(CYPDF_Obj_PNode* page_tree, CYPDF_UINT32 onum, CY
     }
 
     return page;
+}
+
+CYPDF_Obj_Page* CYPDF_Page_At_Number(CYPDF_Obj_PNode* page_tree, CYPDF_INT page_number) {
+    if (page_tree) {
+        if ((CYPDF_SIZE)page_number > page_tree->kids->list->count) {
+            return NULL;
+        }
+
+        CYPDF_Obj_Page* kid = NULL;
+        for (size_t i = 0; i < page_tree->kids->list->count; ++i) {
+            kid = (CYPDF_Obj_Page*)page_tree->kids->list->objects[i];
+
+            if (kid->page_number == page_number) {
+                return kid;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+void CYPDF_Page_Add_Content(CYPDF_Obj_Page* page, CYPDF_Obj_Stream* stream) {
+    if (stream && page) {
+        /* The contents entry in the page dictionary can only be of type stream and array. As of now only array has been implemented. */
+
+        CYPDF_Array_Append(page->contents, stream);
+    }
 }
 
 void CYPDF_Write_Page(FILE* fp, CYPDF_Object* obj) {
@@ -71,10 +102,13 @@ void CYPDF_Write_Page(FILE* fp, CYPDF_Object* obj) {
     CYPDF_Obj_Page* page = (CYPDF_Obj_Page*)obj;
 
     CYPDF_Dict_Append(page->dict, "Parent", page->parent);
-    if (page->resources->count) {
-        CYPDF_Dict_Append(page->dict, "Resources", page->resources); /* If no resources are present, they are inherited from parent. */
-    }
+    // if (page->resources->count) {
+        CYPDF_Dict_Append(page->dict, "Resources", page->resources); /* If no resources are present, they are inherited from parent. If no resources are required, this should be an empty dictionary. */
+    // }
     CYPDF_Dict_Append(page->dict, "MediaBox", page->mediabox);
+    if (page->contents->list->count) {
+        CYPDF_Dict_Append(page->dict, "Contents", page->contents);
+    }
 
     CYPDF_Write_Obj_Direct(fp, page->dict);
 }

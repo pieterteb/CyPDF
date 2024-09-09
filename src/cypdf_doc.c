@@ -6,6 +6,7 @@
 #include "cypdf_catalog.h"
 #include "cypdf_consts.h"
 #include "cypdf_dict.h"
+#include "cypdf_graphics.h"
 #include "cypdf_header.h"
 #include "cypdf_list.h"
 #include "cypdf_object.h"
@@ -43,6 +44,18 @@ CYPDF_Doc* CYPDF_New_Doc() {
 void CYPDF_Append_Page(CYPDF_Doc* pdf) {
     CYPDF_Obj_Page* page = CYPDF_Add_Page(pdf->page_tree, pdf->curr_onum++, CYPDF_A4_MEDIABOX);
     CYPDF_List_Append(pdf->obj_list, page);
+}
+
+void CYPDF_Add_Path(CYPDF_Doc* pdf, CYPDF_INT page_number, CYPDF_Path* path) {
+    if (path && pdf) {
+        CYPDF_Obj_Stream* stream = CYPDF_New_Stream(CYPDF_TRUE, pdf->curr_onum++);
+        CYPDF_Write_Path_To_Stream(stream, path);
+
+        CYPDF_Obj_Page* page = CYPDF_Page_At_Number(pdf->page_tree, page_number);
+        CYPDF_Page_Add_Content(page, stream);
+
+        CYPDF_List_Append(pdf->obj_list, stream);
+    }
 }
 
 void CYPDF_Write_Doc(FILE* fp, CYPDF_Doc* pdf, const char* file_path) {

@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "cypdf_catalog.h"
+#include "cypdf_graphics.h"
 #include "cypdf_header.h"
 #include "cypdf_info.h"
 #include "cypdf_list.h"
@@ -41,6 +42,8 @@ CYPDF_Doc* CYPDF_New_Doc();
  * @param pdf 
  */
 void CYPDF_Append_Page(CYPDF_Doc* pdf);
+
+void CYPDF_Add_Path(CYPDF_Doc* pdf, CYPDF_INT page_number, CYPDF_Path* path);
 
 /**
  * @brief Writes pdf to fp. Does nothing if fp == NULL or pdf == NULL.

@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+#include "cypdf_stream.h"
 #include "cypdf_types.h"
 
 
@@ -36,7 +37,7 @@ enum CYPDF_PCO_TYPE {
     CYPDF_PCO_LINESEG,              /* x y l | Append a straight line segment from the current point to (x,y). */
     CYPDF_PCO_CBEZIER,              /* x_1 y_1 x_2 y_2 x_3 y_3 c | Append a cubic Bézier curve using (x_1,y_1) and (x_2,y_2) as control points. The curve extends from the current point to (x_3,y_3). */
     CYPDF_PCO_VBEZIER,              /* x_2 y_2 x_3 y_3 v | Append a cubic Bézier curve using the current point and (x_2,y_2) as control points. The curve extends from the current point to (x_3,y_3). */
-    CYPDF_PCO_YBEZIER,          /* x_1 y_1 x_3 y_3 y | Append a cubic Bézier curve using (x_1,y_1) and (x_3,y_3) as control points. The curve extends from the current point to (x_3,y_3). */
+    CYPDF_PCO_YBEZIER,              /* x_1 y_1 x_3 y_3 y | Append a cubic Bézier curve using (x_1,y_1) and (x_3,y_3) as control points. The curve extends from the current point to (x_3,y_3). */
     CYPDF_PCO_CLOSE,                /* -- h | Close current subpath by appending a straight line segment from the current point to the starting point of the subpath. */
     CYPDF_PCO_RECT,                 /* x y width height re | Append a rectangle to the current path as a complete subpath, with lower-left corner (x,y) and dimensions width and height in user space. */
 
@@ -75,32 +76,33 @@ enum CYPDF_PPO_TYPE {
 
 
 /* CYPDF Path Construction Operator (PCO) */
-typedef struct _CYPDF_PCO {
-    enum CYPDF_PCO_TYPE         operator;
-
-    CYPDF_Point                 endpoint;       /* Used for m, l, c, v, y, re. */
-    CYPDF_Point                 operand1;       /* Used for c, y. operand1 is used as (width,height) for CYPDF_PCO_RECT. */
-    CYPDF_Point                 operand2;       /* Used for c, v. */
-} CYPDF_PCO;
+typedef char* CYPDF_PCO;                            /* A CYPDF_PCO is represented by a null terminated string. */
 
 
 typedef struct _CYPDF_Path {
-    CYPDF_PCO**                 pcos;           /* Path construction operators. */
-    CYPDF_SIZE                  pco_count;      /* Number of path construction operators. */
+    CYPDF_BYTE*                 path_str;           /* String representation of an arbitrary amount of Path Construction Operators. */
+    CYPDF_SIZE                  path_str_size;      /* Size of pco_string. */
+    CYPDF_SIZE                  pco_count;          /* Number of pco's represented pco_string. */
 
-    enum CYPDF_PPO_TYPE         ppo;            /* Path-painting operator. */
+    enum CYPDF_PPO_TYPE         ppo;                /* Path-painting operator. */
 } CYPDF_Path;
 
 
-CYPDF_PCO* CYPDF_PCO_New(enum CYPDF_PCO_TYPE operator, CYPDF_Point endpoint,  CYPDF_Point operand1,  CYPDF_Point operand2);
+CYPDF_Path* CYPDF_New_Path(enum CYPDF_PPO_TYPE ppo);
 
-CYPDF_Path* CYPDF_Path_New(CYPDF_PCO** pcos, CYPDF_SIZE pco_count, enum CYPDF_PPO_TYPE ppo);
+/**
+ * @brief Appends a PCO (Path Construction Operator) to path.
+ * 
+ * @param path 
+ * @param endpoint Used for CYPDF_PCO_NEW, CYPDF_PCO_LINESEG, CYPDF_PCO_CBEZIER, CYPDF_PCO_VBEZIER, CYPDF_PCO_YBEZIER and CYPDF_PCO_RECT.
+ * @param point1 Used for CYPDF_PCO_CBEZIER and CYPDF_PCO_YBEZIER as Bézier control point. Used for CYPDF_PCO_RECT as (width,height).
+ * @param point2  Used for CYPDF_PCO_CBEZIER and CYPDF_PCO_VBEZIER as Bézier control point.
+ */
+void CYPDF_Path_Append(CYPDF_Path* path, enum CYPDF_PCO_TYPE operator, CYPDF_Point endpoint, CYPDF_Point point1, CYPDF_Point point2);
 
-void CYPDF_Path_Print(FILE* fp, CYPDF_Path* path);
+void CYPDF_Write_Path_To_Stream(CYPDF_Obj_Stream* stream, CYPDF_Path* path);
 
-void CYPDF_Path_Append(CYPDF_Path* path, CYPDF_PCO* pco);
-
-void CYPDF_Path_Free(CYPDF_Path* path);
+void CYPDF_Free_Path(CYPDF_Path* path);
 
 
 

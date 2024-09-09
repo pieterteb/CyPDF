@@ -23,14 +23,31 @@ size_t CYPDF_Write_NL(FILE* fp) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 int CYPDF_fprintf_NL(FILE* fp, const char* format, ...) {
-    va_list args;
-    va_start(args, format);
-    int ret = vfprintf(fp, format, args);
-    va_end(args);
+    int char_count = 0;
+    if (format) {
+        va_list args;
+        va_start(args, format);
+        char_count += vfprintf(fp, format, args);
+        va_end(args);
+    }
 
-    ret += (int)CYPDF_Write_NL(fp);
+    char_count += (int)CYPDF_Write_NL(fp);
 
-    return ret;
+    return char_count;
+}
+
+int CYPDF_sprintf_NL(char* dest, const char* format, ...) {
+    int char_count = 0;
+    if (format) {
+        va_list args;
+        va_start(args, format);
+        char_count += vsprintf(dest, format, args);
+        va_end(args);
+    }
+
+    char_count += sprintf(dest, "%s", CYPDF_NEW_LINE);
+
+    return char_count;
 }
 #pragma GCC diagnostic pop
 
