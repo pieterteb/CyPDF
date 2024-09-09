@@ -44,7 +44,7 @@ add_executable(CyPDF
     src/md5.c
 )
 
-# m refers to the libm library (needed for <math.h>)
+# m refers to the libm library (needed for <math.h> for example)
 target_link_libraries(CyPDF PUBLIC compiler_flags m)
 
 target_include_directories(CyPDF PUBLIC "${PROJECT_SOURCE_DIR}/include")
