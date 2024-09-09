@@ -38,9 +38,9 @@ void add_polygon(CYPDF_Doc* pdf, CYPDF_INT page_number, size_t n) {
 int main(void) {
     CYPDF_Doc* pdf = CYPDF_New_Doc();
 
-    for (size_t i = 0; i < 10; ++i) {
-        CYPDF_Append_Page(pdf);
-        add_polygon(pdf, (CYPDF_INT)i + 1, i + 3);
+    CYPDF_Append_Page(pdf);
+    for (size_t i = 0; i < 100; ++i) {
+        add_polygon(pdf, /*(CYPDF_INT)i*/ + 1, i + 3);
     }
 
     FILE* fp = fopen("../out/test.txt", "wb");
