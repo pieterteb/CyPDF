@@ -16,19 +16,19 @@ size_t CYPDF_fwrite_NL(const void* buffer, size_t element_size, size_t element_c
     return ret;
 }
 
-size_t CYPDF_Write_NL(FILE* stream) {
-    return fwrite(CYPDF_NEW_LINE, sizeof(char), strlen(CYPDF_NEW_LINE), stream) * sizeof(char);
+size_t CYPDF_Write_NL(FILE* fp) {
+    return fwrite(CYPDF_NEW_LINE, sizeof(char), strlen(CYPDF_NEW_LINE), fp) * sizeof(char);
 }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
-int CYPDF_fprintf_NL(FILE* stream, const char* format, ...) {
+int CYPDF_fprintf_NL(FILE* fp, const char* format, ...) {
     va_list args;
     va_start(args, format);
-    int ret = vfprintf(stream, format, args);
+    int ret = vfprintf(fp, format, args);
     va_end(args);
 
-    ret += (int)CYPDF_Write_NL(stream);
+    ret += (int)CYPDF_Write_NL(fp);
 
     return ret;
 }
