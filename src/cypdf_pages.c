@@ -137,6 +137,7 @@ void CYPDF_Free_Page(CYPDF_Object* obj) {
         CYPDF_Free_Obj(page->parent, CYPDF_FALSE);
         CYPDF_Free_Obj(page->resources, CYPDF_FALSE);
         CYPDF_Free_Obj(page->mediabox, CYPDF_FALSE);
+        CYPDF_Free_Obj(page->contents, CYPDF_FALSE);
         CYPDF_Free_Obj(page->dict, CYPDF_FALSE);
 
         free(page);
