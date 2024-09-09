@@ -18,7 +18,7 @@ void copy_file(const char* source_path, const char* dest_path) {
     fclose(dest);
 }
 
-void add_polygon(CYPDF_Doc* pdf, size_t n) {
+void add_polygon(CYPDF_Doc* pdf, CYPDF_INT page_number, size_t n) {
     float centerx = CYPDF_A4_WIDTH / 2;
     float centery = CYPDF_A4_HEIGHT / 2;
     float radius = CYPDF_MM_TO_UU(100);
@@ -30,7 +30,7 @@ void add_polygon(CYPDF_Doc* pdf, size_t n) {
     }
     CYPDF_Path_Append(path, CYPDF_PCO_CLOSE, CYPDF_DEFAULT_POINT, CYPDF_DEFAULT_POINT, CYPDF_DEFAULT_POINT);
     
-    CYPDF_Add_Path(pdf, 1, path);
+    CYPDF_Add_Path(pdf, page_number, path);
     CYPDF_Free_Path(path);
 }
 
@@ -38,10 +38,10 @@ void add_polygon(CYPDF_Doc* pdf, size_t n) {
 int main(void) {
     CYPDF_Doc* pdf = CYPDF_New_Doc();
 
-    for (size_t i = 0; i < 1; ++i) {
+    for (size_t i = 0; i < 10; ++i) {
         CYPDF_Append_Page(pdf);
+        add_polygon(pdf, (CYPDF_INT)i + 1, 17);
     }
-    add_polygon(pdf, 17);
 
     FILE* fp = fopen("../out/test.txt", "wb");
     CYPDF_Write_Doc(fp, pdf, "CyPDF/test.txt");
