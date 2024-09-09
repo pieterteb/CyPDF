@@ -40,7 +40,7 @@ int main(void) {
 
     for (size_t i = 0; i < 10; ++i) {
         CYPDF_Append_Page(pdf);
-        add_polygon(pdf, (CYPDF_INT)i + 1, 17);
+        add_polygon(pdf, (CYPDF_INT)i + 1, i + 3);
     }
 
     FILE* fp = fopen("../out/test.txt", "wb");
