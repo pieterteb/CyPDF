@@ -7,8 +7,8 @@
 
 
 
-CYPDF_Obj_Bool* CYPDF_New_Bool(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_BOOL value) {
-    CYPDF_Obj_Bool* bool = (CYPDF_Obj_Bool*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_BOOL, onum);
+CYPDF_Obj_Bool* CYPDF_New_Bool(CYPDF_BOOL indirect, CYPDF_BOOL value) {
+    CYPDF_Obj_Bool* bool = (CYPDF_Obj_Bool*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_BOOL);
     if (bool) {
         bool->value = value;
     }

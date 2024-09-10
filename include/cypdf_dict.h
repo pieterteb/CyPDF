@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 
-#include "cypdf_list.h"
 #include "cypdf_name.h"
 #include "cypdf_object.h"
 #include "cypdf_types.h"
@@ -18,20 +17,13 @@
 /* CYPDF_Obj_Dict struct */
 typedef struct _CYPDF_Obj_Dict {
     CYPDF_Obj_Header        header;
-    CYPDF_Obj_List*         keys;
-    CYPDF_Obj_List*         values;
+    CYPDF_Obj_Name**        keys;
+    CYPDF_Object**          values;
     CYPDF_SIZE              count;
 } CYPDF_Obj_Dict;
 
 
-/**
- * @brief Creates new CYPDF_Obj_Dict.
- * 
- * @param indirect 
- * @param ID 
- * @return CYPDF_Obj_Dict* | Returns NULL if object creation fails.
- */
-CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect, CYPDF_UINT32 onum);
+CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect);
 
 /**
  * @brief Appends the key value pair to dict. Does nothing if dict is NULL.

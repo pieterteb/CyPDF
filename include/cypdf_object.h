@@ -47,10 +47,11 @@ typedef struct _CYPDF_Obj_Header {
  * 
  * @param indirect 
  * @param class
- * @param onum 
  * @return CYPDF_Object* | Returns NULL if header creation fails.
  */
-CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_UINT32 onum);
+CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class);
+
+void CYPDF_Obj_Set_Onum(CYPDF_Object* obj, CYPDF_UINT32 onum);
 
 /**
  * @brief Checks whether obj is direct or not.

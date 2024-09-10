@@ -13,9 +13,9 @@
 
 
 
-CYPDF_Obj_Stream* CYPDF_New_Stream(CYPDF_BOOL indirect, CYPDF_UINT32 onum) {
-    CYPDF_Obj_Stream* stream = CYPDF_New_Obj(indirect, CYPDF_OCLASS_STREAM, onum);
-    stream->dict = CYPDF_New_Dict(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+CYPDF_Obj_Stream* CYPDF_New_Stream(CYPDF_BOOL indirect) {
+    CYPDF_Obj_Stream* stream = CYPDF_New_Obj(indirect, CYPDF_OCLASS_STREAM);
+    stream->dict = CYPDF_New_Dict(CYPDF_FALSE);
 
     return stream;
 }
@@ -31,7 +31,7 @@ void CYPDF_Write_To_Stream(CYPDF_Obj_Stream* stream, CYPDF_BYTE* val, CYPDF_SIZE
 void CYPDF_Write_Stream(FILE* fp, CYPDF_Object* obj) {
     CYPDF_Obj_Stream* stream = (CYPDF_Obj_Stream*)obj;
 
-    CYPDF_Obj_Number* length = CYPDF_New_Number(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, (CYPDF_INT)stream->val_size);
+    CYPDF_Obj_Number* length = CYPDF_New_Number(CYPDF_FALSE, (CYPDF_INT)stream->val_size);
     CYPDF_Dict_Append(stream->dict, "Length", length);
     CYPDF_Write_Obj_Direct(fp, stream->dict);
     CYPDF_Write_NL(fp);

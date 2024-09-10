@@ -14,50 +14,46 @@
 
 
 
-CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_INT page_number, CYPDF_Obj_PNode* parent, CYPDF_Rect mediabox) {
-    CYPDF_Obj_Page* page = (CYPDF_Obj_Page*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_PAGE, onum);
+CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_Obj_PNode* parent, CYPDF_INT page_number, CYPDF_Rect mediabox) {
+    CYPDF_Obj_Page* page = (CYPDF_Obj_Page*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_PAGE);
     if (page) {
         page->page_number = page_number;
         page->parent = parent;
-        page->resources = CYPDF_New_Dict(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
-        page->mediabox = CYPDF_Array_From_Rect(mediabox, CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
-        page->contents = CYPDF_New_Array(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+        page->resources = CYPDF_New_Dict(CYPDF_FALSE);
+        page->mediabox = CYPDF_Array_From_Rect(mediabox, CYPDF_FALSE);
+        page->contents = CYPDF_New_Array(CYPDF_FALSE);
 
-        page->dict = CYPDF_New_Dict(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+        page->dict = CYPDF_New_Dict(CYPDF_FALSE);
         if (page->dict) {
             /* The type of the PDF object that this dictionary describes. */
-            CYPDF_Obj_Name* type = CYPDF_New_Name(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, "Page");
+            CYPDF_Obj_Name* type = CYPDF_New_Name(CYPDF_FALSE, "Page");
             CYPDF_Dict_Append(page->dict, CYPDF_TYPE_NAME, type);
-
-            /* The rest of the dictionary will be build only when this page_node is printed. */
         }
     }
 
     return page;
 }
 
-CYPDF_Obj_PNode* CYPDF_New_PNode(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_Obj_PNode* parent) {
-    CYPDF_Obj_PNode* page_node = (CYPDF_Obj_PNode*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_PNODE, onum);
+CYPDF_Obj_PNode* CYPDF_New_PNode(CYPDF_BOOL indirect, CYPDF_Obj_PNode* parent) {
+    CYPDF_Obj_PNode* page_node = (CYPDF_Obj_PNode*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_PNODE);
     if (page_node) {
         page_node->parent = parent;
-        page_node->kids = CYPDF_New_Array(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+        page_node->kids = CYPDF_New_Array(CYPDF_FALSE);
         page_node->leaf_count = 0;
 
-        page_node->dict = CYPDF_New_Dict(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+        page_node->dict = CYPDF_New_Dict(CYPDF_FALSE);
         if (page_node->dict) {
             /* The type of the PDF object that this dictionary describes. */
-            CYPDF_Obj_Name* type = CYPDF_New_Name(CYPDF_FALSE, CYPDF_DEFAULT_OGEN, "Pages");
+            CYPDF_Obj_Name* type = CYPDF_New_Name(CYPDF_FALSE, "Pages");
             CYPDF_Dict_Append(page_node->dict, CYPDF_TYPE_NAME, type);
-
-            /* The rest of the dictionary will be build only when this page_node is printed. */
         }
     }
 
     return page_node;
 }
 
-CYPDF_Obj_Page* CYPDF_Add_Page(CYPDF_Obj_PNode* page_tree, CYPDF_UINT32 onum, CYPDF_Rect mediabox) {
-    CYPDF_Obj_Page* page = CYPDF_New_Page(CYPDF_TRUE, onum, page_tree->leaf_count + 1, page_tree, mediabox);
+CYPDF_Obj_Page* CYPDF_Add_Page(CYPDF_Obj_PNode* page_tree, CYPDF_Rect mediabox) {
+    CYPDF_Obj_Page* page = CYPDF_New_Page(CYPDF_TRUE, page_tree, page_tree->leaf_count + 1, mediabox);
 
     if (page) {
         CYPDF_Array_Append(page_tree->kids, page);
@@ -69,13 +65,14 @@ CYPDF_Obj_Page* CYPDF_Add_Page(CYPDF_Obj_PNode* page_tree, CYPDF_UINT32 onum, CY
 
 CYPDF_Obj_Page* CYPDF_Page_At_Number(CYPDF_Obj_PNode* page_tree, CYPDF_INT page_number) {
     if (page_tree) {
-        if ((CYPDF_SIZE)page_number > page_tree->kids->list->count) {
+        CYPDF_Obj_Array* kids = page_tree->kids;
+        if ((CYPDF_SIZE)page_number > kids->obj_count) {
             return NULL;
         }
 
         CYPDF_Obj_Page* kid = NULL;
-        for (size_t i = 0; i < page_tree->kids->list->count; ++i) {
-            kid = (CYPDF_Obj_Page*)page_tree->kids->list->objects[i];
+        for (size_t i = 0; i < kids->obj_count; ++i) {
+            kid = (CYPDF_Obj_Page*)kids->objs[i];
 
             if (kid->page_number == page_number) {
                 return kid;
@@ -106,7 +103,7 @@ void CYPDF_Write_Page(FILE* fp, CYPDF_Object* obj) {
         CYPDF_Dict_Append(page->dict, "Resources", page->resources); /* If no resources are present, they are inherited from parent. If no resources are required, this should be an empty dictionary. */
     // }
     CYPDF_Dict_Append(page->dict, "MediaBox", page->mediabox);
-    if (page->contents->list->count) {
+    if (page->contents->obj_count) {
         CYPDF_Dict_Append(page->dict, "Contents", page->contents);
     }
 
@@ -124,7 +121,7 @@ void CYPDF_Write_PNode(FILE* fp, CYPDF_Object* obj) {
         CYPDF_Dict_Append(page_node->dict, "Parent", page_node->parent);
     }
     CYPDF_Dict_Append(page_node->dict, "Kids", page_node->kids);
-    CYPDF_Obj_Number* leaf_count = CYPDF_New_Number(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, page_node->leaf_count);
+    CYPDF_Obj_Number* leaf_count = CYPDF_New_Number(CYPDF_FALSE, page_node->leaf_count);
     CYPDF_Dict_Append(page_node->dict, "Count", leaf_count);
 
     CYPDF_Write_Obj_Direct(fp, page_node->dict);

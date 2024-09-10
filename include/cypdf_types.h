@@ -57,16 +57,16 @@ typedef struct _CYPDF_Point {
     CYPDF_REAL y;
 } CYPDF_Point;
 
-#define CYPDF_TO_POINT(x, y)    (CYPDF_Point){ (CYPDF_REAL)(x), (CYPDF_REAL)(y) }
+#define CYPDF_TO_POINT(x, y)                (CYPDF_Point){ (CYPDF_REAL)(x), (CYPDF_REAL)(y) }
 
 
 /* CYPDF_Rect struct */
 typedef struct _CYPDF_Rect {
-    CYPDF_REAL lowleftx;
-    CYPDF_REAL lowlefty;
-    CYPDF_REAL uprightx;
-    CYPDF_REAL uprighty;
+    CYPDF_Point         lower_left;
+    CYPDF_Point         upper_right;
 } CYPDF_Rect;
+
+#define CYPDF_TO_RECT(x1, y1, x2, y2)       (CYPDF_Rect){ CYPDF_TO_POINT((x1), (y1)), CYPDF_TO_POINT((x2), (y2)) }
 
 
 typedef void CYPDF_Object;

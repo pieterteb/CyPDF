@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 
-#include "cypdf_list.h"
 #include "cypdf_object.h"
 #include "cypdf_types.h"
 
@@ -17,28 +16,14 @@
 /* CYPDF_Obj_Array struct */
 typedef struct _CYPDF_Obj_Array {
     CYPDF_Obj_Header        header;
-    CYPDF_Obj_List*         list;
+    CYPDF_Object**          objs;
+    CYPDF_SIZE              obj_count;
 } CYPDF_Obj_Array;
 
 
-/**
- * @brief Creates new CYPDF_Obj_Array.
- * 
- * @param indirect 
- * @param ID 
- * @return CYPDF_Obj_Array* | Returns NULL if object creation fails.
- */
-CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect, CYPDF_UINT32 onum);
+CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect);
 
-/**
- * @brief Creates new CYPDF_Obj_Array from a CYPDF_Rect.
- * 
- * @param rect 
- * @param indirect 
- * @param ID 
- * @return CYPDF_Obj_Array* | Returns NULL if object creation fails.
- */
-CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect, CYPDF_UINT32 onum);
+CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect);
 
 /**
  * @brief Appends obj to array.

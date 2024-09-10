@@ -54,7 +54,7 @@ typedef struct _CYPDF_Obj_Page_Node {
  * @param mediabox 
  * @return CYPDF_Obj_Page* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_INT page_number, CYPDF_Obj_PNode* parent, CYPDF_Rect mediabox);
+CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_Obj_PNode* parent, CYPDF_INT page_number, CYPDF_Rect mediabox);
 
 /**
  * @brief Creates new CYPDF_Obj_PNode.
@@ -64,7 +64,7 @@ CYPDF_Obj_Page* CYPDF_New_Page(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_INT
  * @param parent 
  * @return CYPDF_Obj_PNode* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_PNode* CYPDF_New_PNode(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_Obj_PNode* parent);
+CYPDF_Obj_PNode* CYPDF_New_PNode(CYPDF_BOOL indirect, CYPDF_Obj_PNode* parent);
 
 /**
  * @brief Adds a new page to page_tree.
@@ -73,7 +73,7 @@ CYPDF_Obj_PNode* CYPDF_New_PNode(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_O
  * @param ID 
  * @param mediabox 
  */
-CYPDF_Obj_Page* CYPDF_Add_Page(CYPDF_Obj_PNode* page_tree, CYPDF_UINT32 onum, CYPDF_Rect mediabox);
+CYPDF_Obj_Page* CYPDF_Add_Page(CYPDF_Obj_PNode* page_tree, CYPDF_Rect mediabox);
 
 CYPDF_Obj_Page* CYPDF_Page_At_Number(CYPDF_Obj_PNode* page_tree, CYPDF_INT page_number);
 

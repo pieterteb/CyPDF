@@ -7,8 +7,8 @@
 
 
 
-CYPDF_Obj_Number* CYPDF_New_Number(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_INT value) {
-    CYPDF_Obj_Number* number = (CYPDF_Obj_Number*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_NUMBER, onum);
+CYPDF_Obj_Number* CYPDF_New_Number(CYPDF_BOOL indirect, CYPDF_INT value) {
+    CYPDF_Obj_Number* number = (CYPDF_Obj_Number*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_NUMBER);
     if (number) {
         number->value = value;
     }

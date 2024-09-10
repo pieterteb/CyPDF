@@ -20,7 +20,7 @@
 
 
 
-CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_UINT32 onum) {
+CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class) {
     /* Assign size, write_func and free_func according to the object class. */
     CYPDF_SIZE size = 0;
     switch (class)
@@ -71,11 +71,6 @@ CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_
 
     CYPDF_Obj_Null* obj = (CYPDF_Obj_Null*)CYPDF_scalloc(1, size);
     if (obj) {
-        /* If the given ID is invalid, the default ID is used. */
-        if (onum > CYPDF_INDIRECT_OBJ_MAX) {
-            onum = CYPDF_DEFAULT_ONUM;
-        }
-
         /* If the given class doesn't exist, it is set to unknown. */
         if (class > CYPDF_OCLASS_COUNT) {
             class = CYPDF_OCLASS_UNKNOWN;
@@ -83,11 +78,21 @@ CYPDF_Object* CYPDF_New_Obj(CYPDF_BOOL indirect, enum CYPDF_OCLASS class, CYPDF_
 
         obj->header.indirect = indirect;
         obj->header.class = class;
-        obj->header.onum = onum;                    /* ID will always be less than 2^24 - 1. */
+        obj->header.onum = CYPDF_DEFAULT_ONUM;
         obj->header.ogen = CYPDF_DEFAULT_OGEN;
     }
 
     return (CYPDF_Object*)obj;
+}
+
+void CYPDF_Obj_Set_Onum(CYPDF_Object* obj, CYPDF_UINT32 onum) {
+    /* If the given ID is invalid, the default ID is used, which essentially nullifies the object. */
+    if (onum > CYPDF_INDIRECT_OBJ_MAX) {
+        onum = CYPDF_DEFAULT_ONUM;
+    }
+
+    CYPDF_Obj_Null* _obj = (CYPDF_Obj_Null*)obj;
+    _obj->header.onum = onum;
 }
 
 CYPDF_BOOL CYPDF_Obj_isDirect(CYPDF_Object* obj) {

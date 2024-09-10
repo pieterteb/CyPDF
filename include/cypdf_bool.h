@@ -20,7 +20,7 @@ typedef struct _CYPDF_Obj_Bool {
 } CYPDF_Obj_Bool;
 
 
-CYPDF_Obj_Bool* CYPDF_New_Bool(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_BOOL val);
+CYPDF_Obj_Bool* CYPDF_New_Bool(CYPDF_BOOL indirect, CYPDF_BOOL val);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.

@@ -8,7 +8,6 @@
 #include "cypdf_graphics.h"
 #include "cypdf_header.h"
 #include "cypdf_info.h"
-#include "cypdf_list.h"
 #include "cypdf_pages.h"
 #include "cypdf_types.h"
 
@@ -22,10 +21,10 @@ typedef struct _CYPDF_Doc {
     CYPDF_Obj_PNode*        page_tree;
     CYPDF_Obj_Info*         info;
     
-    CYPDF_Obj_List*         obj_list;
-    CYPDF_UINT32            curr_onum;
+    CYPDF_Object**          objs;
+    CYPDF_UINT32            obj_count;
 
-    CYPDF_INT64*            offsets; /* Byte offsets of the objects in obj_list. */
+    CYPDF_INT64*            offsets; /* Byte offsets of the objects in objs. */
 } CYPDF_Doc;
 
 

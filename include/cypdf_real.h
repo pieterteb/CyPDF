@@ -28,7 +28,7 @@ typedef struct _CYPDF_Obj_Real {
  * @param value 
  * @return CYPDF_Obj_Real* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Real* CYPDF_New_Real(CYPDF_BOOL indirect, CYPDF_UINT32 onum, CYPDF_REAL value);
+CYPDF_Obj_Real* CYPDF_New_Real(CYPDF_BOOL indirect, CYPDF_REAL value);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.

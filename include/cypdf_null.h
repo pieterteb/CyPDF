@@ -26,7 +26,7 @@ typedef struct _CYPDF_Obj_Null {
  * @param indirect 
  * @return CYPDF_Obj_Null* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Null* CYPDF_New_Null(CYPDF_BOOL indirect, CYPDF_UINT32 onum);
+CYPDF_Obj_Null* CYPDF_New_Null(CYPDF_BOOL indirect);
 
 /**
  * @brief Writes obj to fp.

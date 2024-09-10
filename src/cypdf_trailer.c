@@ -18,10 +18,10 @@
 
 
 void CYPDF_Write_Trailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, CYPDF_INT64 xref_offset) {
-    CYPDF_Obj_Dict* dict = CYPDF_New_Dict(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+    CYPDF_Obj_Dict* dict = CYPDF_New_Dict(CYPDF_FALSE);
 
     if (dict) {
-        CYPDF_Obj_Number* size = CYPDF_New_Number(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, (CYPDF_INT)pdf->obj_list->count + 1);
+        CYPDF_Obj_Number* size = CYPDF_New_Number(CYPDF_FALSE, (CYPDF_INT)pdf->obj_count + 1); /* +1 for the free object entry (0000000000 65535 f) */
         CYPDF_Dict_Append(dict, "Size", size);
         CYPDF_Dict_Append(dict, "Root", pdf->catalog);
         CYPDF_Dict_Append(dict, "Info", pdf->info);
@@ -40,9 +40,9 @@ void CYPDF_Write_Trailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, CYPDF_
         char* id = md5_string(string_to_hash);
         free(string_to_hash);
 
-        CYPDF_Obj_String* ID = CPYDF_New_String(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, CYPDF_STRTYPE_BYTE, (CYPDF_BYTE*)id, strlen(id));
+        CYPDF_Obj_String* ID = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_BYTE, (CYPDF_BYTE*)id, strlen(id));
         free(id);
-        CYPDF_Obj_Array* array = CYPDF_New_Array(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+        CYPDF_Obj_Array* array = CYPDF_New_Array(CYPDF_FALSE);
         CYPDF_Array_Append(array, ID);
         CYPDF_Array_Append(array, ID);
         CYPDF_Dict_Append(dict, "ID", array);

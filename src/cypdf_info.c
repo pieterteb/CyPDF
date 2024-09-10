@@ -11,8 +11,8 @@
 
 
 
-CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, CYPDF_UINT32 onum, const char* title, const char* author, const char* subject, const char* creator, const char* producer, const char* creation_date) {
-    CYPDF_Obj_Info* info = (CYPDF_Obj_Info*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_INFO, onum);
+CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, const char* title, const char* author, const char* subject, const char* creator, const char* producer, const char* creation_date) {
+    CYPDF_Obj_Info* info = (CYPDF_Obj_Info*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_INFO);
 
     if (info) {
         snprintf(info->title, CYPDF_INFO_MAX_SIZE, "%s", title);
@@ -22,7 +22,7 @@ CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, CYPDF_UINT32 onum, const cha
         snprintf(info->producer, CYPDF_INFO_MAX_SIZE, "%s", producer);
         snprintf(info->creation_date, CYPDF_INFO_MAX_SIZE, "%s", creation_date);
 
-        info->dict = CYPDF_New_Dict(CYPDF_FALSE, CYPDF_DEFAULT_ONUM);
+        info->dict = CYPDF_New_Dict(CYPDF_FALSE);
     }
 
     return info;
@@ -35,17 +35,17 @@ void CYPDF_Write_Info(FILE* fp, CYPDF_Object* obj) {
 
     CYPDF_Obj_Info* info = (CYPDF_Obj_Info*)obj;
     CYPDF_Obj_Dict* dict = info->dict;
-    CYPDF_Obj_String* string = CPYDF_New_String(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->title, strlen(info->title));
+    CYPDF_Obj_String* string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->title, strlen(info->title));
     CYPDF_Dict_Append(dict, "Title", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->author, strlen(info->author));
+    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->author, strlen(info->author));
     CYPDF_Dict_Append(dict, "Author", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->subject, strlen(info->subject));
+    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->subject, strlen(info->subject));
     CYPDF_Dict_Append(dict, "Subject", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->creator, strlen(info->creator));
+    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->creator, strlen(info->creator));
     CYPDF_Dict_Append(dict, "Creator", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->producer, strlen(info->producer));
+    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->producer, strlen(info->producer));
     CYPDF_Dict_Append(dict, "Producer", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_DEFAULT_ONUM, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->creation_date, strlen(info->creation_date));
+    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->creation_date, strlen(info->creation_date));
     CYPDF_Dict_Append(dict, "CreationDate", string);
 
     CYPDF_Write_Obj_Direct(fp, dict);

@@ -34,7 +34,7 @@ typedef struct _CYPDF_Obj_Name {
  * @param value 
  * @return CYPDF_Obj_Name* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Name* CYPDF_New_Name(CYPDF_BOOL indirect, CYPDF_UINT32 onum, const char* value);
+CYPDF_Obj_Name* CYPDF_New_Name(CYPDF_BOOL indirect, const char* value);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
