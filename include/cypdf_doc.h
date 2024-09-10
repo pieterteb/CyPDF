@@ -5,10 +5,10 @@
 #include <stdio.h>
 
 #include "cypdf_catalog.h"
-#include "cypdf_graphics.h"
 #include "cypdf_header.h"
 #include "cypdf_info.h"
 #include "cypdf_pages.h"
+#include "cypdf_path_operators.h"
 #include "cypdf_types.h"
 
 

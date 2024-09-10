@@ -25,7 +25,6 @@ add_executable(CyPDF
     src/cypdf_catalog.c
     src/cypdf_dict.c
     src/cypdf_doc.c
-    src/cypdf_graphics.c
     src/cypdf_header.c
     src/cypdf_info.c
     src/cypdf_name.c
@@ -33,6 +32,7 @@ add_executable(CyPDF
     src/cypdf_number.c
     src/cypdf_object.c
     src/cypdf_pages.c
+    src/cypdf_path_operators.c
     src/cypdf_print.c
     src/cypdf_real.c
     src/cypdf_stream.c

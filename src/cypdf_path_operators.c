@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "cypdf_graphics.h"
+#include "cypdf_path_operators.h"
 #include "cypdf_consts.h"
 #include "cypdf_print.h"
 #include "cypdf_stream.h"
