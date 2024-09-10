@@ -10,13 +10,17 @@
 
 
 
-CYPDF_Path* CYPDF_New_Path(enum CYPDF_PPO_TYPE ppo) {
+CYPDF_Path* CYPDF_New_Path(enum CYPDF_PPO_TYPE ppo, enum CYPDF_CPO_TYPE cpo) {
     CYPDF_Path* path = CYPDF_scalloc(1, sizeof(CYPDF_Path));
 
     if (ppo >= CYPDF_PPO_COUNT) {
-        ppo = CYPDF_PPO_UNKNOWN;
+        ppo = CYPDF_PPO_STROKE;
+    }
+    if (cpo >= CYPDF_CPO_COUNT) {
+        cpo = CYPDF_CPO_NONE;
     }
     path->ppo = ppo;
+    path->cpo = cpo;
 
     return path;
 }
@@ -123,48 +127,59 @@ void CYPDF_Path_Append_Rect(CYPDF_Path* path, CYPDF_Point ll_corner, CYPDF_REAL 
 
 void CYPDF_Write_Path_To_Stream(CYPDF_Obj_Stream* stream, CYPDF_Path* path) {
     if (path && stream) {
-        char* ppo = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 characters is enough unless one of the PCOC's becomes a lot lengthier. */
-        switch (path->ppo)
+        char* cpo_ppo = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 characters is enough unless one of the PCOC's becomes a lot lengthier. */
+        switch (path->cpo)
         {
-        case CYPDF_PPO_STROKE:
-            sprintf(ppo, " " CYPDF_PPOC_STROKE);
+        case CYPDF_CPO_NWNRCLIP:
+            sprintf(cpo_ppo, " " CYPDF_CPOC_NWNRCLIP);
             break;
-        case CYPDF_PPO_CLOSE_STROKE:
-            sprintf(ppo, " " CYPDF_PPOC_CLOSE_STROKE);
-            break;
-        case CYPDF_PPO_NWNRFILL:
-            sprintf(ppo, " " CYPDF_PPOC_NWNRFILL);
-            break;
-        case CYPDF_PPO_EORFILL:
-            sprintf(ppo, " " CYPDF_PPOC_EORFILL);
-            break;
-        case CYPDF_PPO_NWNRFILL_STROKE:
-            sprintf(ppo, " " CYPDF_PPOC_NWNRFILL_STROKE);
-            break;
-        case CYPDF_PPO_EORFILL_STROKE:
-            sprintf(ppo, " " CYPDF_PPOC_EORFILL_STROKE);
-            break;
-        case CYPDF_PPO_CLOSE_NWNRFILL_STROKE:
-            sprintf(ppo, " " CYPDF_PPOC_CLOSE_NWNRFILL_STROKE);
-            break;
-        case CYPDF_PPO_CLOSE_EORFILL_STROKE:
-            sprintf(ppo, " " CYPDF_PPOC_CLOSE_EORFILL_STROKE);
-            break;
-        case CYPDF_PPO_END:
-            sprintf(ppo, " " CYPDF_PPOC_END);
+        case CYPDF_CPO_EORCLIP:
+            sprintf(cpo_ppo, " " CYPDF_CPOC_EORCLIP);
             break;
         default:
             break;
         }
-        CYPDF_SIZE ppo_len = strlen(ppo);
-
-        /* If the ppo is not an empty string, it is appended to path->path_str. */
-        if (ppo[0]) {
-            path->path_str = CYPDF_srealloc(path->path_str, (path->path_str_size + ppo_len) * sizeof(CYPDF_BYTE));
-            memcpy(&path->path_str[path->path_str_size], ppo, ppo_len);
-            path->path_str_size += ppo_len;
+        switch (path->ppo)
+        {
+        case CYPDF_PPO_STROKE:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_STROKE);
+            break;
+        case CYPDF_PPO_CLOSE_STROKE:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_CLOSE_STROKE);
+            break;
+        case CYPDF_PPO_NWNRFILL:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_NWNRFILL);
+            break;
+        case CYPDF_PPO_EORFILL:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_EORFILL);
+            break;
+        case CYPDF_PPO_NWNRFILL_STROKE:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_NWNRFILL_STROKE);
+            break;
+        case CYPDF_PPO_EORFILL_STROKE:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_EORFILL_STROKE);
+            break;
+        case CYPDF_PPO_CLOSE_NWNRFILL_STROKE:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_CLOSE_NWNRFILL_STROKE);
+            break;
+        case CYPDF_PPO_CLOSE_EORFILL_STROKE:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_CLOSE_EORFILL_STROKE);
+            break;
+        case CYPDF_PPO_END:
+            sprintf(cpo_ppo, " " CYPDF_PPOC_END);
+            break;
+        default:
+            break;
         }
-        free(ppo);
+        CYPDF_SIZE cpo_ppo_len = strlen(cpo_ppo);
+
+        /* If the cpo_ppo is not an empty string, it is appended to path->path_str. */
+        if (cpo_ppo[0]) {
+            path->path_str = CYPDF_srealloc(path->path_str, (path->path_str_size + cpo_ppo_len) * sizeof(CYPDF_BYTE));
+            memcpy(&path->path_str[path->path_str_size], cpo_ppo, cpo_ppo_len);
+            path->path_str_size += cpo_ppo_len;
+        }
+        free(cpo_ppo);
 
         CYPDF_Write_To_Stream(stream, path->path_str, path->path_str_size);
     }

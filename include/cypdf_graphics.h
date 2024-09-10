@@ -30,6 +30,10 @@
 #define CYPDF_PPOC_CLOSE_EORFILL_STROKE     "b*"
 #define CYPDF_PPOC_END                      "n"
 
+/* Clipping Path Operator Codes (CPOC) */
+#define CYPDF_CPOC_NWNRCLIP                 "W"
+#define CYPDF_CPOC_EORCLIP                  "W*"
+
 
 /* Path Construction Operators (PCO) */
 enum CYPDF_PCO_TYPE {
@@ -42,8 +46,6 @@ enum CYPDF_PCO_TYPE {
     CYPDF_PCO_RECT,                 /* x y width height re | Append a rectangle to the current path as a complete subpath, with lower-left corner (x,y) and dimensions width and height in user space. */
 
     CYPDF_PCO_COUNT,
-
-    CYPDF_PCO_UNKNOWN,
 };
 
 /*
@@ -70,8 +72,16 @@ enum CYPDF_PPO_TYPE {
     CYPDF_PPO_END,                      /* End the path object without filling or stroking it. */
 
     CYPDF_PPO_COUNT,
+};
 
-    CYPDF_PPO_UNKNOWN,
+
+/* Clipping Path Operators (CPO). */
+enum CYPDF_CPO_TYPE {
+    CYPDF_CPO_NONE = 0,
+    CYPDF_CPO_NWNRCLIP,
+    CYPDF_CPO_EORCLIP,
+
+    CYPDF_CPO_COUNT,
 };
 
 
@@ -88,11 +98,12 @@ typedef struct _CYPDF_Path {
     CYPDF_Point                 curr_start_point;       /* The point at which the current sub path started. In other words, the point that was passed in the most recent CYPDF_Path_Append_Begin call. */
     CYPDF_Point                 curr_point;             /* The point at which the next pco will start. */
 
+    enum CYPDF_CPO_TYPE         cpo;                    /* Clipping path operator. */
     enum CYPDF_PPO_TYPE         ppo;                    /* Path-painting operator. */
 } CYPDF_Path;
 
 
-CYPDF_Path* CYPDF_New_Path(enum CYPDF_PPO_TYPE ppo);
+CYPDF_Path* CYPDF_New_Path(enum CYPDF_PPO_TYPE ppo, enum CYPDF_CPO_TYPE cpo);
 
 
 /**
