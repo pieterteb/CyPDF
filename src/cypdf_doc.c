@@ -29,7 +29,7 @@ CYPDF_Doc* CYPDF_New_Doc() {
         pdf->catalog = CYPDF_New_Catalog(CYPDF_TRUE, pdf->curr_onum++, pdf->page_tree);
 
         char* creation_date = CYPDF_Get_Date();
-        pdf->info = CYPDF_New_Info(CYPDF_TRUE, pdf->curr_onum++, "Test", "Pieter", "Test", "CyPDF", "CyProducer", creation_date);
+        pdf->info = CYPDF_New_Info(CYPDF_TRUE, pdf->curr_onum++, "Test", "Bob", "Test", "CyPDF", "CyProducer", creation_date);
         free(creation_date);
 
         pdf->obj_list = CYPDF_New_List();

@@ -24,11 +24,11 @@ void add_polygon(CYPDF_Doc* pdf, CYPDF_INT page_number, size_t n) {
     float radius = CYPDF_MM_TO_UU(100);
 
     CYPDF_Path* path = CYPDF_New_Path(CYPDF_PPO_STROKE);
-    CYPDF_Path_Append(path, CYPDF_PCO_NEW, CYPDF_TO_POINT(centerx + radius, centery), CYPDF_DEFAULT_POINT, CYPDF_DEFAULT_POINT);
+    CYPDF_Path_Append_Begin(path, CYPDF_TO_POINT(centerx + radius, centery));
     for (size_t i = 1; i < n; ++i) {
-        CYPDF_Path_Append(path, CYPDF_PCO_LINESEG, CYPDF_TO_POINT(centerx + radius * cos(2 * M_PI / (double)n * (double)i), centery + radius * sin(2 * M_PI / (double)n * (double)i)), CYPDF_DEFAULT_POINT, CYPDF_DEFAULT_POINT);
+        CYPDF_Path_Append_Lineseg(path, CYPDF_TO_POINT(centerx + radius * cos(2 * M_PI / (double)n * (double)i), centery + radius * sin(2 * M_PI / (double)n * (double)i)));
     }
-    CYPDF_Path_Append(path, CYPDF_PCO_CLOSE, CYPDF_DEFAULT_POINT, CYPDF_DEFAULT_POINT, CYPDF_DEFAULT_POINT);
+    CYPDF_Path_Append_Close(path);
     
     CYPDF_Add_Path(pdf, page_number, path);
     CYPDF_Free_Path(path);
@@ -39,7 +39,7 @@ int main(void) {
     CYPDF_Doc* pdf = CYPDF_New_Doc();
 
     CYPDF_Append_Page(pdf);
-    for (size_t i = 0; i < 100; ++i) {
+    for (size_t i = 0; i < 10; ++i) {
         add_polygon(pdf, /*(CYPDF_INT)i*/ + 1, i + 3);
     }
 

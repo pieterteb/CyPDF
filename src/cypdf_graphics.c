@@ -21,57 +21,109 @@ CYPDF_Path* CYPDF_New_Path(enum CYPDF_PPO_TYPE ppo) {
     return path;
 }
 
-void CYPDF_Path_Append(CYPDF_Path* path, enum CYPDF_PCO_TYPE operator, CYPDF_Point endpoint, CYPDF_Point point1, CYPDF_Point point2) {
-    if (path) {
-        CYPDF_PCO pco = CYPDF_scalloc(128, sizeof(char)); /* A buffer of 127 characters is enough unless one of the PCOC's becomes a lot lengthier. */
-        switch (operator)
-        {
-        case CYPDF_PCO_NEW:
-            sprintf(pco, "%g %g " CYPDF_PCOC_NEW, endpoint.x, endpoint.y);
-            break;
-        case CYPDF_PCO_LINESEG:
-            sprintf(pco, "%g %g " CYPDF_PCOC_LINESEG, endpoint.x, endpoint.y);
-            break;
-        case CYPDF_PCO_CBEZIER:
-            sprintf(pco, "%g %g %g %g %g %g " CYPDF_PCOC_YBEZIER, point1.x, point1.y, point2.x, point2.y, endpoint.x, endpoint.y);
-            break;
-        case CYPDF_PCO_VBEZIER:
-            sprintf(pco, "%g %g %g %g " CYPDF_PCOC_VBEZIER, point2.x, point2.y, endpoint.x, endpoint.y);
-            break;
-        case CYPDF_PCO_YBEZIER:
-            sprintf(pco, "%g %g %g %g " CYPDF_PCOC_YBEZIER, point1.x, point1.y, endpoint.x, endpoint.y);
-            break;
-        case CYPDF_PCO_CLOSE:
-            sprintf(pco, CYPDF_PCOC_CLOSE);
-            break;
-        case CYPDF_PCO_RECT:
-            sprintf(pco, "%g %g %g %g " CYPDF_PCOC_RECT, endpoint.x, endpoint.y, point1.x, point1.y);
-            break;
-        default:
-            break;
-        }
-        CYPDF_SIZE pco_len = strlen(pco);
-        
+static void CYPDF_Path_Append(CYPDF_Path* path, CYPDF_PCO pco, enum CYPDF_PCO_TYPE type, CYPDF_Point new_curr_point) {
+    if (path) {       
         /* If the pco is not an empty string, it is appended to path->path_str. */
         if (pco[0]) {
+            CYPDF_SIZE pco_len = strlen(pco);
+
             if (path->pco_count) {
                 /* If the new pco is not the first of path, a new line sequence is inserted before the new pco. */
-                path->path_str = CYPDF_srealloc(path->path_str, (path->path_str_size + sizeof(CYPDF_NEW_LINE) + pco_len) * sizeof(CYPDF_BYTE));
-                path->path_str_size += (CYPDF_SIZE)CYPDF_sprintf_NL((char*)&path->path_str[path->path_str_size], NULL);
+                path->path_str = CYPDF_srealloc(path->path_str, (path->path_str_size + (sizeof(CYPDF_NEW_LINE) - 1) + pco_len) * sizeof(CYPDF_BYTE));
+                CYPDF_sprintf_NL((char*)&path->path_str[path->path_str_size], NULL);
+                path->path_str_size += sizeof(CYPDF_NEW_LINE) - 1;
             } else {
                 path->path_str = CYPDF_srealloc(path->path_str, (path->path_str_size + pco_len) * sizeof(CYPDF_BYTE));
             }
+
             memcpy(&path->path_str[path->path_str_size], pco, pco_len);
             path->path_str_size += pco_len;
             ++path->pco_count;
+
+            path->pco_types = CYPDF_srealloc(path->pco_types, path->pco_count * sizeof(enum CYPDF_PCO_TYPE));
+            path->pco_types[path->pco_count - 1] = type;
+
+            path->curr_point = new_curr_point;
         }
+    }
+}
+
+void CYPDF_Path_Append_Begin(CYPDF_Path* path, CYPDF_Point start_point) {
+    if (path) {
+        CYPDF_PCO pco = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 chars is enough unless one of the PCOC's becomes a lot lengthier. */
+        sprintf(pco, "%g %g " CYPDF_PCOC_BEGIN, start_point.x, start_point.y);
+
+        CYPDF_Path_Append(path, pco, CYPDF_PCO_BEGIN, start_point);
+        path->curr_start_point = start_point;
+
+        free(pco);
+    }
+}
+
+void CYPDF_Path_Append_Lineseg(CYPDF_Path* path, CYPDF_Point end_point) {
+    if (path) {
+        CYPDF_PCO pco = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 chars is enough unless one of the PCOC's becomes a lot lengthier. */
+        sprintf(pco, "%g %g " CYPDF_PCOC_LINESEG, end_point.x, end_point.y);
+
+        CYPDF_Path_Append(path, pco, CYPDF_PCO_LINESEG, end_point);
+
+        free(pco);
+    }
+}
+
+void CYPDF_Path_Append_CBezier(CYPDF_Path* path, CYPDF_Point ctrl_point1, CYPDF_Point ctrl_point2, CYPDF_Point end_point) {
+    if (path) {
+        CYPDF_PCO pco = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 chars is enough unless one of the PCOC's becomes a lot lengthier. */
+        sprintf(pco, "%g %g %g %g %g %g " CYPDF_PCOC_CBEZIER, ctrl_point1.x, ctrl_point1.y, ctrl_point2.x, ctrl_point2.y, end_point.x, end_point.y);
+        
+        CYPDF_Path_Append(path, pco, CYPDF_PCO_CBEZIER, end_point);
+
+        free(pco);
+    }
+}
+
+void CYPDF_Path_Append_VBezier(CYPDF_Path* path, CYPDF_Point ctrl_point2, CYPDF_Point end_point) {
+    if (path) {
+        CYPDF_PCO pco = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 chars is enough unless one of the PCOC's becomes a lot lengthier. */
+        sprintf(pco, "%g %g %g %g " CYPDF_PCOC_VBEZIER, ctrl_point2.x, ctrl_point2.y, end_point.x, end_point.y);
+
+        CYPDF_Path_Append(path, pco, CYPDF_PCO_VBEZIER, end_point);
+
+        free(pco);
+    }
+}
+
+void CYPDF_Path_Append_YBezier(CYPDF_Path* path, CYPDF_Point ctrl_point1, CYPDF_Point end_point) {
+    if (path) {
+        CYPDF_PCO pco = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 chars is enough unless one of the PCOC's becomes a lot lengthier. */
+        sprintf(pco, "%g %g %g %g " CYPDF_PCOC_YBEZIER, ctrl_point1.x, ctrl_point1.y, end_point.x, end_point.y);
+
+        CYPDF_Path_Append(path, pco, CYPDF_PCO_YBEZIER, end_point);
+
+        free(pco);
+    }
+}
+
+void CYPDF_Path_Append_Close(CYPDF_Path* path) {
+    if (path) {
+        CYPDF_Path_Append(path, CYPDF_PCOC_CLOSE, CYPDF_PCO_CLOSE, path->curr_start_point);
+    }
+}
+
+void CYPDF_Path_Append_Rect(CYPDF_Path* path, CYPDF_Point ll_corner, CYPDF_REAL width, CYPDF_REAL height) {
+    if (path) {
+        CYPDF_PCO pco = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 chars is enough unless one of the PCOC's becomes a lot lengthier. */
+        sprintf(pco, "%g %g %g %g " CYPDF_PCOC_RECT, ll_corner.x, ll_corner.y, width, height);
+
+        CYPDF_Path_Append(path, pco, CYPDF_PCO_RECT, ll_corner);
+
         free(pco);
     }
 }
 
 void CYPDF_Write_Path_To_Stream(CYPDF_Obj_Stream* stream, CYPDF_Path* path) {
     if (path && stream) {
-        char* ppo = CYPDF_scalloc(128, sizeof(char)); /* A buffer of 127 characters is enough unless one of the PCOC's becomes a lot lengthier. */
+        char* ppo = CYPDF_scalloc(64, sizeof(char)); /* A buffer of 63 characters is enough unless one of the PCOC's becomes a lot lengthier. */
         switch (path->ppo)
         {
         case CYPDF_PPO_STROKE:
@@ -121,6 +173,7 @@ void CYPDF_Write_Path_To_Stream(CYPDF_Obj_Stream* stream, CYPDF_Path* path) {
 void CYPDF_Free_Path(CYPDF_Path* path) {
     if (path) {
         free(path->path_str);
+        free(path->pco_types);
         free(path);
     }
 }
