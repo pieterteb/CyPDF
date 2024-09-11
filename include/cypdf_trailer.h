@@ -2,10 +2,10 @@
 #define CYPDF_TRAILER_H
 
 
+#include <stdint.h>
 #include <stdio.h>
 
 #include "cypdf_doc.h"
-#include "cypdf_types.h"
 
 
 
@@ -17,7 +17,7 @@
  * @param file_path 
  * @param xref_offset 
  */
-void CYPDF_Write_Trailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, CYPDF_INT64 xref_offset);
+void CYPDF_PrintTrailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, uint64_t xref_offset);
 
 
 

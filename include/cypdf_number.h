@@ -2,25 +2,24 @@
 #define CYPDF_NUMBER_H
 
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "cypdf_object.h"
-#include "cypdf_types.h"
 
 
 
-#define CYPDF_WRITE_NUMBER              CYPDF_Write_Number
-#define CYDPF_FREE_NUMBER               CYPDF_Free_Number
+#define CYPDF_PRINT_NUMBER              CYPDF_PrintNumber
+#define CYDPF_FREE_NUMBER               CYPDF_FreeNumber
 
 
-/* CYPDF_Obj_Number struct */
-typedef struct _CYPDF_Obj_Number {
-    CYPDF_Obj_Header        header;
-    CYPDF_INT               value;
-} CYPDF_Obj_Number;
+typedef struct CYPDF_ObjNumber {
+    CYPDF_ObjHeader header;
+    int             val;
+} CYPDF_ObjNumber;
 
 
-CYPDF_Obj_Number* CYPDF_New_Number(CYPDF_BOOL indirect, CYPDF_INT value);
+CYPDF_ObjNumber* CYPDF_NewNumber(bool indirect, int val);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
@@ -28,14 +27,14 @@ CYPDF_Obj_Number* CYPDF_New_Number(CYPDF_BOOL indirect, CYPDF_INT value);
  * @param fp 
  * @param obj 
  */
-void CYPDF_Write_Number(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintNumber(FILE* fp, CYPDF_Object* obj);
 
 /**
  * @brief Frees obj. Does nothing if obj is NULL.
  * 
  * @param obj 
  */
-void CYPDF_Free_Number(CYPDF_Object* obj);
+void CYPDF_FreeNumber(CYPDF_Object* obj);
 
 
 

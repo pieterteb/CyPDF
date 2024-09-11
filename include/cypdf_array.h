@@ -2,6 +2,7 @@
 #define CYPDF_ARRAY_H
 
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "cypdf_object.h"
@@ -9,21 +10,20 @@
 
 
 
-#define CYPDF_WRITE_ARRAY               CYPDF_Write_Array
-#define CYPDF_FREE_ARRAY                CYPDF_Free_Array
+#define CYPDF_PRINT_ARRAY               CYPDF_PrintArray
+#define CYPDF_FREE_ARRAY                CYPDF_FreeArray
 
 
-/* CYPDF_Obj_Array struct */
-typedef struct _CYPDF_Obj_Array {
-    CYPDF_Obj_Header        header;
-    CYPDF_Object**          objs;
-    CYPDF_SIZE              obj_count;
-} CYPDF_Obj_Array;
+typedef struct CYPDF_ObjArray {
+    CYPDF_ObjHeader header;
+    CYPDF_Object**  objs;
+    size_t          obj_count;
+} CYPDF_ObjArray;
 
 
-CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect);
+CYPDF_ObjArray* CYPDF_NewArray(bool indirect);
 
-CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect);
+CYPDF_ObjArray* CYPDF_ArrayFromRect(CYPDF_Rect rect, bool indirect);
 
 /**
  * @brief Appends obj to array.
@@ -31,7 +31,7 @@ CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect);
  * @param array 
  * @param obj 
  */
-void CYPDF_Array_Append(CYPDF_Obj_Array* array, CYPDF_Object* obj);
+void CYPDF_ArrayAppend(CYPDF_ObjArray* array, CYPDF_Object* obj);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
@@ -39,14 +39,14 @@ void CYPDF_Array_Append(CYPDF_Obj_Array* array, CYPDF_Object* obj);
  * @param fp 
  * @param obj 
  */
-void CYPDF_Write_Array(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintArray(FILE* fp, CYPDF_Object* obj);
 
 /**
  * @brief Frees obj. Does nothing if obj is NULL.
  * 
  * @param obj 
  */
-void CYPDF_Free_Array(CYPDF_Object* obj);
+void CYPDF_FreeArray(CYPDF_Object* obj);
 
 
 

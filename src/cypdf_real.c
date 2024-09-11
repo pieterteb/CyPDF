@@ -1,14 +1,14 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "cypdf_real.h"
 #include "cypdf_object.h"
-#include "cypdf_types.h"
 
 
 
-CYPDF_Obj_Real* CYPDF_New_Real(CYPDF_BOOL indirect, CYPDF_REAL value) {
-    CYPDF_Obj_Real* real = (CYPDF_Obj_Real*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_REAL);
+CYPDF_ObjReal* CYPDF_NewReal(bool indirect, float value) {
+    CYPDF_ObjReal* real = (CYPDF_ObjReal*)CYPDF_NewObj(indirect, CYPDF_OCLASS_REAL);
     if (real) {
         real->value = value;
     }
@@ -16,18 +16,18 @@ CYPDF_Obj_Real* CYPDF_New_Real(CYPDF_BOOL indirect, CYPDF_REAL value) {
     return real;
 }
 
-void CYPDF_Write_Real(FILE* fp, CYPDF_Object* obj) {
+void CYPDF_PrintReal(FILE* fp, CYPDF_Object* obj) {
     if (fp == NULL || obj == NULL) {
         return;
     }
 
-    CYPDF_Obj_Real* real = (CYPDF_Obj_Real*)obj;
+    CYPDF_ObjReal* real = (CYPDF_ObjReal*)obj;
     fprintf(fp, "%g", real->value);
 }
 
-void CYPDF_Free_Real(CYPDF_Object* obj) {
+void CYPDF_FreeReal(CYPDF_Object* obj) {
     if (obj) {
-        CYPDF_Obj_Real* real = (CYPDF_Obj_Real*)obj;
+        CYPDF_ObjReal* real = (CYPDF_ObjReal*)obj;
         free(real);
     }
 }

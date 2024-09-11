@@ -4,8 +4,6 @@
 
 #include <ctype.h>
 
-#include "cypdf_types.h"
-
 
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -42,7 +40,7 @@ void* CYPDF_srealloc(void* ptr, size_t size);
  * 
  * @return char* 
  */
-char* CYPDF_Get_Date();
+char* CYPDF_GetDate();
 
 
 

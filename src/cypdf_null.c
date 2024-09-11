@@ -1,25 +1,25 @@
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include "cypdf_null.h"
-#include "cypdf_types.h"
 
 
 
-CYPDF_Obj_Null* CYPDF_New_Null(CYPDF_BOOL indirect) {
-    CYPDF_Obj_Null* null = (CYPDF_Obj_Null*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_NULL);
+CYPDF_ObjNull* CYPDF_New_Null(bool indirect) {
+    CYPDF_ObjNull* null = (CYPDF_ObjNull*)CYPDF_NewObj(indirect, CYPDF_OCLASS_NULL);
 
     return null;
 }
 
-void CYPDF_Write_Null(FILE* fp, CYPDF_Object* obj __attribute_maybe_unused__) {
+void CYPDF_PrintNull(FILE* fp, CYPDF_Object* obj __attribute_maybe_unused__) {
     fprintf(fp, "null");
 
     return;
 }
 
-void CYPDF_Free_Null(CYPDF_Object* obj) {
+void CYPDF_FreeNull(CYPDF_Object* obj) {
     if (obj) {
-        CYPDF_Obj_Null* null = (CYPDF_Obj_Null*)obj;
+        CYPDF_ObjNull* null = (CYPDF_ObjNull*)obj;
         free(null);
     }
 }

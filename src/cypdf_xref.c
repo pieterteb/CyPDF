@@ -8,15 +8,15 @@
 
 
 
-void CYPDF_Write_Xref(FILE* fp, CYPDF_Doc* pdf) {
+void CYPDF_PrintXref(FILE* fp, CYPDF_Doc* pdf) {
     if (pdf) {
-        CYPDF_fprintf_NL(fp, "xref");
-        CYPDF_fprintf_NL(fp, "0 %zu", pdf->obj_count + 1);
+        CYPDF_fprintfNL(fp, "xref");
+        CYPDF_fprintfNL(fp, "0 %zu", pdf->obj_count + 1);
 
-        CYPDF_fprintf_NL(fp, "%.10zu %.5hu f", 0UL, CYPDF_OGEN_MAX);
+        CYPDF_fprintfNL(fp, "%.10zu %.5hu f", 0UL, CYPDF_OGEN_MAX);
         for (size_t i = 0; i < pdf->obj_count; ++i) {
             CYPDF_Object* obj = pdf->objs[i];
-            CYPDF_fprintf_NL(fp, "%.10llu %.5hu n", pdf->offsets[i], CYPDF_Obj_Get_Ogen(obj));
+            CYPDF_fprintfNL(fp, "%.10llu %.5hu n", pdf->offsets[i], CYPDF_ObjGetOgen(obj));
         }
     }
 }

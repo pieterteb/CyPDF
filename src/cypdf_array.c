@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,34 +6,33 @@
 #include "cypdf_consts.h"
 #include "cypdf_object.h"
 #include "cypdf_real.h"
-#include "cypdf_types.h"
 #include "cypdf_utils.h"
 
 
 
-CYPDF_Obj_Array* CYPDF_New_Array(CYPDF_BOOL indirect) {
-    CYPDF_Obj_Array* array = (CYPDF_Obj_Array*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_ARRAY);
+CYPDF_ObjArray* CYPDF_NewArray(bool indirect) {
+    CYPDF_ObjArray* array = (CYPDF_ObjArray*)CYPDF_NewObj(indirect, CYPDF_OCLASS_ARRAY);
 
     return array;
 }
 
-CYPDF_Obj_Array* CYPDF_Array_From_Rect(CYPDF_Rect rect, CYPDF_BOOL indirect) {
-    CYPDF_Obj_Array* array = CYPDF_New_Array(indirect);
+CYPDF_ObjArray* CYPDF_ArrayFromRect(CYPDF_Rect rect, bool indirect) {
+    CYPDF_ObjArray* array = CYPDF_NewArray(indirect);
     if (array) {
-        CYPDF_Obj_Real* coord = CYPDF_New_Real(CYPDF_FALSE, rect.lower_left.x);
-        CYPDF_Array_Append(array, coord);
-        coord = CYPDF_New_Real(CYPDF_FALSE, rect.lower_left.y);
-        CYPDF_Array_Append(array, coord);
-        coord = CYPDF_New_Real(CYPDF_FALSE, rect.upper_right.x);
-        CYPDF_Array_Append(array, coord);
-        coord = CYPDF_New_Real(CYPDF_FALSE, rect.upper_right.y);
-        CYPDF_Array_Append(array, coord);
+        CYPDF_ObjReal* coord = CYPDF_NewReal(CYPDF_FALSE, rect.lower_left.x);
+        CYPDF_ArrayAppend(array, coord);
+        coord = CYPDF_NewReal(CYPDF_FALSE, rect.lower_left.y);
+        CYPDF_ArrayAppend(array, coord);
+        coord = CYPDF_NewReal(CYPDF_FALSE, rect.upper_right.x);
+        CYPDF_ArrayAppend(array, coord);
+        coord = CYPDF_NewReal(CYPDF_FALSE, rect.upper_right.y);
+        CYPDF_ArrayAppend(array, coord);
     }
 
     return array;
 }
 
-void CYPDF_Array_Append(CYPDF_Obj_Array* array, CYPDF_Object* obj) {
+void CYPDF_ArrayAppend(CYPDF_ObjArray* array, CYPDF_Object* obj) {
     if (array && obj) {
         ++array->obj_count;
         array->objs = CYPDF_srealloc(array->objs, array->obj_count * sizeof(CYPDF_Object*));
@@ -40,20 +40,20 @@ void CYPDF_Array_Append(CYPDF_Obj_Array* array, CYPDF_Object* obj) {
     }
 }
 
-void CYPDF_Write_Array(FILE* fp, CYPDF_Object* obj) {
+void CYPDF_PrintArray(FILE* fp, CYPDF_Object* obj) {
     if (fp == NULL || obj == NULL) {
         return;
     }
 
-    CYPDF_Obj_Array* array = (CYPDF_Obj_Array*)obj;
+    CYPDF_ObjArray* array = (CYPDF_ObjArray*)obj;
     fputc('[', fp);
     for (size_t i = 0; i < array->obj_count; ++i) {
         CYPDF_Object* _obj = array->objs[i];
 
-        if (!CYPDF_Obj_isDirect(_obj)) {
-            CYPDF_Write_Obj_Ref(fp, _obj);
+        if (!CYPDF_ObjIsDirect(_obj)) {
+            CYPDF_PrintObjRef(fp, _obj);
         } else {
-            CYPDF_Write_Obj_Direct(fp, _obj);
+            CYPDF_PrintObjDirect(fp, _obj);
         }
 
         if (i + 1 < array->obj_count) {
@@ -63,12 +63,12 @@ void CYPDF_Write_Array(FILE* fp, CYPDF_Object* obj) {
     fputc(']', fp);
 }
 
-void CYPDF_Free_Array(CYPDF_Object* obj) {
+void CYPDF_FreeArray(CYPDF_Object* obj) {
     if (obj) {
-        CYPDF_Obj_Array* array = (CYPDF_Obj_Array*)obj;
+        CYPDF_ObjArray* array = (CYPDF_ObjArray*)obj;
         
         for (size_t i = 0; i < array->obj_count; ++i) {
-            CYPDF_Free_Obj(array->objs[i], CYPDF_FALSE);
+            CYPDF_FreeObj(array->objs[i], CYPDF_FALSE);
         }
         free(array->objs);
         free(array);

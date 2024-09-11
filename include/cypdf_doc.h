@@ -2,6 +2,7 @@
 #define CYPDF_DOC_H
 
 
+#include <stdint.h>
 #include <stdio.h>
 
 #include "cypdf_catalog.h"
@@ -9,22 +10,20 @@
 #include "cypdf_info.h"
 #include "cypdf_pages.h"
 #include "cypdf_path_operators.h"
-#include "cypdf_types.h"
 
 
 
-/* CYPDF_doc struct */
-typedef struct _CYPDF_Doc {
-    CYPDF_File_Header*      file_header;
+typedef struct CYPDF_Doc {
+    CYPDF_FileHeader*   file_header;
 
-    CYPDF_Obj_Catalog*      catalog;
-    CYPDF_Obj_PNode*        page_tree;
-    CYPDF_Obj_Info*         info;
+    CYPDF_ObjCatalog*   catalog;
+    CYPDF_ObjPNode*     page_tree;
+    CYPDF_ObjInfo*      info;
     
-    CYPDF_Object**          objs;
-    CYPDF_UINT32            obj_count;
+    CYPDF_Object**      objs;
+    uint32_t	        obj_count;
 
-    CYPDF_INT64*            offsets; /* Byte offsets of the objects in objs. */
+    size_t*             offsets; /* Byte offsets of the objects in objs. */
 } CYPDF_Doc;
 
 
@@ -33,16 +32,16 @@ typedef struct _CYPDF_Doc {
  * 
  * @return CYPDF_Doc* | Returns NULL if memory allocation fails.
  */
-CYPDF_Doc* CYPDF_New_Doc();
+CYPDF_Doc* CYPDF_NewDoc();
 
 /**
  * @brief Append a new page to pdf.
  * 
  * @param pdf 
  */
-void CYPDF_Append_Page(CYPDF_Doc* pdf);
+void CYPDF_AppendPage(CYPDF_Doc* pdf);
 
-void CYPDF_Add_Path(CYPDF_Doc* pdf, CYPDF_INT page_number, CYPDF_Path* path);
+void CYPDF_AddPath(CYPDF_Doc* pdf, int page_number, CYPDF_Path* path);
 
 /**
  * @brief Writes pdf to fp. Does nothing if fp == NULL or pdf == NULL.
@@ -50,14 +49,14 @@ void CYPDF_Add_Path(CYPDF_Doc* pdf, CYPDF_INT page_number, CYPDF_Path* path);
  * @param fp 
  * @param pdf 
  */
-void CYPDF_Write_Doc(FILE* fp, CYPDF_Doc* pdf, const char* file_path);
+void CYPDF_PrintDoc(FILE* fp, CYPDF_Doc* pdf, const char* file_path);
 
 /**
  * @brief Frees pdf. Does nothing if pdf is NULL.
  * 
  * @param pdf 
  */
-void CYPDF_Free_Doc(CYPDF_Doc* pdf);
+void CYPDF_FreeDoc(CYPDF_Doc* pdf);
 
 
 

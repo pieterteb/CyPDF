@@ -89,21 +89,21 @@ enum CYPDF_CPO_TYPE {
 typedef char* CYPDF_PCO;                                /* A CYPDF_PCO is represented by a null terminated string. */
 
 
-typedef struct _CYPDF_Path {
-    CYPDF_BYTE*                 path_str;               /* String representation of an arbitrary amount of Path Construction Operators. */
-    CYPDF_SIZE                  path_str_size;          /* Size of pco_string. */
-    CYPDF_SIZE                  pco_count;              /* Number of pco's represented pco_string. */
-    enum CYPDF_PCO_TYPE*        pco_types;              /* They types of the pco's. */
+typedef struct CYPDF_Path {
+    unsigned char*          path_str;               /* String representation of an arbitrary amount of Path Construction Operators. */
+    size_t                  path_str_size;          /* Size of pco_string. */
+    size_t                  pco_count;              /* Number of pco's represented pco_string. */
+    enum CYPDF_PCO_TYPE*    pco_types;              /* They types of the pco's. */
 
-    CYPDF_Point                 curr_start_point;       /* The point at which the current sub path started. In other words, the point that was passed in the most recent CYPDF_Path_Append_Begin call. */
-    CYPDF_Point                 curr_point;             /* The point at which the next pco will start. */
+    CYPDF_Point             curr_start_point;       /* The point at which the current sub path started. In other words, the point that was passed in the most recent CYPDF_Path_Append_Begin call. */
+    CYPDF_Point             curr_point;             /* The point at which the next pco will start. */
 
-    enum CYPDF_CPO_TYPE         cpo;                    /* Clipping path operator. */
-    enum CYPDF_PPO_TYPE         ppo;                    /* Path-painting operator. */
+    enum CYPDF_CPO_TYPE     cpo;                    /* Clipping path operator. */
+    enum CYPDF_PPO_TYPE     ppo;                    /* Path-painting operator. */
 } CYPDF_Path;
 
 
-CYPDF_Path* CYPDF_New_Path(enum CYPDF_PPO_TYPE ppo, enum CYPDF_CPO_TYPE cpo);
+CYPDF_Path* CYPDF_NewPath(enum CYPDF_PPO_TYPE ppo, enum CYPDF_CPO_TYPE cpo);
 
 
 /**
@@ -112,7 +112,7 @@ CYPDF_Path* CYPDF_New_Path(enum CYPDF_PPO_TYPE ppo, enum CYPDF_CPO_TYPE cpo);
  * @param path 
  * @param start_point Coordinates of start of new subpath in User Units.
  */
-void CYPDF_Path_Append_Begin(CYPDF_Path* path, CYPDF_Point start_point);
+void CYPDF_PathAppendBegin(CYPDF_Path* path, CYPDF_Point start_point);
 
 /**
  * @brief Append a straight line segment from path->curr_point to @a end_point. The new path->curr_point is @a end_point. (from: https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf Table 4.9)
@@ -122,7 +122,7 @@ void CYPDF_Path_Append_Begin(CYPDF_Path* path, CYPDF_Point start_point);
  * @param path 
  * @param end_point End point of the line segment in User Units.
  */
-void CYPDF_Path_Append_Lineseg(CYPDF_Path* path, CYPDF_Point end_point);
+void CYPDF_PathAppendLineseg(CYPDF_Path* path, CYPDF_Point end_point);
 
 /**
  * @brief Append a cubic Bézier curve to the current path. The curve extends from path->curr_point to @a end_point, using @a ctrl_point1 and @a ctrl_point2 as the Bézier control points. The new path->curr_point is @a end_point. (from: https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf Table 4.9)
@@ -132,7 +132,7 @@ void CYPDF_Path_Append_Lineseg(CYPDF_Path* path, CYPDF_Point end_point);
  * @param ctrl_point2 Second Bézier control point in User Units.
  * @param end_point End point of the Bézier curve in User Units.
  */
-void CYPDF_Path_Append_CBezier(CYPDF_Path* path, CYPDF_Point ctrl_point1, CYPDF_Point ctrl_point2, CYPDF_Point end_point);
+void CYPDF_PathAppendCBezier(CYPDF_Path* path, CYPDF_Point ctrl_point1, CYPDF_Point ctrl_point2, CYPDF_Point end_point);
 
 /**
  * @brief Append a cubic Bézier curve to the current path. The curve extends from path->curr_point to @a end_point, using path->curr_point and @a ctrl_point2 as the Bézier control points. The new path->curr_point is @a end_point. (from: https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf Table 4.9)
@@ -141,7 +141,7 @@ void CYPDF_Path_Append_CBezier(CYPDF_Path* path, CYPDF_Point ctrl_point1, CYPDF_
  * @param ctrl_point2 Second Bézier control point in User Units.
  * @param end_point End point of the Bézier curve in User Units.
  */
-void CYPDF_Path_Append_VBezier(CYPDF_Path* path, CYPDF_Point ctrl_point2, CYPDF_Point end_point);
+void CYPDF_PathAppendVBezier(CYPDF_Path* path, CYPDF_Point ctrl_point2, CYPDF_Point end_point);
 
 /**
  * @brief Append a cubic Bézier curve to the current path. The curve extends from path->curr_point to @a end_point, using @a ctrl_point1 and @a end_point as the Bézier control points. The new path->curr_point is @a end_point. (from: https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf Table 4.9)
@@ -150,14 +150,14 @@ void CYPDF_Path_Append_VBezier(CYPDF_Path* path, CYPDF_Point ctrl_point2, CYPDF_
  * @param ctrl_point1 First Bézier control point in User Units.
  * @param end_point End point of the Bézier curve in User Units.
  */
-void CYPDF_Path_Append_YBezier(CYPDF_Path* path, CYPDF_Point ctrl_point1, CYPDF_Point end_point);
+void CYPDF_PathAppendYBezier(CYPDF_Path* path, CYPDF_Point ctrl_point1, CYPDF_Point end_point);
 
 /**
  * @brief Close the current subpath by appending a straight line segment from path->curr_point to path->curr_start_point. If the current subpath is already closed, CYPDF_PCO_CLOSE does nothing. This operator terminates the current subpath. Appending another segment to the current path begins a new subpath, even if the new segment begins at the endpoint reached by the h operation. (from: https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf Table 4.9)
  * 
  * @param path 
  */
-void CYPDF_Path_Append_Close(CYPDF_Path* path);
+void CYPDF_PathAppendClose(CYPDF_Path* path);
 
 /**
  * @brief Append a rectangle to the current path as a complete subpath, with lower-left corner @a ll_corner and dimensions @a width and @a height in user space. (from: https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf Table 4.9)
@@ -167,12 +167,12 @@ void CYPDF_Path_Append_Close(CYPDF_Path* path);
  * @param width Width of rectangle in User Units.
  * @param height Height of rectangle in User Units.
  */
-void CYPDF_Path_Append_Rect(CYPDF_Path* path, CYPDF_Point ll_corner, CYPDF_REAL width, CYPDF_REAL height);
+void CYPDF_PathAppendRect(CYPDF_Path* path, CYPDF_Point ll_corner, float width, float height);
 
 
-void CYPDF_Write_Path_To_Stream(CYPDF_Obj_Stream* stream, CYPDF_Path* path);
+void CYPDF_PrintPathToStream(CYPDF_ObjStream* stream, CYPDF_Path* path);
 
-void CYPDF_Free_Path(CYPDF_Path* path);
+void CYPDF_FreePath(CYPDF_Path* path);
 
 
 

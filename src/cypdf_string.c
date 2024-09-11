@@ -1,16 +1,16 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "cypdf_string.h"
 #include "cypdf_object.h"
-#include "cypdf_types.h"
 #include "cypdf_utils.h"
 
 
 
-CYPDF_Obj_String* CPYDF_New_String(CYPDF_BOOL indirect, enum CYPDF_STRING_TYPE type, CYPDF_BYTE* value, CYPDF_SIZE valsize) {
-    CYPDF_Obj_String* string = (CYPDF_Obj_String*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_STRING);
+CYPDF_ObjString* CPYDF_NewString(bool indirect, enum CYPDF_STRING_TYPE type, unsigned char* value, size_t valsize) {
+    CYPDF_ObjString* string = (CYPDF_ObjString*)CYPDF_NewObj(indirect, CYPDF_OCLASS_STRING);
     if (string) {
         string->type = type;
         string->value = CYPDF_smalloc(valsize);
@@ -27,12 +27,12 @@ CYPDF_Obj_String* CPYDF_New_String(CYPDF_BOOL indirect, enum CYPDF_STRING_TYPE t
     return string;
 }
 
-void CYPDF_Write_String(FILE* fp, CYPDF_Object* obj) {
+void CYPDF_PrintString(FILE* fp, CYPDF_Object* obj) {
     if (fp == NULL || obj == NULL) {
         return;
     }
 
-    CYPDF_Obj_String* string = (CYPDF_Obj_String*)obj;
+    CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
 
     switch (string->type)
     {
@@ -49,9 +49,9 @@ void CYPDF_Write_String(FILE* fp, CYPDF_Object* obj) {
     }
 }
 
-void CYPDF_Free_String(CYPDF_Object* obj) {
+void CYPDF_FreeString(CYPDF_Object* obj) {
     if (obj) {
-        CYPDF_Obj_String* string = (CYPDF_Obj_String*)obj;
+        CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
         free(string->value);
         free(string);
     }

@@ -2,31 +2,30 @@
 #define CYPDF_NULL_H
 
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "cypdf_object.h"
-#include "cypdf_types.h"
 
 
 
-#define CYPDF_WRITE_NULL            CYPDF_Write_Null
-#define CYPDF_FREE_NULL             CYPDF_Free_Null
+#define CYPDF_PRINT_NULL            CYPDF_PrintNull
+#define CYPDF_FREE_NULL             CYPDF_FreeNull
 
 
-/* CYPDF_Obj_Null struct */
-typedef struct _CYPDF_Obj_Null {
-    CYPDF_Obj_Header        header;
-} CYPDF_Obj_Null;
+typedef struct CYPDF_ObjNull {
+    CYPDF_ObjHeader header;
+} CYPDF_ObjNull;
 
 
 /**
- * @brief Creates new CYPDF_Obj_Null.
+ * @brief Creates new CYPDF_ObjNull.
  * 
  * @param ID 
  * @param indirect 
- * @return CYPDF_Obj_Null* | Returns NULL if object creation fails.
+ * @return CYPDF_ObjNull* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Null* CYPDF_New_Null(CYPDF_BOOL indirect);
+CYPDF_ObjNull* CYPDF_NewNull(bool indirect);
 
 /**
  * @brief Writes obj to fp.
@@ -34,14 +33,14 @@ CYPDF_Obj_Null* CYPDF_New_Null(CYPDF_BOOL indirect);
  * @param fp Stream to be written to.
  * @param obj 
  */
-void CYPDF_Write_Null(FILE* fp, CYPDF_Object* obj __attribute_maybe_unused__);
+void CYPDF_PrintNull(FILE* fp, CYPDF_Object* obj __attribute_maybe_unused__);
 
 /**
  * @brief Frees NULL. Does nothing if obj is NULL.
  * 
  * @param obj 
  */
-void CYPDF_Free_Null(CYPDF_Object* obj);
+void CYPDF_FreeNull(CYPDF_Object* obj);
 
 
 

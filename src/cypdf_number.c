@@ -1,33 +1,33 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "cypdf_number.h"
 #include "cypdf_object.h"
-#include "cypdf_types.h"
 
 
 
-CYPDF_Obj_Number* CYPDF_New_Number(CYPDF_BOOL indirect, CYPDF_INT value) {
-    CYPDF_Obj_Number* number = (CYPDF_Obj_Number*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_NUMBER);
+CYPDF_ObjNumber* CYPDF_NewNumber(bool indirect, int val) {
+    CYPDF_ObjNumber* number = (CYPDF_ObjNumber*)CYPDF_NewObj(indirect, CYPDF_OCLASS_NUMBER);
     if (number) {
-        number->value = value;
+        number->val = val;
     }
 
     return number;
 }
 
-void CYPDF_Write_Number(FILE* fp, CYPDF_Object* obj) {
+void CYPDF_PrintNumber(FILE* fp, CYPDF_Object* obj) {
     if (fp == NULL || obj == NULL) {
         return;
     }
 
-    CYPDF_Obj_Number* number = (CYPDF_Obj_Number*)obj;
-    fprintf(fp, "%d", number->value);
+    CYPDF_ObjNumber* number = (CYPDF_ObjNumber*)obj;
+    fprintf(fp, "%d", number->val);
 }
 
-void CYPDF_Free_Number(CYPDF_Object* obj) {
+void CYPDF_FreeNumber(CYPDF_Object* obj) {
     if (obj) {
-        CYPDF_Obj_Number* number = (CYPDF_Obj_Number*)obj;
+        CYPDF_ObjNumber* number = (CYPDF_ObjNumber*)obj;
         free(number);
     }
 }

@@ -2,28 +2,27 @@
 #define CYPDF_STREAM_H
 
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "cypdf_dict.h"
-#include "cypdf_types.h"
 
 
 
-#define CYPDF_WRITE_STREAM                      CYPDF_Write_Stream
-#define CYPDF_FREE_STREAM                       CYPDF_Free_Stream
+#define CYPDF_PRINT_STREAM                      CYPDF_PrintStream
+#define CYPDF_FREE_STREAM                       CYPDF_FreeStream
 
 
-/* CYPDF_Obj_Stream struct */
-typedef struct _CYPDF_Obj_Stream {
-    CYPDF_Obj_Header        header;
+typedef struct CYPDF_ObjStream {
+    CYPDF_ObjHeader header;
 
-    CYPDF_Obj_Dict*         dict;
-    CYPDF_BYTE*             val;
-    CYPDF_SIZE              val_size;
-} CYPDF_Obj_Stream;
+    CYPDF_ObjDict*  dict;
+    unsigned char*  val;
+    size_t          val_size;
+} CYPDF_ObjStream;
 
 
-CYPDF_Obj_Stream* CYPDF_New_Stream(CYPDF_BOOL indirect);
+CYPDF_ObjStream* CYPDF_NewStream(bool indirect);
 
 /**
  * @brief Writes a CYPDF_BYTE array to stream->val.
@@ -32,11 +31,11 @@ CYPDF_Obj_Stream* CYPDF_New_Stream(CYPDF_BOOL indirect);
  * @param val 
  * @param val_size 
  */
-void CYPDF_Write_To_Stream(CYPDF_Obj_Stream* stream, CYPDF_BYTE* val, CYPDF_SIZE val_size);
+void CYPDF_PrintToStream(CYPDF_ObjStream* stream, unsigned char* val, size_t val_size);
 
-void CYPDF_Write_Stream(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintStream(FILE* fp, CYPDF_Object* obj);
 
-void CYPDF_Free_Stream(CYPDF_Object* obj);
+void CYPDF_FreeStream(CYPDF_Object* obj);
 
 
 

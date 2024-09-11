@@ -2,15 +2,15 @@
 #define CYPDF_STRING_H
 
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "cypdf_object.h"
-#include "cypdf_types.h"
 
 
 
-#define CYPDF_WRITE_STRING          CYPDF_Write_String
-#define CYPDF_FREE_STRING           CYPDF_Free_String
+#define CYPDF_PRINT_STRING          CYPDF_PrintString
+#define CYPDF_FREE_STRING           CYPDF_FreeString
 
 
 enum CYPDF_STRING_TYPE {
@@ -23,13 +23,13 @@ enum CYPDF_STRING_TYPE {
 };
 
 
-typedef struct _CYPDF_String_obj {
-    CYPDF_Obj_Header            header;
+typedef struct CYPDF_StringObj {
+    CYPDF_ObjHeader         header;
 
-    enum CYPDF_STRING_TYPE      type;
-    CYPDF_BYTE*                 value;
-    CYPDF_SIZE                  size;
-} CYPDF_Obj_String;
+    enum CYPDF_STRING_TYPE  type;
+    unsigned char*          value;
+    size_t                  size;
+} CYPDF_ObjString;
 
 
 /**
@@ -42,7 +42,7 @@ typedef struct _CYPDF_String_obj {
  * @param valsize Size of value in bytes.
  * @return CYPDF_Obj_String* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_String* CPYDF_New_String(CYPDF_BOOL indirect, enum CYPDF_STRING_TYPE type, CYPDF_BYTE* value, CYPDF_SIZE valsize);
+CYPDF_ObjString* CPYDF_NewString(bool indirect, enum CYPDF_STRING_TYPE type, unsigned char* value, size_t valsize);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
@@ -50,14 +50,14 @@ CYPDF_Obj_String* CPYDF_New_String(CYPDF_BOOL indirect, enum CYPDF_STRING_TYPE t
  * @param fp 
  * @param obj 
  */
-void CYPDF_Write_String(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintString(FILE* fp, CYPDF_Object* obj);
 
 /**
  * @brief Frees obj. Does nothing if obj is NULL.
  * 
  * @param obj 
  */
-void CYPDF_Free_String(CYPDF_Object* obj);
+void CYPDF_FreeString(CYPDF_Object* obj);
 
 
 

@@ -4,8 +4,6 @@
 
 #include <stdio.h>
 
-#include "cypdf_types.h"
-
 
 
 /**
@@ -17,9 +15,9 @@
  * @param stream 
  * @return size_t | Returns the amount of bytes successfully written.
  */
-size_t CYPDF_fwrite_NL(const void* buffer, size_t element_size, size_t element_count, FILE* stream);
+size_t CYPDF_fwriteNL(const void* buffer, size_t element_size, size_t element_count, FILE* stream);
 
-size_t CYPDF_Write_NL(FILE* fp);
+size_t CYPDF_PrintNL(FILE* fp);
 
 /**
  * @brief Behaves like fprintf but appends the newline sequence to the printed chars. If format is NULL, only the newline sequence is printed.
@@ -29,7 +27,7 @@ size_t CYPDF_Write_NL(FILE* fp);
  * @param ... 
  * @return int | The amount of characters printed.
  */
-int CYPDF_fprintf_NL(FILE* fp, const char* format, ...);
+int CYPDF_fprintfNL(FILE* fp, const char* format, ...);
 
 /**
  * @brief Behaves like sprintf but appends the newline sequence to the printed chars. If format is NULL, only the newline sequence is printed.
@@ -39,7 +37,7 @@ int CYPDF_fprintf_NL(FILE* fp, const char* format, ...);
  * @param ... 
  * @return int | The amount of characters printed.
  */
-int CYPDF_sprintf_NL(char* dest, const char* format, ...);
+int CYPDF_sprintfNL(char* dest, const char* format, ...);
 
 /**
  * @brief Writes src as a comment to fp.
@@ -48,7 +46,7 @@ int CYPDF_sprintf_NL(char* dest, const char* format, ...);
  * @param src 
  * @return size_t | Returns the amount of bytes successfully written.
  */
-size_t CYPDF_Write_Comment(FILE* fp, const char* src);
+size_t CYPDF_PrintComment(FILE* fp, const char* src);
 
 
 

@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,23 +12,22 @@
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 #include "cypdf_string.h"
-#include "cypdf_types.h"
 #include "cypdf_utils.h"
 #include "md5.h"
 
 
 
-void CYPDF_Write_Trailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, CYPDF_INT64 xref_offset) {
-    CYPDF_Obj_Dict* dict = CYPDF_New_Dict(CYPDF_FALSE);
+void CYPDF_PrintTrailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, uint64_t xref_offset) {
+    CYPDF_ObjDict* dict = CYPDF_NewDict(CYPDF_FALSE);
 
     if (dict) {
-        CYPDF_Obj_Number* size = CYPDF_New_Number(CYPDF_FALSE, (CYPDF_INT)pdf->obj_count + 1); /* +1 for the free object entry (0000000000 65535 f) */
-        CYPDF_Dict_Append(dict, "Size", size);
-        CYPDF_Dict_Append(dict, "Root", pdf->catalog);
-        CYPDF_Dict_Append(dict, "Info", pdf->info);
+        CYPDF_ObjNumber* size = CYPDF_NewNumber(CYPDF_FALSE, (int)pdf->obj_count + 1); /* +1 for the free object entry (0000000000 65535 f) */
+        CYPDF_DictAppend(dict, "Size", size);
+        CYPDF_DictAppend(dict, "Root", pdf->catalog);
+        CYPDF_DictAppend(dict, "Info", pdf->info);
 
         char* string_to_hash = CYPDF_smalloc(1024 * sizeof(char));
-        CYPDF_Obj_Info* info = pdf->info;
+        CYPDF_ObjInfo* info = pdf->info;
         char* date = info->creation_date;
         sprintf(string_to_hash, "%s%s%ld%s%s%s%s%s%s",
                 date, file_path, ftell(fp),
@@ -40,21 +40,21 @@ void CYPDF_Write_Trailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, CYPDF_
         char* id = md5_string(string_to_hash);
         free(string_to_hash);
 
-        CYPDF_Obj_String* ID = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_BYTE, (CYPDF_BYTE*)id, strlen(id));
+        CYPDF_ObjString* ID = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_BYTE, (unsigned char*)id, strlen(id));
         free(id);
-        CYPDF_Obj_Array* array = CYPDF_New_Array(CYPDF_FALSE);
-        CYPDF_Array_Append(array, ID);
-        CYPDF_Array_Append(array, ID);
-        CYPDF_Dict_Append(dict, "ID", array);
+        CYPDF_ObjArray* array = CYPDF_NewArray(CYPDF_FALSE);
+        CYPDF_ArrayAppend(array, ID);
+        CYPDF_ArrayAppend(array, ID);
+        CYPDF_DictAppend(dict, "ID", array);
     }
 
-    CYPDF_fprintf_NL(fp, "trailer");
+    CYPDF_fprintfNL(fp, "trailer");
 
-    CYPDF_Write_Obj_Direct(fp, dict);
-    CYPDF_Free_Obj(dict, CYPDF_TRUE);
-    CYPDF_Write_NL(fp);
+    CYPDF_PrintObjDirect(fp, dict);
+    CYPDF_FreeObj(dict, CYPDF_TRUE);
+    CYPDF_PrintNL(fp);
 
-    CYPDF_fprintf_NL(fp, "startxref");
-    CYPDF_fprintf_NL(fp, "%lld", xref_offset);
+    CYPDF_fprintfNL(fp, "startxref");
+    CYPDF_fprintfNL(fp, "%lld", xref_offset);
     fprintf(fp, "%%%%EOF");
 }

@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,8 +12,8 @@
 
 
 
-CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, const char* title, const char* author, const char* subject, const char* creator, const char* producer, const char* creation_date) {
-    CYPDF_Obj_Info* info = (CYPDF_Obj_Info*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_INFO);
+CYPDF_ObjInfo* CYPDF_NewInfo(bool indirect, const char* title, const char* author, const char* subject, const char* creator, const char* producer, const char* creation_date) {
+    CYPDF_ObjInfo* info = (CYPDF_ObjInfo*)CYPDF_NewObj(indirect, CYPDF_OCLASS_INFO);
 
     if (info) {
         snprintf(info->title, CYPDF_INFO_MAX_SIZE, "%s", title);
@@ -22,40 +23,40 @@ CYPDF_Obj_Info* CYPDF_New_Info(CYPDF_BOOL indirect, const char* title, const cha
         snprintf(info->producer, CYPDF_INFO_MAX_SIZE, "%s", producer);
         snprintf(info->creation_date, CYPDF_INFO_MAX_SIZE, "%s", creation_date);
 
-        info->dict = CYPDF_New_Dict(CYPDF_FALSE);
+        info->dict = CYPDF_NewDict(CYPDF_FALSE);
     }
 
     return info;
 }
 
-void CYPDF_Write_Info(FILE* fp, CYPDF_Object* obj) {
+void CYPDF_PrintInfo(FILE* fp, CYPDF_Object* obj) {
     if (fp == NULL || obj == NULL) {
         return;
     }
 
-    CYPDF_Obj_Info* info = (CYPDF_Obj_Info*)obj;
-    CYPDF_Obj_Dict* dict = info->dict;
-    CYPDF_Obj_String* string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->title, strlen(info->title));
-    CYPDF_Dict_Append(dict, "Title", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->author, strlen(info->author));
-    CYPDF_Dict_Append(dict, "Author", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->subject, strlen(info->subject));
-    CYPDF_Dict_Append(dict, "Subject", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->creator, strlen(info->creator));
-    CYPDF_Dict_Append(dict, "Creator", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->producer, strlen(info->producer));
-    CYPDF_Dict_Append(dict, "Producer", string);
-    string = CPYDF_New_String(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (CYPDF_BYTE*)info->creation_date, strlen(info->creation_date));
-    CYPDF_Dict_Append(dict, "CreationDate", string);
+    CYPDF_ObjInfo* info = (CYPDF_ObjInfo*)obj;
+    CYPDF_ObjDict* dict = info->dict;
+    CYPDF_ObjString* string = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (unsigned char*)info->title, strlen(info->title));
+    CYPDF_DictAppend(dict, "Title", string);
+    string = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (unsigned char*)info->author, strlen(info->author));
+    CYPDF_DictAppend(dict, "Author", string);
+    string = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (unsigned char*)info->subject, strlen(info->subject));
+    CYPDF_DictAppend(dict, "Subject", string);
+    string = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (unsigned char*)info->creator, strlen(info->creator));
+    CYPDF_DictAppend(dict, "Creator", string);
+    string = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (unsigned char*)info->producer, strlen(info->producer));
+    CYPDF_DictAppend(dict, "Producer", string);
+    string = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_STRING, (unsigned char*)info->creation_date, strlen(info->creation_date));
+    CYPDF_DictAppend(dict, "CreationDate", string);
 
-    CYPDF_Write_Obj_Direct(fp, dict);
+    CYPDF_PrintObjDirect(fp, dict);
 }
 
-void CYPDF_Free_Info(CYPDF_Object* obj) {
+void CYPDF_FreeInfo(CYPDF_Object* obj) {
     if (obj) {
-        CYPDF_Obj_Info* info = (CYPDF_Obj_Info*)obj;
+        CYPDF_ObjInfo* info = (CYPDF_ObjInfo*)obj;
         
-        CYPDF_Free_Obj(info->dict, CYPDF_FALSE);
+        CYPDF_FreeObj(info->dict, CYPDF_FALSE);
 
         free(info);
     }

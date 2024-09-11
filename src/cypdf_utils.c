@@ -3,7 +3,6 @@
 #include <time.h>
 
 #include "cypdf_utils.h"
-#include "cypdf_types.h"
 
 
 
@@ -34,7 +33,7 @@ void* CYPDF_srealloc(void* ptr, size_t size) {
     return mem;
 }
 
-char* CYPDF_Get_Date() {
+char* CYPDF_GetDate() {
     char* date = CYPDF_scalloc(128, sizeof(char));
     time_t currtime = time(NULL);
     time_t UTC = mktime(gmtime(&currtime));

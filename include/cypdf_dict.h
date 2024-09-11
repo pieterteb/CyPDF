@@ -2,6 +2,7 @@
 #define CYPDF_DICT_H
 
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "cypdf_name.h"
@@ -10,20 +11,19 @@
 
 
 
-#define CYPDF_WRITE_DICT                CYPDF_Write_Dict
-#define CYPDF_FREE_DICT                 CYPDF_Free_Dict
+#define CYPDF_PRINT_DICT                CYPDF_PrintDict
+#define CYPDF_FREE_DICT                 CYPDF_FreeDict
 
 
-/* CYPDF_Obj_Dict struct */
-typedef struct _CYPDF_Obj_Dict {
-    CYPDF_Obj_Header        header;
-    CYPDF_Obj_Name**        keys;
-    CYPDF_Object**          values;
-    CYPDF_SIZE              count;
-} CYPDF_Obj_Dict;
+typedef struct CYPDF_ObjDict {
+    CYPDF_ObjHeader header;
+    CYPDF_ObjName** keys;
+    CYPDF_Object**  values;
+    size_t          count;
+} CYPDF_ObjDict;
 
 
-CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect);
+CYPDF_ObjDict* CYPDF_NewDict(bool indirect);
 
 /**
  * @brief Appends the key value pair to dict. Does nothing if dict is NULL.
@@ -32,7 +32,7 @@ CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect);
  * @param key 
  * @param value 
  */
-void CYPDF_Dict_Append(CYPDF_Obj_Dict* dict, const char* key_name, CYPDF_Object* value);
+void CYPDF_DictAppend(CYPDF_ObjDict* dict, const char* key_name, CYPDF_Object* value);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
@@ -40,14 +40,14 @@ void CYPDF_Dict_Append(CYPDF_Obj_Dict* dict, const char* key_name, CYPDF_Object*
  * @param fp 
  * @param dict 
  */
-void CYPDF_Write_Dict(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintDict(FILE* fp, CYPDF_Object* obj);
 
 /**
  * @brief Frees obj. Does nothing if obj is NULL.
  * 
  * @param obj 
  */
-void CYPDF_Free_Dict(CYPDF_Object* obj);
+void CYPDF_FreeDict(CYPDF_Object* obj);
 
 
 

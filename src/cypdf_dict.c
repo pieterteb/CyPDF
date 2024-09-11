@@ -11,56 +11,56 @@
 
 
 
-CYPDF_Obj_Dict* CYPDF_New_Dict(CYPDF_BOOL indirect) {
-    CYPDF_Obj_Dict* dict = (CYPDF_Obj_Dict*)CYPDF_New_Obj(indirect, CYPDF_OCLASS_DICT);
+CYPDF_ObjDict* CYPDF_NewDict(bool indirect) {
+    CYPDF_ObjDict* dict = (CYPDF_ObjDict*)CYPDF_NewObj(indirect, CYPDF_OCLASS_DICT);
 
     return dict;
 }
 
-void CYPDF_Dict_Append(CYPDF_Obj_Dict* dict, const char* key_name, CYPDF_Object* value) {
+void CYPDF_DictAppend(CYPDF_ObjDict* dict, const char* key_name, CYPDF_Object* value) {
     if (dict) {
-        CYPDF_Obj_Name* key = CYPDF_New_Name(CYPDF_FALSE, key_name);
+        CYPDF_ObjName* key = CYPDF_NewName(CYPDF_FALSE, key_name);
         ++dict->count;
-        dict->keys = CYPDF_srealloc(dict->keys, dict->count * sizeof(CYPDF_Obj_Name*));
+        dict->keys = CYPDF_srealloc(dict->keys, dict->count * sizeof(CYPDF_ObjName*));
         dict->values = CYPDF_srealloc(dict->values, dict->count * sizeof(CYPDF_Object*));
         dict->keys[dict->count - 1] = key;
         dict->values[dict->count - 1] = value;
     }
 }
 
-void CYPDF_Write_Dict(FILE* fp, CYPDF_Object* obj) {
+void CYPDF_PrintDict(FILE* fp, CYPDF_Object* obj) {
     if (fp == NULL || obj == NULL) {
         return;
     }
 
-    CYPDF_Obj_Dict* dict = (CYPDF_Obj_Dict*)obj;
+    CYPDF_ObjDict* dict = (CYPDF_ObjDict*)obj;
 
     fprintf(fp, "<<%s", CYPDF_NEW_LINE);
 
     /* Write all dictionary entry object pairs. */
     for(size_t i = 0; i < dict->count; ++i) {
-        CYPDF_Write_Obj_Direct(fp, dict->keys[i]);
+        CYPDF_PrintObjDirect(fp, dict->keys[i]);
         fputc(' ', fp);
 
-        if (CYPDF_Obj_isDirect(dict->values[i])) {
-            CYPDF_Write_Obj_Direct(fp, dict->values[i]);
+        if (CYPDF_ObjIsDirect(dict->values[i])) {
+            CYPDF_PrintObjDirect(fp, dict->values[i]);
         } else {
-            CYPDF_Write_Obj_Ref(fp, dict->values[i]);
+            CYPDF_PrintObjRef(fp, dict->values[i]);
         }
         
-        CYPDF_Write_NL(fp);
+        CYPDF_PrintNL(fp);
     }
 
     fprintf(fp, ">>");
 }
 
-void CYPDF_Free_Dict(CYPDF_Object* obj) {
+void CYPDF_FreeDict(CYPDF_Object* obj) {
     if (obj) {
-        CYPDF_Obj_Dict* dict = (CYPDF_Obj_Dict*)obj;
+        CYPDF_ObjDict* dict = (CYPDF_ObjDict*)obj;
         
         for (size_t i = 0; i < dict->count; ++i) {
-            CYPDF_Free_Obj(dict->keys[i], CYPDF_FALSE);
-            CYPDF_Free_Obj(dict->values[i], CYPDF_FALSE);
+            CYPDF_FreeObj(dict->keys[i], CYPDF_FALSE);
+            CYPDF_FreeObj(dict->values[i], CYPDF_FALSE);
         }
         free(dict->keys);
         free(dict->values);

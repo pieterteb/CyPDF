@@ -2,6 +2,7 @@
 #define CYPDF_REAL_H
 
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "cypdf_object.h"
@@ -9,15 +10,14 @@
 
 
 
-#define CYPDF_WRITE_REAL                CYPDF_Write_Real
-#define CYPDF_FREE_REAL                 CYPDF_Free_Real
+#define CYPDF_PRINT_REAL                CYPDF_PrintReal
+#define CYPDF_FREE_REAL                 CYPDF_FreeReal
 
 
-/* CYPDF_Obj_Real struct */
-typedef struct _CYPDF_Obj_Real {
-    CYPDF_Obj_Header        header;
-    CYPDF_REAL              value;
-} CYPDF_Obj_Real;
+typedef struct CYPDF_ObjReal {
+    CYPDF_ObjHeader header;
+    float           value;
+} CYPDF_ObjReal;
 
 
 /**
@@ -28,7 +28,7 @@ typedef struct _CYPDF_Obj_Real {
  * @param value 
  * @return CYPDF_Obj_Real* | Returns NULL if object creation fails.
  */
-CYPDF_Obj_Real* CYPDF_New_Real(CYPDF_BOOL indirect, CYPDF_REAL value);
+CYPDF_ObjReal* CYPDF_NewReal(bool indirect, float value);
 
 /**
  * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
@@ -36,14 +36,14 @@ CYPDF_Obj_Real* CYPDF_New_Real(CYPDF_BOOL indirect, CYPDF_REAL value);
  * @param fp 
  * @param obj 
  */
-void CYPDF_Write_Real(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintReal(FILE* fp, CYPDF_Object* obj);
 
 /**
  * @brief Frees obj. Does nothing if obj is NULL.
  * 
  * @param obj 
  */
-void CYPDF_Free_Real(CYPDF_Object* obj);
+void CYPDF_FreeReal(CYPDF_Object* obj);
 
 
 

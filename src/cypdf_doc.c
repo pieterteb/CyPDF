@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -18,82 +19,82 @@
 
 
 
-static void CYPDF_Doc_Append_Object(CYPDF_Doc* pdf, CYPDF_Object* obj) {
+static void CYPDF_DocAppendObject(CYPDF_Doc* pdf, CYPDF_Object* obj) {
     if (pdf) {
         ++pdf->obj_count;
         pdf->objs = CYPDF_srealloc(pdf->objs, pdf->obj_count * sizeof(CYPDF_Object*));
         pdf->objs[pdf->obj_count - 1] = obj;
 
         /* Once an object has been appended to the pdf document, it can receive an object number. */
-        CYPDF_Obj_Set_Onum(obj, pdf->obj_count);
+        CYPDF_ObjSetOnum(obj, pdf->obj_count);
     }
 }
 
-CYPDF_Doc* CYPDF_New_Doc() {
+CYPDF_Doc* CYPDF_NewDoc() {
     CYPDF_Doc* pdf = CYPDF_smalloc(sizeof(CYPDF_Doc));
     if (pdf) {
-        pdf->file_header = CYPDF_New_File_Header();
+        pdf->file_header = CYPDF_NewFileHeader();
         pdf->obj_count = 0;
         pdf->offsets = NULL;
 
-        pdf->page_tree = CYPDF_New_PNode(CYPDF_TRUE, NULL);                     /* Page root. */
-        pdf->catalog = CYPDF_New_Catalog(CYPDF_TRUE, pdf->page_tree);
+        pdf->page_tree = CYPDF_NewPNode(CYPDF_TRUE, NULL);                     /* Page root. */
+        pdf->catalog = CYPDF_NewCatalog(CYPDF_TRUE, pdf->page_tree);
         
 
-        char* creation_date = CYPDF_Get_Date();
-        pdf->info = CYPDF_New_Info(CYPDF_TRUE, "Test", "Bob", "Test", "CyPDF", "CyProducer", creation_date);
+        char* creation_date = CYPDF_GetDate();
+        pdf->info = CYPDF_NewInfo(CYPDF_TRUE, "Test", "Bob", "Test", "CyPDF", "CyProducer", creation_date);
         free(creation_date);
 
-        CYPDF_Doc_Append_Object(pdf, pdf->catalog);
-        CYPDF_Doc_Append_Object(pdf, pdf->page_tree);
-        CYPDF_Doc_Append_Object(pdf, pdf->info);
+        CYPDF_DocAppendObject(pdf, pdf->catalog);
+        CYPDF_DocAppendObject(pdf, pdf->page_tree);
+        CYPDF_DocAppendObject(pdf, pdf->info);
     }
 
     return pdf;
 }
 
-void CYPDF_Append_Page(CYPDF_Doc* pdf) {
-    CYPDF_Obj_Page* page = CYPDF_Add_Page(pdf->page_tree, CYPDF_A4_MEDIABOX);
-    CYPDF_Doc_Append_Object(pdf, page);
+void CYPDF_AppendPage(CYPDF_Doc* pdf) {
+    CYPDF_ObjPage* page = CYPDF_AddPage(pdf->page_tree, CYPDF_A4_MEDIABOX);
+    CYPDF_DocAppendObject(pdf, page);
 }
 
-void CYPDF_Add_Path(CYPDF_Doc* pdf, CYPDF_INT page_number, CYPDF_Path* path) {
+void CYPDF_AddPath(CYPDF_Doc* pdf, int page_number, CYPDF_Path* path) {
     if (path && pdf) {
-        CYPDF_Obj_Stream* stream = CYPDF_New_Stream(CYPDF_TRUE);
-        CYPDF_Write_Path_To_Stream(stream, path);
+        CYPDF_ObjStream* stream = CYPDF_NewStream(CYPDF_TRUE);
+        CYPDF_PrintPathToStream(stream, path);
 
-        CYPDF_Obj_Page* page = CYPDF_Page_At_Number(pdf->page_tree, page_number);
-        CYPDF_Page_Add_Content(page, stream);
+        CYPDF_ObjPage* page = CYPDF_PageAtNumber(pdf->page_tree, page_number);
+        CYPDF_PageAddContent(page, stream);
 
-        CYPDF_Doc_Append_Object(pdf, stream);
+        CYPDF_DocAppendObject(pdf, stream);
     }
 }
 
-void CYPDF_Write_Doc(FILE* fp, CYPDF_Doc* pdf, const char* file_path) {
+void CYPDF_PrintDoc(FILE* fp, CYPDF_Doc* pdf, const char* file_path) {
     if (fp == NULL || pdf == NULL) {
         return;
     }
 
-    CYPDF_Write_File_Header(fp, pdf->file_header);
+    CYPDF_PrintFileHeader(fp, pdf->file_header);
 
     CYPDF_Object** objs = pdf->objs;
-    pdf->offsets = CYPDF_smalloc(pdf->obj_count * sizeof(CYPDF_INT64));
+    pdf->offsets = CYPDF_smalloc(pdf->obj_count * sizeof(size_t));
     for (size_t i = 0; i < pdf->obj_count; ++i) {
-        pdf->offsets[i] = ftell(fp);
-        CYPDF_Write_Obj_Def(fp, objs[i]);
+        pdf->offsets[i] = (size_t)ftell(fp);
+        CYPDF_PrintObjDef(fp, objs[i]);
     }
 
-    CYPDF_INT64 xref_offset = ftell(fp);
-    CYPDF_Write_Xref(fp, pdf);
-    CYPDF_Write_Trailer(fp, pdf, file_path, xref_offset);
+    size_t xref_offset = (size_t)ftell(fp);
+    CYPDF_PrintXref(fp, pdf);
+    CYPDF_PrintTrailer(fp, pdf, file_path, xref_offset);
 }
 
-void CYPDF_Free_Doc(CYPDF_Doc* pdf) {
+void CYPDF_FreeDoc(CYPDF_Doc* pdf) {
     if (pdf) {
-        CYPDF_Free_File_Header(pdf->file_header);
+        CYPDF_FreeFileHeader(pdf->file_header);
 
         for (size_t i = 0; i < pdf->obj_count; ++i) {
-            CYPDF_Free_Obj(pdf->objs[i], CYPDF_TRUE);
+            CYPDF_FreeObj(pdf->objs[i], CYPDF_TRUE);
         }
         free(pdf->objs);
         

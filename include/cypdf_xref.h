@@ -8,7 +8,7 @@
 
 
 
-void CYPDF_Write_Xref(FILE* fp, CYPDF_Doc* pdf);
+void CYPDF_PrintXref(FILE* fp, CYPDF_Doc* pdf);
 
 
 
