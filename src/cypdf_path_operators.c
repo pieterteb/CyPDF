@@ -35,7 +35,7 @@ static void CYPDF_PathAppend(CYPDF_Path* const path, const char pco[static 1], c
             CYPDF_sprintfNL(&path->path_str[path->path_str_size], NULL);
             path->path_str_size += sizeof(CYPDF_NEW_LINE) - 1;
         } else {
-            path->path_str = CYPDF_smalloc(path->path_str_size + pco_len + 1);
+            path->path_str = CYPDF_smalloc(pco_len + 1);
         }
 
         strcpy(&path->path_str[path->path_str_size], pco);
