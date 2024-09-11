@@ -22,20 +22,13 @@ typedef struct CYPDF_ObjStream {
 } CYPDF_ObjStream;
 
 
-CYPDF_ObjStream* CYPDF_NewStream(bool indirect);
+CYPDF_ObjStream* CYPDF_NewStream(const bool indirect);
 
-/**
- * @brief Writes a CYPDF_BYTE array to stream->val.
- * 
- * @param stream 
- * @param val 
- * @param val_size 
- */
-void CYPDF_PrintToStream(CYPDF_ObjStream* stream, unsigned char* val, size_t val_size);
+void CYPDF_PrintToStream(CYPDF_ObjStream* const stream, const char format[restrict static 1], ...);
 
-void CYPDF_PrintStream(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintStream(FILE* restrict fp, CYPDF_Object* const obj);
 
-void CYPDF_FreeStream(CYPDF_Object* obj);
+void CYPDF_FreeStream(CYPDF_Object* const obj);
 
 
 

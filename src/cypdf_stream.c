@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,22 +14,32 @@
 
 
 
-CYPDF_ObjStream* CYPDF_NewStream(bool indirect) {
+CYPDF_ObjStream* CYPDF_NewStream(const bool indirect) {
     CYPDF_ObjStream* stream = CYPDF_NewObj(indirect, CYPDF_OCLASS_STREAM);
     stream->dict = CYPDF_NewDict(CYPDF_FALSE);
 
     return stream;
 }
 
-void CYPDF_PrintToStream(CYPDF_ObjStream* stream, unsigned char* val, size_t val_size) {
+void CYPDF_PrintToStream(CYPDF_ObjStream* const stream, const char format[restrict static 1], ...) {
     if (stream) {
-        stream->val = CYPDF_srealloc(stream->val, (stream->val_size + val_size) * sizeof(unsigned char));
-        memcpy(&stream->val[stream->val_size], val, val_size);
-        stream->val_size += val_size;
+        va_list args;
+        va_start(args, format);
+        size_t size = (size_t)vsnprintf(NULL, 0, format, args);
+        
+        va_list args_;
+        va_copy(args_, args);
+        stream->val = CYPDF_srealloc(stream->val, (stream->val_size + size) * sizeof(unsigned char));
+        vsnprintf((char*)(stream->val + stream->val_size), size + 1, format, args_);
+
+        va_end(args);
+        va_end(args_);
+
+        stream->val_size += size;
     }
 }
 
-void CYPDF_PrintStream(FILE* fp, CYPDF_Object* obj) {
+void CYPDF_PrintStream(FILE* restrict fp, CYPDF_Object* const obj) {
     CYPDF_ObjStream* stream = (CYPDF_ObjStream*)obj;
 
     CYPDF_ObjNumber* length = CYPDF_NewNumber(CYPDF_FALSE, (int)stream->val_size);
@@ -43,9 +54,10 @@ void CYPDF_PrintStream(FILE* fp, CYPDF_Object* obj) {
     fprintf(fp, "endstream");
 }
 
-void CYPDF_FreeStream(CYPDF_Object* obj) {
+void CYPDF_FreeStream(CYPDF_Object* const obj) {
     CYPDF_ObjStream* stream = (CYPDF_ObjStream*)obj;
 
     CYPDF_FreeObj(stream->dict, CYPDF_FALSE);
     free(stream->val);
+    free(stream);
 }
