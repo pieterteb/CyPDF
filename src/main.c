@@ -4,6 +4,7 @@
     #include <sys/stat.h>
 #elif defined _WIN64
     #include <direct.h>
+    #define mkdir(path, mode) _mkdir(path)
 #endif
 
 #include "cypdf_consts.h"
@@ -58,11 +59,7 @@ int main(void) {
     CYPDF_AddPath(pdf, 2, path);
     CYPDF_FreePath(path);
 
-#ifdef __linux__
     mkdir("../out", 0700);
-#elif _WIN64
-    _mkdir("../out");
-#endif
 
     CYPDF_PrintDoc(pdf, "..out/test.txt");
     CYPDF_FreeDoc(pdf);
