@@ -1,10 +1,11 @@
 #include <math.h>
 #include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "cypdf_consts.h"
 #include "cypdf_doc.h"
-#include <sys/stat.h>
-#include <sys/types.h>
+
 
 
 void copy_file(const char* source_path, const char* dest_path) {
