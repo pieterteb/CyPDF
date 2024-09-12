@@ -10,6 +10,7 @@
 
 /* CYPDF new line string */
 #define CYPDF_NEW_LINE              "\x0D\x0A"  /* Carriage return followed by line feed. */
+#define CYPDF_NEW_LINE_SIZE         (sizeof(CYPDF_NEW_LINE) - 1)
 
 
 /* CYPDF boolean values */

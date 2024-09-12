@@ -31,15 +31,15 @@ static void CYPDF_PathAppend(CYPDF_Path* const path, const char pco[static 1], c
 
         if (path->pco_count) {
             /* If the new pco is not the first of path, a new line sequence is inserted before the new pco. */
-            path->path_str = CYPDF_srealloc(path->path_str, path->path_str_size + sizeof(CYPDF_NEW_LINE) - 1 + pco_len);
-            CYPDF_sprintfNL(&path->path_str[path->path_str_size], NULL);
-            path->path_str_size += sizeof(CYPDF_NEW_LINE) - 1;
+            path->path_str = CYPDF_srealloc(path->path_str, path->path_str_len + CYPDF_NEW_LINE_SIZE + pco_len + 1);
+            strcpy(path->path_str + path->path_str_len, CYPDF_NEW_LINE);
+            path->path_str_len += CYPDF_NEW_LINE_SIZE;
         } else {
             path->path_str = CYPDF_smalloc(pco_len + 1);
         }
 
-        strcpy(&path->path_str[path->path_str_size], pco);
-        path->path_str_size += pco_len;
+        strcpy(path->path_str + path->path_str_len, pco);
+        path->path_str_len += pco_len;
         ++path->pco_count;
 
         path->pco_types = CYPDF_srealloc(path->pco_types, path->pco_count * sizeof(enum CYPDF_PCO_TYPE));

@@ -90,8 +90,8 @@ enum CYPDF_CPO_TYPE {
 
 typedef struct CYPDF_Path {
     char*                   path_str;           /* Null terminated string representation of an arbitrary amount of Path Construction Operators. */
-    size_t                  path_str_size;      /* Size of pco_string. */
-    size_t                  pco_count;          /* Number of pco's represented pco_string. */
+    size_t                  path_str_len;       /* Length of path_str. */
+    size_t                  pco_count;          /* Number of pco's represented path_str. */
     enum CYPDF_PCO_TYPE*    pco_types;          /* They types of the pco's. */
 
     CYPDF_Point             curr_start_point;   /* The point at which the current sub path started. In other words, the point that was passed in the most recent CYPDF_Path_Append_Begin call. */
