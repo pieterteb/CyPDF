@@ -1,7 +1,9 @@
 #include <math.h>
 #include <stdio.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#ifdef __unix__
+    #include <sys/stat.h>
+    #include <sys/types.h>
+#endif
 
 #include "cypdf_consts.h"
 #include "cypdf_doc.h"
@@ -55,7 +57,11 @@ int main(void) {
     CYPDF_AddPath(pdf, 2, path);
     CYPDF_FreePath(path);
 
+#ifdef __linux__
     mkdir("../out", 0700);
+#else
+    _mkdir("../out");
+#endif
 
     FILE* fp = fopen("../out/test.txt", "wb");
     CYPDF_PrintDoc(fp, pdf, "CyPDF/test.txt");
