@@ -2,7 +2,6 @@
 #include <stdio.h>
 #ifdef __unix__
     #include <sys/stat.h>
-    #include <sys/types.h>
 #elif defined _WIN64
     #include <direct.h>
 #endif
