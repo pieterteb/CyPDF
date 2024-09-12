@@ -70,23 +70,25 @@ void CYPDF_AddPath(CYPDF_Doc* pdf, int page_number, CYPDF_Path* path) {
     }
 }
 
-void CYPDF_PrintDoc(FILE* fp, CYPDF_Doc* pdf, const char* file_path) {
-    if (fp == NULL || pdf == NULL) {
-        return;
+void CYPDF_PrintDoc(CYPDF_Doc* pdf, const char* file_path) {
+    if (pdf) {
+        FILE* fp = fopen("../out/test.txt", "wb");
+
+        CYPDF_PrintFileHeader(fp, pdf->file_header);
+
+        CYPDF_Object** objs = pdf->objs;
+        pdf->offsets = CYPDF_smalloc(pdf->obj_count * sizeof(size_t));
+        for (size_t i = 0; i < pdf->obj_count; ++i) {
+            pdf->offsets[i] = (size_t)ftell(fp);
+            CYPDF_PrintObjDef(fp, objs[i]);
+        }
+
+        size_t xref_offset = (size_t)ftell(fp);
+        CYPDF_PrintXref(fp, pdf);
+        CYPDF_PrintTrailer(fp, pdf, file_path, xref_offset);
+
+        fclose(fp);
     }
-
-    CYPDF_PrintFileHeader(fp, pdf->file_header);
-
-    CYPDF_Object** objs = pdf->objs;
-    pdf->offsets = CYPDF_smalloc(pdf->obj_count * sizeof(size_t));
-    for (size_t i = 0; i < pdf->obj_count; ++i) {
-        pdf->offsets[i] = (size_t)ftell(fp);
-        CYPDF_PrintObjDef(fp, objs[i]);
-    }
-
-    size_t xref_offset = (size_t)ftell(fp);
-    CYPDF_PrintXref(fp, pdf);
-    CYPDF_PrintTrailer(fp, pdf, file_path, xref_offset);
 }
 
 void CYPDF_FreeDoc(CYPDF_Doc* pdf) {

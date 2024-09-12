@@ -43,13 +43,7 @@ void CYPDF_AppendPage(CYPDF_Doc* pdf);
 
 void CYPDF_AddPath(CYPDF_Doc* pdf, int page_number, CYPDF_Path* path);
 
-/**
- * @brief Writes pdf to fp. Does nothing if fp == NULL or pdf == NULL.
- * 
- * @param fp 
- * @param pdf 
- */
-void CYPDF_PrintDoc(FILE* fp, CYPDF_Doc* pdf, const char* file_path);
+void CYPDF_PrintDoc(CYPDF_Doc* pdf, const char* file_path);
 
 /**
  * @brief Frees pdf. Does nothing if pdf is NULL.

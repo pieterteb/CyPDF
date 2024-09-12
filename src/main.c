@@ -65,9 +65,7 @@ int main(void) {
     _mkdir("../out");
 #endif
 
-    FILE* fp = fopen("../out/test.txt", "wb");
-    CYPDF_PrintDoc(fp, pdf, "CyPDF/test.txt");
-    fclose(fp);
+    CYPDF_PrintDoc(pdf, "..out/test.txt");
     CYPDF_FreeDoc(pdf);
 
     copy_file("../out/test.txt", "../out/test.pdf");
