@@ -3,6 +3,8 @@
 
 #include "cypdf_consts.h"
 #include "cypdf_doc.h"
+#include <sys/stat.h>
+#include <sys/types.h>
 
 
 void copy_file(const char* source_path, const char* dest_path) {
@@ -10,7 +12,7 @@ void copy_file(const char* source_path, const char* dest_path) {
     FILE* dest = fopen(dest_path, "w");
 
     char ch = 0;
-    while ((ch = (char)fgetc(source)) != EOF) {
+    while ((ch = (char)fgetc(source)) != (char)EOF) {
         fputc(ch, dest);
     }
 
@@ -51,6 +53,8 @@ int main(void) {
     CYPDF_PathAppendCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
     CYPDF_AddPath(pdf, 2, path);
     CYPDF_FreePath(path);
+
+    mkdir("../out", 0700);
 
     FILE* fp = fopen("../out/test.txt", "wb");
     CYPDF_PrintDoc(fp, pdf, "CyPDF/test.txt");
