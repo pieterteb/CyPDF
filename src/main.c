@@ -3,6 +3,8 @@
 #ifdef __unix__
     #include <sys/stat.h>
     #include <sys/types.h>
+#elif defined _WIN64
+    #include <direct.h>
 #endif
 
 #include "cypdf_consts.h"
@@ -59,7 +61,7 @@ int main(void) {
 
 #ifdef __linux__
     mkdir("../out", 0700);
-#else
+#elif _WIN64
     _mkdir("../out");
 #endif
 
