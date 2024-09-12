@@ -40,11 +40,12 @@ void CYPDF_PrintTrailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, uint64_
         char* id = md5_string(string_to_hash);
         free(string_to_hash);
 
-        CYPDF_ObjString* ID = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_BYTE, (unsigned char*)id, strlen(id));
+        CYPDF_ObjString* ID1 = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_BYTE, (unsigned char*)id, strlen(id));
+        CYPDF_ObjString* ID2 = CPYDF_NewString(CYPDF_FALSE, CYPDF_STRTYPE_BYTE, (unsigned char*)id, strlen(id));
         free(id);
         CYPDF_ObjArray* array = CYPDF_NewArray(CYPDF_FALSE);
-        CYPDF_ArrayAppend(array, ID);
-        CYPDF_ArrayAppend(array, ID);
+        CYPDF_ArrayAppend(array, ID1);
+        CYPDF_ArrayAppend(array, ID2);
         CYPDF_DictAppend(dict, "ID", array);
     }
 
