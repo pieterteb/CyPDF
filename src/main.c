@@ -2,9 +2,10 @@
 #include <stdio.h>
 #ifdef __unix__
     #include <sys/stat.h>
-#elif defined _WIN64
+#elif defined _WIN64 || _WIN32
     #include <direct.h>
-    #define mkdir(path, mode) _mkdir(path)
+    #define mkdir(path, mode)   _mkdir(path)
+    #define mkdir(path)         _mkdir(path)
 #endif
 
 #include "cypdf_consts.h"
