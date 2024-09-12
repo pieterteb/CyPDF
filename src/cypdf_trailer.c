@@ -51,7 +51,7 @@ void CYPDF_PrintTrailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, uint64_
     CYPDF_fprintfNL(fp, "trailer");
 
     CYPDF_PrintObjDirect(fp, dict);
-    CYPDF_FreeObj(dict, CYPDF_TRUE);
+    CYPDF_FreeObj(dict, CYPDF_FALSE);
     CYPDF_PrintNL(fp);
 
     CYPDF_fprintfNL(fp, "startxref");

@@ -171,7 +171,7 @@ void CYPDF_PathAppendRect(CYPDF_Path* const path, const CYPDF_Point ll_corner, c
 
 void CYPDF_PrintPathToStream(CYPDF_ObjStream* const stream, const CYPDF_Path* const path);
 
-void CYPDF_FreePath(CYPDF_Path* const path);
+void CYPDF_FreePath(CYPDF_Path* path);
 
 
 
