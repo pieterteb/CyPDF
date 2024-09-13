@@ -23,6 +23,7 @@ CYPDF_ObjCatalog* CYPDF_NewCatalog(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const
         if (catalog->dict) {
             CYPDF_ObjName* type = CYPDF_NewName(mmgr, "Catalog");
             CYPDF_DictAppend(mmgr, catalog->dict, CYPDF_TYPE_NAME, type);
+            CYPDF_DictAppend(mmgr, catalog->dict, "Pages", pages);
         }
     }
 

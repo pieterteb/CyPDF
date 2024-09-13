@@ -47,13 +47,13 @@ CYPDF_Doc* CYPDF_NewDoc(void) {
         pdf->info = CYPDF_NewInfo(pdf->obj_mmgr, "Test", "Bob", "Test", "CyPDF", "CyProducer", creation_date);
         free(creation_date);
 
-        CYPDF_DocAppendObject(pdf, pdf->catalog);
-        CYPDF_DocAppendObject(pdf, pdf->page_tree);
-        CYPDF_DocAppendObject(pdf, pdf->info);
-
         pdf->objs = NULL;
         pdf->obj_count = 0;
         pdf->offsets = NULL;
+
+        CYPDF_DocAppendObject(pdf, pdf->catalog);
+        CYPDF_DocAppendObject(pdf, pdf->page_tree);
+        CYPDF_DocAppendObject(pdf, pdf->info);
     }
 
     return pdf;
