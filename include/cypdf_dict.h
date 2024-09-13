@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "cypdf_mmgr.h"
 #include "cypdf_name.h"
 #include "cypdf_object.h"
 #include "cypdf_types.h"
@@ -23,30 +24,12 @@ typedef struct CYPDF_ObjDict {
 } CYPDF_ObjDict;
 
 
-CYPDF_ObjDict* CYPDF_NewDict(bool indirect);
+CYPDF_ObjDict* CYPDF_NewDict(CYPDF_MMgr* const mmgr);
 
-/**
- * @brief Appends the key value pair to dict. Does nothing if dict is NULL.
- * 
- * @param dict 
- * @param key 
- * @param value 
- */
-void CYPDF_DictAppend(CYPDF_ObjDict* dict, const char* key_name, CYPDF_Object* value);
+void CYPDF_DictAppend(CYPDF_MMgr* const mmgr, CYPDF_ObjDict* const dict, char key_name[restrict static 1], CYPDF_Object* const value);
 
-/**
- * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
- * 
- * @param fp 
- * @param dict 
- */
-void CYPDF_PrintDict(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintDict(FILE* restrict fp, const CYPDF_Object* const obj);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
 void CYPDF_FreeDict(CYPDF_Object* obj);
 
 

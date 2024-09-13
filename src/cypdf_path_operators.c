@@ -161,7 +161,7 @@ void CYPDF_PrintPathToStream(CYPDF_ObjStream* const stream, const CYPDF_Path* co
     }
 }
 
-void CYPDF_FreePath(CYPDF_Path* const path) {
+void CYPDF_FreePath(CYPDF_Path* path) {
     if (path) {
         free(path->path_str);
         free(path->pco_types);

@@ -8,7 +8,7 @@
 #include "cypdf_version.h"
 
 
-CYPDF_FileHeader* CYPDF_NewFileHeader() {
+CYPDF_FileHeader* CYPDF_NewFileHeader(void) {
     CYPDF_FileHeader* file_header = CYPDF_smalloc(sizeof(CYPDF_FileHeader));
     if (file_header) {
         strcpy(file_header->version, CYPDF_PDF_VERSION);

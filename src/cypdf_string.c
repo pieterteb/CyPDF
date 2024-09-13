@@ -9,50 +9,53 @@
 
 
 
-CYPDF_ObjString* CPYDF_NewString(bool indirect, enum CYPDF_STRING_TYPE type, unsigned char* value, size_t valsize) {
-    CYPDF_ObjString* string = (CYPDF_ObjString*)CYPDF_NewObj(indirect, CYPDF_OCLASS_STRING);
-    if (string) {
-        string->type = type;
-        string->value = CYPDF_smalloc(valsize);
+CYPDF_ObjString* CPYDF_NewString(CYPDF_MMgr* const mmgr, const enum CYPDF_STRING_TYPE type, const char* restrict val) {
+    CYPDF_ObjString* string = (CYPDF_ObjString*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjString));
 
-        /* If memory allocation failed, string->value is not initialized. */
-        if (string->value) {
-            memcpy(string->value, value, valsize);
-            string->size = valsize;
-        } else {
-            string->size = 0;
-        }
+    if (string) {
+        CYPDF_InitHeader(string, CYPDF_OCLASS_STRING);
+        string->type = type;
+        string->val = CYPDF_smalloc(strlen(val) + 1);
+
+        strcpy(string->val, val);
     }
 
     return string;
 }
 
-void CYPDF_PrintString(FILE* fp, CYPDF_Object* obj) {
-    if (fp == NULL || obj == NULL) {
-        return;
+char* CYPDF_GetString(const CYPDF_ObjString* const string) {
+    if (string) {
+        return string->val;
     }
 
-    CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
+    return NULL;
+}
 
-    switch (string->type)
-    {
-    case CYPDF_STRTYPE_BYTE:
-        fputc('<', fp);
-        fwrite(string->value, sizeof(string->value[0]), string->size, fp);
-        fputc('>', fp);
-        break;
-    default:
-        fputc('(', fp);
-        fwrite(string->value, sizeof(string->value[0]), string->size, fp);
-        fputc(')', fp);
-        break;
-    }
+void CYPDF_PrintString(FILE* restrict fp, const CYPDF_Object* const obj) {
+    if (fp && obj) {
+        CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
+
+        switch (string->type)
+        {
+        case CYPDF_STRTYPE_BYTE:
+            fputc('<', fp);
+            fprintf(fp, "%s", string->val);
+            fputc('>', fp);
+            break;
+        default:
+            fputc('(', fp);
+            fprintf(fp, "%s", string->val);
+            fputc(')', fp);
+            break;
+        }
+    }    
 }
 
 void CYPDF_FreeString(CYPDF_Object* obj) {
     if (obj) {
         CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
-        free(string->value);
+
+        free(string->val);
         free(string);
     }
 }

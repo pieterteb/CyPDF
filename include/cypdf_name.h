@@ -5,7 +5,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "cypdf_mmgr.h"
 #include "cypdf_object.h"
+#include "cypdf_types.h"
 
 
 
@@ -16,7 +18,7 @@
 #define CYPDF_FREE_NAME                 CYPDF_FreeName
 
 
-#define CYPDF_MAX_NAME_LEN              127
+#define CYPDF_MAX_NAME_LEN              128
 
 
 typedef struct CYPDF_ObjName {
@@ -25,29 +27,10 @@ typedef struct CYPDF_ObjName {
 } CYPDF_ObjName;
 
 
-/**
- * @brief Creates new CYPDF_ObjName initialized with value. If the length of value exceeds CYPDF_MAX_NAME_LEN, only the first CYPDF_MAX_NAME_LEN characters of value are used to initialize the CYPDF_ObjName.
- * 
- * @param indirect 
- * @param ID 
- * @param value 
- * @return CYPDF_ObjName* | Returns NULL if object creation fails.
- */
-CYPDF_ObjName* CYPDF_NewName(bool indirect, const char* val);
+CYPDF_ObjName* CYPDF_NewName(CYPDF_MMgr* const mmgr, char val[restrict static 1]);
 
-/**
- * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
- * 
- * @param fp 
- * @param obj 
- */
-void CYPDF_PrintName(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintName(FILE* restrict fp, const CYPDF_Object* const obj);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
 void CYPDF_FreeName(CYPDF_Object* obj);
 
 

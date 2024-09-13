@@ -3,26 +3,42 @@
 #include <stdlib.h>
 
 #include "cypdf_real.h"
+#include "cypdf_mmgr.h"
 #include "cypdf_object.h"
+#include "cypdf_types.h"
 
 
 
-CYPDF_ObjReal* CYPDF_NewReal(bool indirect, float value) {
-    CYPDF_ObjReal* real = (CYPDF_ObjReal*)CYPDF_NewObj(indirect, CYPDF_OCLASS_REAL);
+CYPDF_ObjReal* CYPDF_NewReal(CYPDF_MMgr* const mmgr, const float val) {
+    CYPDF_ObjReal* real = (CYPDF_ObjReal*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjReal));
+
     if (real) {
-        real->value = value;
+        CYPDF_InitHeader(real, CYPDF_OCLASS_REAL);
+        real->val = val;
     }
 
     return real;
 }
 
-void CYPDF_PrintReal(FILE* fp, CYPDF_Object* obj) {
-    if (fp == NULL || obj == NULL) {
-        return;
+void CYPDF_SetReal(CYPDF_ObjReal* const real, const float val) {
+    if (real) {
+        real->val = val;
+    }
+}
+
+float CYPDF_GetReal(const CYPDF_ObjReal* const real) {
+    if (real) {
+        return real->val;
     }
 
-    CYPDF_ObjReal* real = (CYPDF_ObjReal*)obj;
-    fprintf(fp, "%g", real->value);
+    return 0.0f;
+}
+
+void CYPDF_PrintReal(FILE* restrict fp, const CYPDF_Object* const obj) {
+    if (fp && obj) {
+        CYPDF_ObjReal* real = (CYPDF_ObjReal*)obj;
+        fprintf(fp, "%g", real->val);
+    }
 }
 
 void CYPDF_FreeReal(CYPDF_Object* obj) {

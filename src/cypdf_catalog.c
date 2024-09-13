@@ -5,42 +5,41 @@
 #include "cypdf_catalog.h"
 #include "cypdf_consts.h"
 #include "cypdf_dict.h"
+#include "cypdf_mmgr.h"
 #include "cypdf_name.h"
 #include "cypdf_object.h"
 #include "cypdf_pages.h"
 
 
 
-CYPDF_ObjCatalog* CYPDF_NewCatalog(bool indirect, CYPDF_ObjPNode* pages) {
-    CYPDF_ObjCatalog* catalog = (CYPDF_ObjCatalog*)CYPDF_NewObj(indirect, CYPDF_OCLASS_CATALOG);
-    if (catalog) {
-        catalog->dict = CYPDF_NewDict(CYPDF_TRUE);
-        if (catalog->dict) {
-            /* The type of PDF object that this dictionary describes. */
-            CYPDF_ObjName* type = CYPDF_NewName(CYPDF_FALSE, "Catalog");
-            CYPDF_DictAppend(catalog->dict, CYPDF_TYPE_NAME, type);
+CYPDF_ObjCatalog* CYPDF_NewCatalog(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const pages) {
+    CYPDF_ObjCatalog* catalog = (CYPDF_ObjCatalog*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjCatalog));
 
-            /* The page tree node that is the root of the document’s page tree. */
-            CYPDF_DictAppend(catalog->dict, "Pages", pages);
+    if (catalog) {
+        CYPDF_InitHeader(catalog, CYPDF_OCLASS_CATALOG);
+        catalog->pages = pages;
+        catalog->dict = CYPDF_NewDict(mmgr);
+
+        if (catalog->dict) {
+            CYPDF_ObjName* type = CYPDF_NewName(mmgr, "Catalog");
+            CYPDF_DictAppend(mmgr, catalog->dict, CYPDF_TYPE_NAME, type);
         }
     }
 
     return catalog;
 }
 
-void CYPDF_PrintCatalog(FILE* fp, CYPDF_Object* obj) {
-    if (fp == NULL || obj == NULL) {
-        return;
+void CYPDF_PrintCatalog(FILE* restrict fp, const CYPDF_Object* const obj) {
+    if (fp && obj) {
+        CYPDF_ObjCatalog* catalog = (CYPDF_ObjCatalog*)obj;
+        CYPDF_PrintObjDirect(fp, catalog->dict);
     }
-
-    CYPDF_ObjCatalog* catalog = (CYPDF_ObjCatalog*)obj;
-    CYPDF_PrintObjDirect(fp, catalog->dict);
 }
 
 void CYPDF_FreeCatalog(CYPDF_Object* obj) {
     if (obj) {
         CYPDF_ObjCatalog* catalog = (CYPDF_ObjCatalog*)obj;
-        CYPDF_FreeObj(catalog->dict, CYPDF_FALSE);
+
         free(catalog);
     }
 }

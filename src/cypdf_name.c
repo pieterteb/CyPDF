@@ -4,27 +4,30 @@
 #include <string.h>
 
 #include "cypdf_name.h"
+#include "cypdf_mmgr.h"
 #include "cypdf_object.h"
 #include "cypdf_utils.h"
 
 
 
-CYPDF_ObjName* CYPDF_NewName(bool indirect, const char* val) {
-    CYPDF_ObjName* name = (CYPDF_ObjName*)CYPDF_NewObj(indirect, CYPDF_OCLASS_NAME);
+CYPDF_ObjName* CYPDF_NewName(CYPDF_MMgr* const mmgr, char val[restrict static 1]) {
+    CYPDF_ObjName* name = (CYPDF_ObjName*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjName));
+
     if (name) {
-        memcpy(name->val, val, MAX(strlen(val), CYPDF_MAX_NAME_LEN));
+        CYPDF_InitHeader(name, CYPDF_OCLASS_NAME);
+
+        strncpy(name->val, val, CYPDF_MAX_NAME_LEN + 1);
+        name->val[CYPDF_MAX_NAME_LEN] = 0;
     }
 
     return name;
 }
 
-void CYPDF_PrintName(FILE* fp, CYPDF_Object* obj) {
-    if (fp == NULL || obj == NULL) {
-        return;
+void CYPDF_PrintName(FILE* restrict fp, const CYPDF_Object* const obj) {
+    if (fp && obj) {
+        CYPDF_ObjName* name = (CYPDF_ObjName*)obj;
+        fprintf(fp, "/%s", name->val);
     }
-
-    CYPDF_ObjName* name = (CYPDF_ObjName*)obj;
-    fprintf(fp, "/%s", name->val);
 }
 
 void CYPDF_FreeName(CYPDF_Object* obj) {

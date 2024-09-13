@@ -28,8 +28,8 @@ typedef void CYPDF_Object;
 
 
 /* CYPDF function types */
-typedef void (*CYPDF_FreeFunc)(CYPDF_Object*);
-typedef void (*CYPDF_PrintFunc)(FILE*, CYPDF_Object*);
+typedef void (*CYPDF_FreeFunc)(void*);
+typedef void (*CYPDF_PrintFunc)(FILE* restrict, const CYPDF_Object* const);
 
 
 

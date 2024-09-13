@@ -5,7 +5,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "cypdf_mmgr.h"
 #include "cypdf_object.h"
+#include "cypdf_types.h"
 
 
 
@@ -18,28 +20,10 @@ typedef struct CYPDF_ObjNull {
 } CYPDF_ObjNull;
 
 
-/**
- * @brief Creates new CYPDF_ObjNull.
- * 
- * @param ID 
- * @param indirect 
- * @return CYPDF_ObjNull* | Returns NULL if object creation fails.
- */
-CYPDF_ObjNull* CYPDF_NewNull(bool indirect);
+CYPDF_ObjNull* CYPDF_New_Null(CYPDF_MMgr* const mmgr);
 
-/**
- * @brief Writes obj to fp.
- * 
- * @param fp Stream to be written to.
- * @param obj 
- */
-void CYPDF_PrintNull(FILE* fp, CYPDF_Object* obj __attribute_maybe_unused__);
+void CYPDF_PrintNull(FILE* restrict fp, const CYPDF_Object* const obj __attribute_maybe_unused__);
 
-/**
- * @brief Frees NULL. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
 void CYPDF_FreeNull(CYPDF_Object* obj);
 
 

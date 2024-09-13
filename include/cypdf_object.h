@@ -4,7 +4,9 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
+#include "cypdf_mmgr.h"
 #include "cypdf_types.h"
 
 
@@ -27,8 +29,7 @@ enum CYPDF_OCLASS {
 
     CYPDF_OCLASS_COUNT,
 
-    CYPDF_OCLASS_NONE,
-    CYPDF_OCLASS_UNKNOWN,
+    CYPDF_OCLASS_UNKNOWN
 };
 
 
@@ -44,96 +45,31 @@ typedef struct CYPDF_ObjHeader {
 } CYPDF_ObjHeader;
 
 
-/**
- * @brief Creates a new CYPDF_Object.
- * 
- * @param indirect 
- * @param class
- * @return CYPDF_Object* | Returns NULL if header creation fails.
- */
-CYPDF_Object* CYPDF_NewObj(bool indirect, enum CYPDF_OCLASS class);
+void CYPDF_InitHeader(CYPDF_Object* const obj, enum CYPDF_OCLASS class);
 
-void CYPDF_ObjSetOnum(CYPDF_Object* obj, uint32_t onum);
+void CYPDF_ObjSetOnum(CYPDF_Object* const obj, uint32_t onum);
 
-/**
- * @brief Checks whether obj is direct or not.
- * 
- * @param obj 
- * @return CYPDF_BOOL | Returns CYPDF_FALSE if obj is NULL.
- */
-bool CYPDF_ObjIsDirect(CYPDF_Object* obj);
+void CYPDF_ObjSetIndirect(CYPDF_Object* const obj, const bool indirect);
 
-/**
- * @brief Gets the class of obj.
- * 
- * @param obj 
- * @return enum CYPDF_OCLASS | Returns CYPDF_OCLASS_NONE if obj is NULL.
- */
-enum CYPDF_OCLASS CYPDF_ObjGetClass(CYPDF_Object* obj);
+bool CYPDF_ObjIsIndirect(const CYPDF_Object* const obj);
 
-/**
- * @brief Gets the ID of obj.
- * 
- * @param obj 
- * @return CYPDF_UINT32 | Returns CYPDF_DEFAULT_OID if obj is NULL.
- */
-uint32_t CYPDF_ObjGetOnum(CYPDF_Object* obj);
+enum CYPDF_OCLASS CYPDF_ObjGetClass(const CYPDF_Object* const obj);
 
-/**
- * @brief Gets the generation number of obj.
- * 
- * @param obj 
- * @return CYPDF_UINT16 | Returns CYPDF_DEFAULT_OGEN if obj is NULL.
- */
-uint16_t CYPDF_ObjGetOgen(CYPDF_Object* obj);
+uint32_t CYPDF_ObjGetOnum(const CYPDF_Object* const obj);
 
-/**
- * @brief Gets the write function belonging to obj.
- * 
- * @param obj 
- * @return CYPDF_Write_Func | Returns NULL if obj is NULL.
- */
-CYPDF_PrintFunc CYPDF_ObjGetPrint(CYPDF_Object* obj);
+uint16_t CYPDF_ObjGetOgen(const CYPDF_Object* const obj);
 
-/**
- * @brief Gets the free function belonging to obj.
- * 
- * @param obj 
- * @return CYPDF_Free_Func | Returns NULL if obj is NULL.
- */
-CYPDF_FreeFunc CYPDF_ObjGetFree(CYPDF_Object* obj);
+CYPDF_PrintFunc CYPDF_ObjGetPrint(const CYPDF_Object* const obj);
 
-/**
- * @brief Writes obj as a direct object. Writes nothing if fp == NULL or obj == NULL.
- * 
- * @param fp Stream to be written to.
- * @param obj 
- */
-void CYPDF_PrintObjDirect(FILE* fp, CYPDF_Object* obj);
+CYPDF_FreeFunc CYPDF_ObjGetFree(const CYPDF_Object* const obj);
 
-/**
- * @brief Writes obj as an object definition to fp. Writes nothing if fp == NULL or obj == NULL or if obj is not indirect.
- * 
- * @param fp Stream to be written to.
- * @param obj 
- */
-void CYPDF_PrintObjDef(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintObjDirect(FILE* restrict fp, const CYPDF_Object* const obj);
 
-/**
- * @brief Writes obj as an object reference to fp. Does nothing if fp == NULL or obj == NULL or if obj is not indirect.
- * 
- * @param fp Stream to be written to.
- * @param obj 
- */
-void CYPDF_PrintObjRef(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintObjDef(FILE* restrict fp, const CYPDF_Object* const obj);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL or if obj is indirect and ifIndirect is false.
- * 
- * @param obj 
- * @param ifIndirect If true, allows for obj to be freed even if it is indirect. Use with caution.
- */
-void CYPDF_FreeObj(CYPDF_Object* obj, bool ifIndirect);
+void CYPDF_PrintObjRef(FILE* restrict fp, const CYPDF_Object* const obj);
+
+void CYPDF_FreeObj(CYPDF_Object* obj);
 
 
 

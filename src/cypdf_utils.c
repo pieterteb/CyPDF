@@ -33,7 +33,7 @@ void* CYPDF_srealloc(void* ptr, size_t size) {
     return mem;
 }
 
-char* CYPDF_GetDate() {
+char* CYPDF_GetDate(void) {
     char* date = CYPDF_scalloc(128, sizeof(char));
     time_t currtime = time(NULL);
     time_t UTC = mktime(gmtime(&currtime));

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "cypdf_mmgr.h"
 #include "cypdf_object.h"
 #include "cypdf_types.h"
 
@@ -16,33 +17,18 @@
 
 typedef struct CYPDF_ObjReal {
     CYPDF_ObjHeader header;
-    float           value;
+    float           val;
 } CYPDF_ObjReal;
 
 
-/**
- * @brief Creates new CYPDF_Obj_Real initialized with value.
- * 
- * @param indirect 
- * @param ID 
- * @param value 
- * @return CYPDF_Obj_Real* | Returns NULL if object creation fails.
- */
-CYPDF_ObjReal* CYPDF_NewReal(bool indirect, float value);
+CYPDF_ObjReal* CYPDF_NewReal(CYPDF_MMgr* const mmgr, const float val);
 
-/**
- * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
- * 
- * @param fp 
- * @param obj 
- */
-void CYPDF_PrintReal(FILE* fp, CYPDF_Object* obj);
+void CYPDF_SetReal(CYPDF_ObjReal* const real, const float val);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
+float CYPDF_GetReal(const CYPDF_ObjReal* const real);
+
+void CYPDF_PrintReal(FILE* restrict fp, const CYPDF_Object* const obj);
+
 void CYPDF_FreeReal(CYPDF_Object* obj);
 
 

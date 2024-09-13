@@ -17,32 +17,17 @@
 
 typedef struct CYPDF_ObjCatalog {
     CYPDF_ObjHeader header;
+
+    CYPDF_ObjPNode* pages;
+
     CYPDF_ObjDict*  dict;
 } CYPDF_ObjCatalog;
 
 
-/**
- * @brief Creates new CYPDF_ObjCatalog.
- * 
- * @param indirect 
- * @param ID 
- * @return CYPDF_ObjCatalog* | Returns NULL if object creation fails.
- */
-CYPDF_ObjCatalog* CYPDF_NewCatalog(bool indirect, CYPDF_ObjPNode* pages);
+CYPDF_ObjCatalog* CYPDF_NewCatalog(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const pages);
 
-/**
- * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
- * 
- * @param fp 
- * @param obj 
- */
-void CYPDF_PrintCatalog(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintCatalog(FILE* restrict fp, const CYPDF_Object* const obj);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
 void CYPDF_FreeCatalog(CYPDF_Object* obj);
 
 

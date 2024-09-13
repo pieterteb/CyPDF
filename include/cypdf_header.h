@@ -23,7 +23,7 @@ typedef struct CYPDF_FileHeader {
  * 
  * @return CYPDF_FileHeader* | Returns NULL if memory allocation fails.
  */
-CYPDF_FileHeader* CYPDF_NewFileHeader();
+CYPDF_FileHeader* CYPDF_NewFileHeader(void);
 
 /**
  * @brief Writes file_header to fp. Does nothing if fp == NULL or file_header == NULL.

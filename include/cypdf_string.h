@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "cypdf_mmgr.h"
 #include "cypdf_object.h"
 
 
@@ -27,36 +28,16 @@ typedef struct CYPDF_StringObj {
     CYPDF_ObjHeader         header;
 
     enum CYPDF_STRING_TYPE  type;
-    unsigned char*          value;
-    size_t                  size;
+    char*                   val;
 } CYPDF_ObjString;
 
 
-/**
- * @brief Creates new CYPDF_Obj_String initialized with value. If memory allocation for obj->value fails, obj->value is set to NULL and obj->size is set to 0.
- * 
- * @param indirect 
- * @param ID 
- * @param size
- * @param value 
- * @param valsize Size of value in bytes.
- * @return CYPDF_Obj_String* | Returns NULL if object creation fails.
- */
-CYPDF_ObjString* CPYDF_NewString(bool indirect, enum CYPDF_STRING_TYPE type, unsigned char* value, size_t valsize);
+CYPDF_ObjString* CPYDF_NewString(CYPDF_MMgr* const mmgr, const enum CYPDF_STRING_TYPE type, const char* restrict val);
 
-/**
- * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
- * 
- * @param fp 
- * @param obj 
- */
-void CYPDF_PrintString(FILE* fp, CYPDF_Object* obj);
+char* CYPDF_GetString(const CYPDF_ObjString* const string);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
+void CYPDF_PrintString(FILE* restrict fp, const CYPDF_Object* const obj);
+
 void CYPDF_FreeString(CYPDF_Object* obj);
 
 

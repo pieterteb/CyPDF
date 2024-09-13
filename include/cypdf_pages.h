@@ -6,6 +6,8 @@
 
 #include "cypdf_array.h"
 #include "cypdf_dict.h"
+#include "cypdf_mmgr.h"
+#include "cypdf_number.h"
 #include "cypdf_object.h"
 #include "cypdf_stream.h"
 #include "cypdf_types.h"
@@ -35,79 +37,33 @@ typedef struct CYPDF_ObjPage {
 
 
 typedef struct CYPDF_ObjPageNode {
-    CYPDF_ObjHeader header;
+    CYPDF_ObjHeader     header;
 
-    CYPDF_ObjPNode* parent;
-    CYPDF_ObjArray* kids;
-    int             leaf_count; /* The number of leaf nodes (page objects) that are descendants of this node within the page tree. */
+    CYPDF_ObjPNode*     parent;
+    CYPDF_ObjArray*     kids;
+    CYPDF_ObjNumber*    leaf_count; /* The number of leaf nodes (page objects) that are descendants of this node within the page tree. */
 
-    CYPDF_ObjDict*  dict;
+    CYPDF_ObjDict*      dict;
 } CYPDF_ObjPNode;
 
 
-/**
- * @brief Creates new CYPDF_Obj_Page.
- * 
- * @param indirect 
- * @param ID 
- * @param parent 
- * @param mediabox 
- * @return CYPDF_Obj_Page* | Returns NULL if object creation fails.
- */
-CYPDF_ObjPage* CYPDF_NewPage(bool indirect, CYPDF_ObjPNode* parent, int page_number, CYPDF_Rect mediabox);
+CYPDF_ObjPage* CYPDF_NewPage(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const parent, const int page_number, const CYPDF_Rect mediabox);
 
-/**
- * @brief Creates new CYPDF_Obj_PNode.
- * 
- * @param indirect 
- * @param ID 
- * @param parent 
- * @return CYPDF_Obj_PNode* | Returns NULL if object creation fails.
- */
-CYPDF_ObjPNode* CYPDF_NewPNode(bool indirect, CYPDF_ObjPNode* parent);
+CYPDF_ObjPNode* CYPDF_NewPNode(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const parent);
 
-/**
- * @brief Adds a new page to page_tree.
- * 
- * @param tree_root 
- * @param ID 
- * @param mediabox 
- */
-CYPDF_ObjPage* CYPDF_AddPage(CYPDF_ObjPNode* page_tree, CYPDF_Rect mediabox);
+CYPDF_ObjPage* CYPDF_AddPage(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const page_tree, const CYPDF_Rect mediabox);
 
-CYPDF_ObjPage* CYPDF_PageAtNumber(CYPDF_ObjPNode* page_tree, int page_number);
+CYPDF_ObjPage* CYPDF_PageAtNumber(const CYPDF_ObjPNode* const page_tree, const int page_number);
 
-void CYPDF_PageAddContent(CYPDF_ObjPage* page, CYPDF_ObjStream* stream);
+void CYPDF_PageAddContent(CYPDF_ObjPage* const page, CYPDF_ObjStream* const stream);
 
-/**
- * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
- * 
- * @param fp 
- * @param obj 
- */
-void CYPDF_PrintPage(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintPage(FILE* restrict fp, const CYPDF_Object* const obj);
 
-/**
- * @brief Write obj to fp. Does nothing if fp == NULL or obj == NULL.
- * 
- * @param fp 
- * @param obj 
- */
-void CYPDF_PrintPNode(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintPNode(FILE* restrict fp, const CYPDF_Object* const obj);
 
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
 void CYPDF_FreePage(CYPDF_Object* obj);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
 void CYPDF_FreePNode(CYPDF_Object* obj);
 
 

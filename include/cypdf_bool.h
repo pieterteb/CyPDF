@@ -5,7 +5,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "cypdf_mmgr.h"
 #include "cypdf_object.h"
+#include "cypdf_types.h"
 
 
 
@@ -19,21 +21,10 @@ typedef struct CYPDF_ObjBool {
 } CYPDF_ObjBool;
 
 
-CYPDF_ObjBool* CYPDF_NewBool(bool indirect, bool val);
+CYPDF_ObjBool* CYPDF_NewBool(CYPDF_MMgr* const mmgr, const bool val);
 
-/**
- * @brief Writes obj to fp. Does nothing if fp == NULL or obj == NULL.
- * 
- * @param fp 
- * @param obj 
- */
-void CYPDF_PrintBool(FILE* fp, CYPDF_Object* obj);
+void CYPDF_PrintBool(FILE* restrict fp, const CYPDF_Object* const obj);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
 void CYPDF_FreeBool(CYPDF_Object* obj);
 
 

@@ -40,7 +40,7 @@ void* CYPDF_srealloc(void* ptr, size_t size);
  * 
  * @return char* 
  */
-char* CYPDF_GetDate();
+char* CYPDF_GetDate(void);
 
 
 
