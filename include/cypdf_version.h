@@ -12,8 +12,9 @@
 #define CYPDF_PDF_VER_1_5       "PDF-1.5"
 #define CYPDF_PDF_VER_1_6       "PDF-1.6"
 #define CYPDF_PDF_VER_1_7       "PDF-1.7"
+#define CYPDF_PDF_VER_2_0       "PDF-2.0"
 
-#define CYPDF_PDF_VERSION       (CYPDF_PDF_VER_1_7)
+#define CYPDF_PDF_VERSION       (CYPDF_PDF_VER_2_0)
 
 
 
