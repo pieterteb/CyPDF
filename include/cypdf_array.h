@@ -30,11 +30,6 @@ void CYPDF_ArrayAppend(CYPDF_ObjArray* const array, CYPDF_Object* const obj);
 
 void CYPDF_PrintArray(FILE* restrict fp, const CYPDF_Object* const obj);
 
-/**
- * @brief Frees obj. Does nothing if obj is NULL.
- * 
- * @param obj 
- */
 void CYPDF_FreeArray(CYPDF_Object* obj);
 
 
