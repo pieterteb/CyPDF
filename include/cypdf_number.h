@@ -17,15 +17,15 @@
 
 typedef struct CYPDF_ObjNumber {
     CYPDF_ObjHeader header;
-    int             val;
+    int             value;
 } CYPDF_ObjNumber;
 
 
-CYPDF_ObjNumber* CYPDF_NewNumber(CYPDF_MMgr* const mmgr, const int val);
+CYPDF_ObjNumber* CYPDF_NewNumber(CYPDF_MMgr* const mmgr, const int value);
 
-void CYPDF_SetNumber(CYPDF_ObjNumber* const number, const int val);
+void CYPDF_NumberSetValue(CYPDF_ObjNumber* const number, const int value);
 
-int CYPDF_GetNumber(const CYPDF_ObjNumber* const number);
+int CYPDF_NumberGetValue(const CYPDF_ObjNumber* const number);
 
 void CYPDF_PrintNumber(FILE* restrict fp, const CYPDF_Object* const obj);
 

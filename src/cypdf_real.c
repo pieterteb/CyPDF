@@ -9,26 +9,26 @@
 
 
 
-CYPDF_ObjReal* CYPDF_NewReal(CYPDF_MMgr* const mmgr, const float val) {
+CYPDF_ObjReal* CYPDF_NewReal(CYPDF_MMgr* const mmgr, const float value) {
     CYPDF_ObjReal* real = (CYPDF_ObjReal*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjReal));
 
     if (real) {
         CYPDF_InitHeader(real, CYPDF_OCLASS_REAL);
-        real->val = val;
+        real->value = value;
     }
 
     return real;
 }
 
-void CYPDF_SetReal(CYPDF_ObjReal* const real, const float val) {
+void CYPDF_RealSetValue(CYPDF_ObjReal* const real, const float value) {
     if (real) {
-        real->val = val;
+        real->value = value;
     }
 }
 
-float CYPDF_GetReal(const CYPDF_ObjReal* const real) {
+float CYPDF_RealGetValue(const CYPDF_ObjReal* const real) {
     if (real) {
-        return real->val;
+        return real->value;
     }
 
     return 0.0f;
@@ -37,7 +37,7 @@ float CYPDF_GetReal(const CYPDF_ObjReal* const real) {
 void CYPDF_PrintReal(FILE* restrict fp, const CYPDF_Object* const obj) {
     if (fp && obj) {
         CYPDF_ObjReal* real = (CYPDF_ObjReal*)obj;
-        fprintf(fp, "%g", real->val);
+        fprintf(fp, "%g", real->value);
     }
 }
 

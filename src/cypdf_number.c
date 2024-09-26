@@ -9,26 +9,26 @@
 
 
 
-CYPDF_ObjNumber* CYPDF_NewNumber(CYPDF_MMgr* const mmgr, const int val) {
+CYPDF_ObjNumber* CYPDF_NewNumber(CYPDF_MMgr* const mmgr, const int value) {
     CYPDF_ObjNumber* number = (CYPDF_ObjNumber*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjNumber));
 
     if (number) {
         CYPDF_InitHeader(number, CYPDF_OCLASS_NUMBER);
-        number->val = val;
+        number->value = value;
     }
 
     return number;
 }
 
-void CYPDF_SetNumber(CYPDF_ObjNumber* const number, const int val) {
+void CYPDF_NumberSetValue(CYPDF_ObjNumber* const number, const int value) {
     if (number) {
-        number->val = val;
+        number->value = value;
     }
 }
 
-int CYPDF_GetNumber(const CYPDF_ObjNumber* const number) {
+int CYPDF_NumberGetValue(const CYPDF_ObjNumber* const number) {
     if (number) {
-        return number->val;
+        return number->value;
     }
 
     return 0;
