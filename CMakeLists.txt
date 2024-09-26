@@ -33,6 +33,7 @@ add_executable(CyPDF
     src/cypdf_null.c
     src/cypdf_number.c
     src/cypdf_object.c
+    src/cypdf_operators.c
     src/cypdf_pages.c
     src/cypdf_path_operators.c
     src/cypdf_print.c

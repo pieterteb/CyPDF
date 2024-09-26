@@ -2,6 +2,10 @@
 #define CYPDF_OPERATORS_H
 
 
+#include <stddef.h>
+#include <stdint.h>
+
+
 
 /*
 This header file defines all graphic operators in PDF. Not all of them are necessarily implemented. The comments following the operator codes are of the form:
@@ -145,6 +149,28 @@ h
 #define CYPDF_OPERATOR_COLOR_NONSTROKING_CMYK       0x000C0000      /* c m y k | Set the nonstroking color space to DeviceCMYK and set the color to use for stroking operations. */
 
 #define CYPDF_OPERATOR_COLOR                        0x000F0000
+
+
+
+typedef struct CYPDF_Operator {
+    uint32_t    type;
+
+    void**      operands;
+    size_t      operand_count;
+} CYPDF_Operator;
+
+
+/**
+ * @brief Create a new operator. Initializes the new operator with operands and operand_count. If operands is equal to NULL, operand_count is set to 0. Assumes type is a valid operator type.
+ * 
+ * @param type 
+ * @param operands 
+ * @param operand_count 
+ * @return CYPDF_Operator* 
+ */
+CYPDF_Operator* CYPDF_NewOperator(const uint32_t type, const void* const* const operands, size_t operand_count);
+
+void CYPDF_FreeOperator(CYPDF_Operator* operator);
 
 
 
