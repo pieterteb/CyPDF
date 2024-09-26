@@ -5,6 +5,7 @@
 #include "cypdf_pages.h"
 #include "cypdf_array.h"
 #include "cypdf_dict.h"
+#include "cypdf_graphics_state.h"
 #include "cypdf_mmgr.h"
 #include "cypdf_name.h"
 #include "cypdf_null.h"
@@ -35,6 +36,8 @@ CYPDF_ObjPage* CYPDF_NewPage(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const paren
             CYPDF_DictAppend(mmgr, page->dict, "MediaBox", page->mediabox);
             CYPDF_DictAppend(mmgr, page->dict, "Contents", page->contents);
         }
+
+        page->state = CYPDF_NewGFXState(mmgr);
     }
 
     return page;
@@ -121,6 +124,8 @@ void CYPDF_PrintPNode(FILE* restrict fp, const CYPDF_Object* const obj) {
 void CYPDF_FreePage(CYPDF_Object* obj) {
     if (obj) {
         CYPDF_ObjPage* page = (CYPDF_ObjPage*)obj;
+
+        CYPDF_FreeGFXState(page->state);
 
         free(page);
     }

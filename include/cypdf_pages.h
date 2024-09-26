@@ -6,6 +6,7 @@
 
 #include "cypdf_array.h"
 #include "cypdf_dict.h"
+#include "cypdf_graphics_state.h"
 #include "cypdf_mmgr.h"
 #include "cypdf_number.h"
 #include "cypdf_object.h"
@@ -26,6 +27,8 @@ typedef struct CYPDF_ObjPageNode CYPDF_ObjPNode;
 typedef struct CYPDF_ObjPage {
     CYPDF_ObjHeader header;
     int             page_number;
+
+    CYPDF_GFXState* state;
 
     CYPDF_ObjPNode* parent;
     CYPDF_ObjDict*  resources;
