@@ -170,6 +170,8 @@ typedef struct CYPDF_Operator {
  */
 CYPDF_Operator* CYPDF_NewOperator(const uint32_t type, const void* const* const operands, size_t operand_count);
 
+void CYPDF_OperatorSetOperands(CYPDF_Operator* const operator, const void* const* const operands, size_t operand_count);
+
 void CYPDF_FreeOperator(CYPDF_Operator* operator);
 
 
