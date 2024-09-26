@@ -144,6 +144,8 @@ h
 #define CYPDF_OPERATOR_COLOR_STROKING_CMYK          0x000B0000      /* c m y k | Set the stroking color space to DeviceCMYK and set the color to use for stroking operations. */
 #define CYPDF_OPERATOR_COLOR_NONSTROKING_CMYK       0x000C0000      /* c m y k | Set the nonstroking color space to DeviceCMYK and set the color to use for stroking operations. */
 
+#define CYPDF_OPERATOR_COLOR                        0x000F0000
+
 
 
 #endif /* CYPDF_OPERATORS_H */
