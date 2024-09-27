@@ -2,9 +2,6 @@
 #define CYPDF_COLOR_H
 
 
-#include <stdint.h>
-
-
 
 /* Color space names */
 
@@ -26,22 +23,20 @@
 #define CYPDF_COLOR_SPACE_DEVICEN_N     "DeviceN"
 
 
-/* Color space types */
-#define CYPDF_COLOR_SPACE_DEVGRAY       0x0001
-#define CYPDF_COLOR_SPACE_DEVRGB        0x0002
-#define CYPDF_COLOR_SPACE_DEVCMYK       0x0003
-#define CYPDF_COLOR_SPACE_CIEGRAY       0x0010
-#define CYPDF_COLOR_SPACE_CIERGB        0x0020
-#define CYPDF_COLOR_SPACE_CIELAB        0x0030
-#define CYPDF_COLOR_SPACE_CIEICC        0x0040
-#define CYPDF_COLOR_SPACE_INDEXED       0x0100
-#define CYPDF_COLOR_SPACE_PATTERN       0x0200
-#define CYPDF_COLOR_SPACE_SEPARATION    0x0300
-#define CYPDF_COLOR_SPACE_DEVICEN       0x0400
+enum CYPDF_COLOR_SPACE_TYPE {
+    CYPDF_COLOR_SPACE_DEVGRAY,
+    CYPDF_COLOR_SPACE_DEVRGB,
+    CYPDF_COLOR_SPACE_DEVCMYK,
+    CYPDF_COLOR_SPACE_CIERGB,
+    CYPDF_COLOR_SPACE_CIELAB,
+    CYPDF_COLOR_SPACE_CIEICC,
+    CYPDF_COLOR_SPACE_INDEXED,
+    CYPDF_COLOR_SPACE_PATTERN,
+    CYPDF_COLOR_SPACE_SEPARATION,
+    CYPDF_COLOR_SPACE_DEVICEN,
 
-#define CYPDF_COLOR_SPACE_DEVICE        0x000F
-#define CYPDF_COLOR_SPACE_CIE_BASED     0x00F0
-#define CYPDF_COLOR_SPACE_SPECIAL       0x0F00
+    CYPDF_COLOR_SPACE_COUNT,
+};
 
 #define CYPDF_COLOR_SPACE_DEFAULT       CYPDF_COLOR_SPACE_DEVGRAY
 
@@ -49,10 +44,10 @@
 
 /* Currently, only the device color spaces are supported. These don't require any additional parameters. */
 typedef struct CYPDF_ColorSpace {
-    uint16_t    type;
+    enum CYPDF_COLOR_SPACE_TYPE type;
     // union {
         
-    // }           params;
+    // }                        params;
 } CYPDF_ColorSpace;
 
 
