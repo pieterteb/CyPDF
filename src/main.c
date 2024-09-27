@@ -32,7 +32,11 @@ void add_polygon(CYPDF_Doc* pdf, int page_number, size_t n) {
     float radius = CYPDF_MM_TO_UU(100);
 
     CYPDF_Path* path = CYPDF_NewPath();
-    CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+    if (n == 3) {
+        CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE);
+    } else {
+        CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+    }
     CYPDF_PathAppendBegin(path, CYPDF_TO_POINT(centerx + radius, centery));
     for (size_t i = 1; i < n; ++i) {
         CYPDF_PathAppendLineseg(path, CYPDF_TO_POINT(centerx + radius * cos(2 * M_PI / (double)n * (double)i), centery + radius * sin(2 * M_PI / (double)n * (double)i)));
@@ -50,7 +54,6 @@ int main(void) {
     for (size_t i = 0; i < 5; ++i) {
         add_polygon(pdf, 1, i + 3);
     }
-    printf("hi\n");
 
     /* Draws an approximation of a circle using two Bézier curves. */
     CYPDF_AppendPage(pdf);
