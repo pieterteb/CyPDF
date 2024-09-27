@@ -1,5 +1,4 @@
 #include <stddef.h>
-#include <stdint.h>
 
 #include "cypdf_operators.h"
 #include "cypdf_utils.h"
@@ -52,7 +51,7 @@ static const char* operator_names[CYPDF_OPERATOR_COUNT] = {
 };
 
 
-CYPDF_Operator* CYPDF_NewOperator(const uint32_t type, const void* const* const operands, size_t operand_count) {
+CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type, const void* const* const operands, size_t operand_count) {
     CYPDF_Operator* operator = (CYPDF_Operator*)CYPDF_smalloc(sizeof(CYPDF_Operator));
 
     if (operator) {

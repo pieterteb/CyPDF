@@ -3,7 +3,6 @@
 
 
 #include <stddef.h>
-#include <stdint.h>
 
 
 
@@ -156,7 +155,7 @@ typedef struct CYPDF_Operator {
  * @param operand_count 
  * @return CYPDF_Operator* 
  */
-CYPDF_Operator* CYPDF_NewOperator(const uint32_t type, const void* const* const operands, size_t operand_count);
+CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type, const void* const* const operands, size_t operand_count);
 
 void CYPDF_FreeOperator(CYPDF_Operator* operator);
 
