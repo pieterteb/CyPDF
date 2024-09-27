@@ -37,7 +37,7 @@ CYPDF_ObjPage* CYPDF_NewPage(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const paren
             CYPDF_DictAppend(mmgr, page->dict, "Contents", page->contents);
         }
 
-        page->state = CYPDF_NewGFXState(mmgr);
+        //page->state = CYPDF_NewGFXState(mmgr);
     }
 
     return page;
@@ -68,11 +68,11 @@ CYPDF_ObjPNode* CYPDF_NewPNode(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const par
 }
 
 CYPDF_ObjPage* CYPDF_AddPage(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const page_tree, const CYPDF_Rect mediabox) {
-    CYPDF_ObjPage* page = CYPDF_NewPage(mmgr, page_tree, CYPDF_GetNumber(page_tree->leaf_count) + 1, mediabox);
+    CYPDF_ObjPage* page = CYPDF_NewPage(mmgr, page_tree, CYPDF_NumberGetValue(page_tree->leaf_count) + 1, mediabox);
 
     if (page) {
         CYPDF_ArrayAppend(page_tree->kids, page);
-        CYPDF_SetNumber(page_tree->leaf_count, CYPDF_GetNumber(page_tree->leaf_count) + 1);
+        CYPDF_NumberSetValue(page_tree->leaf_count, CYPDF_NumberGetValue(page_tree->leaf_count) + 1);
     }
 
     return page;
@@ -80,7 +80,7 @@ CYPDF_ObjPage* CYPDF_AddPage(CYPDF_MMgr* const mmgr, CYPDF_ObjPNode* const page_
 
 CYPDF_ObjPage* CYPDF_PageAtNumber(const CYPDF_ObjPNode* const page_tree, const int page_number) {
     if (page_tree) {
-        if (page_number > CYPDF_GetNumber(page_tree->leaf_count)) {
+        if (page_number > CYPDF_NumberGetValue(page_tree->leaf_count)) {
             return NULL;
         }
 
@@ -125,7 +125,7 @@ void CYPDF_FreePage(CYPDF_Object* obj) {
     if (obj) {
         CYPDF_ObjPage* page = (CYPDF_ObjPage*)obj;
 
-        CYPDF_FreeGFXState(page->state);
+        // CYPDF_FreeGFXState(page->state);
 
         free(page);
     }

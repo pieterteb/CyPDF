@@ -31,8 +31,8 @@ typedef struct CYPDF_GraphicsState {
     CYPDF_ObjNumber*    line_join; /* A code specifying the shape of joints between connected segments of a stroked path. */
     CYPDF_ObjReal*      miter_limit; /* The maximum length of mitered line joins for stroked paths. */
     struct {
-        CYPDF_ObjArray*     pattern;
-        CYPDF_ObjNumber*    phase;
+        CYPDF_ObjArray*     dash_array;
+        CYPDF_ObjNumber*    dash_phase;
     }                   dash_pattern; /* A description of the dash pattern to be used when paths are stroked. */
     // CYPDF_ObjName*      rendering_intent; /* The rendering intent to be used when converting CIE-based colors to device colors. */
     // CYPDF_ObjBool*      stroke_adjustment; /* A flag specifying whether to compensate for possible rasterization effects when stroking a path with a line width that is small relative to the pixel resolution of the output device. */

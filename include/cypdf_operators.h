@@ -147,22 +147,14 @@ typedef struct CYPDF_Operator {
 } CYPDF_Operator;
 
 
-/**
- * @brief Create a new operator. Initializes the new operator with operands and operand_count. If operands is equal to NULL, operand_count is set to 0. Assumes type is a valid operator type.
- * 
- * @param type 
- * @param operands 
- * @param operand_count 
- * @return CYPDF_Operator* 
- */
-CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type, const void* const* const operands, size_t operand_count);
+CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type);
 
 void CYPDF_FreeOperator(CYPDF_Operator* operator);
 
 
 const char* CYPDF_OperatorGetName(const CYPDF_Operator* const operator);
 
-void CYPDF_OperatorAppendOperand(CYPDF_Operator* const operator, const void* const operand);
+void CYPDF_OperatorAppendOperand(CYPDF_Operator* const operator, void* const operand);
 
 
 

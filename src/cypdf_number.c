@@ -38,7 +38,7 @@ void CYPDF_PrintNumber(FILE* restrict fp, const CYPDF_Object* const obj) {
     if (fp && obj) {
         CYPDF_ObjNumber* number = (CYPDF_ObjNumber*)obj;
 
-        fprintf(fp, "%d", CYPDF_GetNumber(number));
+        fprintf(fp, "%d", CYPDF_NumberGetValue(number));
     }
 }
 

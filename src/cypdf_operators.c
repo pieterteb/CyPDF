@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdlib.h>
 
 #include "cypdf_operators.h"
 #include "cypdf_utils.h"
@@ -6,7 +7,7 @@
 
 
 /* Operator lookup table */
-static const char* operator_names[CYPDF_OPERATOR_COUNT] = {
+static char* operator_names[CYPDF_OPERATOR_COUNT] = {
     [CYPDF_OPERATOR_PATH_BEGIN] = CYPDF_OPERATOR_PATH_BEGIN_N,
     [CYPDF_OPERATOR_PATH_LINESEG] = CYPDF_OPERATOR_PATH_LINESEG_N,
     [CYPDF_OPERATOR_PATH_CBEZIER] = CYPDF_OPERATOR_PATH_CBEZIER_N,
@@ -19,7 +20,7 @@ static const char* operator_names[CYPDF_OPERATOR_COUNT] = {
     [CYPDF_OPERATOR_PATH_NWNRFILL] = CYPDF_OPERATOR_PATH_NWNRFILL_N,
     [CYPDF_OPERATOR_PATH_EORFILL] = CYPDF_OPERATOR_PATH_EORFILL_N,
     [CYPDF_OPERATOR_PATH_NWNRFILL_STROKE] = CYPDF_OPERATOR_PATH_NWNRFILL_STROKE_N,
-    [CYPDF_OPERATOR_PATH_EORFILL_STROKE] CYPDF_OPERATOR_PATH_EORFILL_STROKE_N,
+    [CYPDF_OPERATOR_PATH_EORFILL_STROKE] = CYPDF_OPERATOR_PATH_EORFILL_STROKE_N,
     [CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE] = CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE_N,
     [CYPDF_OPERATOR_PATH_CLOSE_EORFILL_STROKE] = CYPDF_OPERATOR_PATH_CLOSE_EORFILL_STROKE_N,
     [CYPDF_OPERATOR_PATH_END] = CYPDF_OPERATOR_PATH_END_N,
@@ -51,17 +52,13 @@ static const char* operator_names[CYPDF_OPERATOR_COUNT] = {
 };
 
 
-CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type, const void* const* const operands, size_t operand_count) {
+CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type) {
     CYPDF_Operator* operator = (CYPDF_Operator*)CYPDF_smalloc(sizeof(CYPDF_Operator));
 
     if (operator) {
         operator->type = type;
-        operator->operands = operands;
-
-        if (!operands) {
-            operand_count = 0;
-        }
-        operator->operand_count = operand_count;
+        operator->operands = NULL;
+        operator->operand_count = 0;
     }
 
     return operator;
@@ -88,7 +85,7 @@ const char* CYPDF_OperatorGetName(const CYPDF_Operator* const operator) {
     return name;
 }
 
-void CYPDF_OperatorAppendOperand(CYPDF_Operator* const operator, const void* const operand) {
+void CYPDF_OperatorAppendOperand(CYPDF_Operator* const operator, void* const operand) {
     if (operator && operand) {
         operator->operands = CYPDF_srealloc(operator->operands, (operator->operand_count + 1) * sizeof(void*));
         operator->operands[operator->operand_count] = operand;

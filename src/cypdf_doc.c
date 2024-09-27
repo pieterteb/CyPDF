@@ -14,6 +14,7 @@
 #include "cypdf_pages.h"
 #include "cypdf_path_operators.h"
 #include "cypdf_print.h"
+#include "cypdf_time.h"
 #include "cypdf_trailer.h"
 #include "cypdf_utils.h"
 #include "cypdf_xref.h"

@@ -36,18 +36,21 @@ void CYPDF_PrintToStream(CYPDF_ObjStream* const stream, const char format[restri
     if (stream) {
         va_list args;
         va_start(args, format);
-        size_t size = (size_t)vsnprintf(NULL, 0, format, args);
-        
-        va_list args_;
-        va_copy(args_, args);
-        size_t curr_len = (size_t)CYPDF_GetNumber(stream->length);
+
+        va_list args_copy;
+        va_copy(args_copy, args);
+
+        size_t size = (size_t)vsnprintf(NULL, 0, format, args_copy);
+
+        va_end(args_copy);
+
+        size_t curr_len = (size_t)CYPDF_NumberGetValue(stream->length);
         stream->bytes = CYPDF_srealloc(stream->bytes, (curr_len + size) * sizeof(unsigned char));
-        vsnprintf((char*)(stream->bytes + curr_len), size + 1, format, args_);
+        vsnprintf((char*)(stream->bytes + curr_len), size + 1, format, args);
 
         va_end(args);
-        va_end(args_);
 
-        CYPDF_SetNumber(stream->length, (int)(curr_len + size));
+        CYPDF_NumberSetValue(stream->length, (int)(curr_len + size));
     }
 }
 
@@ -58,7 +61,7 @@ void CYPDF_PrintStream(FILE* restrict fp, const CYPDF_Object* const obj) {
     CYPDF_PrintNL(fp);
     CYPDF_fprintfNL(fp, "stream");
 
-    fwrite(stream->bytes, sizeof(stream->bytes[0]), (size_t)CYPDF_GetNumber(stream->length), fp);
+    fwrite(stream->bytes, sizeof(stream->bytes[0]), (size_t)CYPDF_NumberGetValue(stream->length), fp);
 
     CYPDF_PrintNL(fp);
     fprintf(fp, "endstream");

@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <time.h>
 
 #include "cypdf_time.h"
+#include "cypdf_utils.h"
 
 
 

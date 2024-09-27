@@ -13,6 +13,7 @@
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 #include "cypdf_string.h"
+#include "cypdf_time.h"
 #include "cypdf_utils.h"
 #include "md5.h"
 
