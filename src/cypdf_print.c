@@ -1,62 +1,142 @@
 #include <stdarg.h>
 #include <stdio.h>
-#include <string.h>
 
 #include "cypdf_print.h"
 #include "cypdf_consts.h"
-#include "cypdf_utils.h"
+#include "cypdf_memmgr.h"
+#include "cypdf_stream.h"
 
 
 
-size_t CYPDF_fwriteNL(const void* buffer, size_t element_size, size_t element_count, FILE* stream) {
-    size_t ret = fwrite(buffer, element_size, element_count, stream) * element_size;
-    ret += CYPDF_PrintNL(stream);
+static int CYPDF_ChannelVPrint(CYPDF_Channel* const restrict channel, const char format[restrict static 1], va_list args);
 
-    return ret;
+
+CYPDF_Channel* CYPDF_NewChannel(void* const restrict stream, const enum CYPDF_CHANNEL_TYPE type) {
+    CYPDF_Channel* channel = CYPDF_malloc(sizeof(CYPDF_Channel));
+
+    if (channel) {
+        channel->type = type;
+        channel->stream = stream;
+    }
+
+    return channel;
 }
 
-size_t CYPDF_PrintNL(FILE* fp) {
-    return fwrite(CYPDF_NEW_LINE, sizeof(char), strlen(CYPDF_NEW_LINE), fp) * sizeof(char);
-}
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
-int CYPDF_fprintfNL(FILE* fp, const char* format, ...) {
-    int char_count = 0;
-    if (format) {
+int CYPDF_ChannelPrint(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...) {
+    int characters_printed = 0;
+
+    if (channel) {
         va_list args;
         va_start(args, format);
-        char_count += vfprintf(fp, format, args);
+
+        CYPDF_ChannelVPrint(channel, format, args);
+
         va_end(args);
     }
 
-    char_count += (int)CYPDF_PrintNL(fp);
-
-    return char_count;
+    return characters_printed;
 }
 
-int CYPDF_sprintfNL(char* dest, const char* format, ...) {
-    int char_count = 0;
-    if (format) {
+size_t CYPDF_ChannelWrite(CYPDF_Channel* const restrict channel, const void* restrict buffer, size_t size, size_t count) {
+    size_t objects_written = 0;
+
+    if (channel) {
+        switch (channel->type)
+        {
+        case CYPDF_CHANNEL_FILE:
+            objects_written = fwrite(buffer, size, count, (FILE*)channel->stream);
+            break;
+        case CYPDF_CHANNEL_OBJSTREAM:
+            objects_written = CYPDF_WriteToStream((CYPDF_ObjStream*)channel->stream, buffer, size, count);
+            break;
+        default:
+            break;
+        }
+    }
+
+    return objects_written;
+}
+
+int CYPDF_ChannelPrintNL(CYPDF_Channel* const restrict channel) {
+    int characters_printed = 0;
+
+    if (channel) {
+        characters_printed = (int)CYPDF_ChannelWrite(channel, CYPDF_NEW_LINE, sizeof(char), CYPDF_NEW_LINE_SIZE);
+    }
+
+    return characters_printed;
+}
+
+int CYPDF_ChannelPrintComment(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...) {
+    int characters_printed = 0;
+
+    if (channel) {
         va_list args;
         va_start(args, format);
-        char_count += vsprintf(dest, format, args);
+
+        characters_printed += CYPDF_ChannelPrint(channel, "%%");
+        characters_printed += CYPDF_ChannelVPrint(channel, format, args);
+
         va_end(args);
     }
 
-    char_count += sprintf(dest, "%s", CYPDF_NEW_LINE);
-
-    return char_count;
+    return characters_printed;
 }
-#pragma GCC diagnostic pop
 
-size_t CYPDF_PrintComment(FILE* fp, const char* src) {
-    size_t ret = 0;
+int CYPDF_ChannelPrintLine(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...) {
+    int characters_printed = 0;
 
-    if (fputc('%', fp) != EOF) {
-        ret = 1;
+    if (channel) {
+        va_list args;
+        va_start(args, format);
+
+        characters_printed += CYPDF_ChannelVPrint(channel, format, args);
+        characters_printed += CYPDF_ChannelPrintNL(channel);
+
+        va_end(args);
     }
-    ret += CYPDF_fwriteNL(src, sizeof(src[0]), strlen(src), fp);
 
-    return ret;
+    return characters_printed;
+}
+
+static int CYPDF_ChannelVPrint(CYPDF_Channel* const restrict channel, const char format[restrict static 1], va_list args) {
+    int characters_printed = 0;
+
+    if (channel) {
+        switch (channel->type)
+        {
+        case CYPDF_CHANNEL_FILE:
+            characters_printed = vfprintf((FILE*)channel->stream, format, args);
+            break;
+        case CYPDF_CHANNEL_OBJSTREAM:
+            characters_printed = CYPDF_PrintToStream((CYPDF_ObjStream*)channel->stream, format, args);
+            break;
+        default:
+            break;
+        }
+    }
+
+    return characters_printed;
+}
+
+
+long CYPDF_Channeltell(CYPDF_Channel* const restrict channel) {
+    long current_position = 0;
+
+    if (channel) {
+        switch (channel->type)
+        {
+        case CYPDF_CHANNEL_FILE:
+            current_position = ftell((FILE*)channel->stream);
+            break;
+        case CYPDF_CHANNEL_OBJSTREAM:
+            current_position = (long)((CYPDF_ObjStream*)channel->stream)->length;
+            break;
+        default:
+            break;
+        }
+    }
+
+    return current_position;
 }

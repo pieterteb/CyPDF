@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "cypdf_memmgr.h"
 #include "cypdf_time.h"
-#include "cypdf_utils.h"
 
 
 
-char* CYPDF_GetDate(void) {
-    char* date = CYPDF_scalloc(128, sizeof(char));
+char* CYPDF_Date(void) {
+    char* date = CYPDF_calloc(128, sizeof(char));
     time_t currtime = time(NULL);
     time_t UTC = mktime(gmtime(&currtime));
     struct tm* local = localtime(&currtime);

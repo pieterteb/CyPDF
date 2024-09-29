@@ -1,38 +1,29 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "cypdf_name.h"
-#include "cypdf_mmgr.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_object.h"
-#include "cypdf_utils.h"
+#include "cypdf_print.h"
+#include "cypdf_types.h"
 
 
 
-CYPDF_ObjName* CYPDF_NewName(CYPDF_MMgr* const mmgr, char val[restrict static 1]) {
-    CYPDF_ObjName* name = (CYPDF_ObjName*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjName));
+CYPDF_ObjName* CYPDF_NewName(CYPDF_MemMgr* const restrict memmgr, const char value[restrict static 1]) {
+    CYPDF_ObjName* name = (CYPDF_ObjName*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjName));
 
     if (name) {
-        CYPDF_InitHeader(name, CYPDF_OCLASS_NAME);
-
-        strncpy(name->val, val, CYPDF_MAX_NAME_LEN + 1);
-        name->val[CYPDF_MAX_NAME_LEN] = 0;
+        name->header.class = CYPDF_OBJ_CLASS_NAME;
+        strncpy(name->value, value, CYPDF_MAX_NAME_LEN);
+        name->value[CYPDF_MAX_NAME_LEN] = 0;
     }
 
     return name;
 }
 
-void CYPDF_PrintName(FILE* restrict fp, const CYPDF_Object* const obj) {
-    if (fp && obj) {
+void CYPDF_PrintName(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    if (channel && obj) {
         CYPDF_ObjName* name = (CYPDF_ObjName*)obj;
-        fprintf(fp, "/%s", name->val);
-    }
-}
 
-void CYPDF_FreeName(CYPDF_Object* obj) {
-    if (obj) {
-        CYPDF_ObjName* name = (CYPDF_ObjName*)obj;
-        free(name);
+        CYPDF_ChannelPrint(channel, "/%s", name->value);
     }
 }

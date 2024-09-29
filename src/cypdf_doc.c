@@ -1,14 +1,11 @@
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "cypdf_doc.h"
-#include "cypdf_array.h"
 #include "cypdf_catalog.h"
 #include "cypdf_consts.h"
-#include "cypdf_dict.h"
 #include "cypdf_header.h"
-#include "cypdf_mmgr.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_null.h"
 #include "cypdf_object.h"
 #include "cypdf_pages.h"
@@ -16,36 +13,24 @@
 #include "cypdf_print.h"
 #include "cypdf_time.h"
 #include "cypdf_trailer.h"
-#include "cypdf_utils.h"
 #include "cypdf_xref.h"
 
 
 
-static void CYPDF_DocAppendObject(CYPDF_Doc* const pdf, CYPDF_Object* const obj) {
-    if (pdf) {
-        pdf->objs = CYPDF_srealloc(pdf->objs, (pdf->obj_count + 1) * sizeof(CYPDF_Object*));
-        pdf->objs[pdf->obj_count] = obj;
-        ++pdf->obj_count;
+static void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
 
-        /* Once an object has been appended to the pdf document, it can receive an object number. */
-        CYPDF_ObjSetOnum(obj, pdf->obj_count);
-        CYPDF_ObjSetIndirect(obj, true);
-    }
-}
 
 CYPDF_Doc* CYPDF_NewDoc(void) {
-    CYPDF_Doc* pdf = CYPDF_smalloc(sizeof(CYPDF_Doc));
+    CYPDF_Doc* pdf = CYPDF_malloc(sizeof(CYPDF_Doc));
 
     if (pdf) {
-        pdf->file_header = CYPDF_NewFileHeader();
+        pdf->memmgr = CYPDF_NewMemMgr(CYPDF_FreeObj);
 
-        pdf->obj_mmgr = CYPDF_NewMMgr(CYPDF_FreeObj);
+        pdf->page_root = CYPDF_NewPageNode(pdf->memmgr, NULL);   /* Page root. */
+        pdf->catalog = CYPDF_NewCatalog(pdf->memmgr, pdf->page_root);
 
-        pdf->page_tree = CYPDF_NewPNode(pdf->obj_mmgr, NULL);   /* Page root. */
-        pdf->catalog = CYPDF_NewCatalog(pdf->obj_mmgr, pdf->page_tree);
-
-        char* creation_date = CYPDF_GetDate();
-        pdf->info = CYPDF_NewInfo(pdf->obj_mmgr, "Test", "Bob", "Test", "CyPDF", "CyProducer", creation_date);
+        char* creation_date = CYPDF_Date();
+        pdf->info = CYPDF_NewInfo(pdf->memmgr, "Test", "Bob", "Test", "CyPDF", "CyProducer", creation_date);
         free(creation_date);
 
         pdf->objs = NULL;
@@ -53,59 +38,80 @@ CYPDF_Doc* CYPDF_NewDoc(void) {
         pdf->offsets = NULL;
 
         CYPDF_DocAppendObject(pdf, pdf->catalog);
-        CYPDF_DocAppendObject(pdf, pdf->page_tree);
+        CYPDF_DocAppendObject(pdf, pdf->page_root);
         CYPDF_DocAppendObject(pdf, pdf->info);
     }
 
     return pdf;
 }
 
-void CYPDF_AppendPage(CYPDF_Doc* const pdf) {
-    CYPDF_ObjPage* page = CYPDF_AddPage(pdf->obj_mmgr, pdf->page_tree, CYPDF_A4_MEDIABOX);
-    CYPDF_DocAppendObject(pdf, page);
-}
+void CYPDF_FreeDoc(CYPDF_Doc* pdf) {
+    if (pdf) {
+        CYPDF_DestroyMemMgr(pdf->memmgr);
 
-void CYPDF_AddPath(CYPDF_Doc* const pdf, const int page_number, const CYPDF_Path* const path) {
-    if (path && pdf) {
-        CYPDF_ObjStream* stream = CYPDF_NewStream(pdf->obj_mmgr);
-        CYPDF_PrintPathToStream(stream, path);
+        free(pdf->objs);
+        free(pdf->offsets);
 
-        CYPDF_ObjPage* page = CYPDF_PageAtNumber(pdf->page_tree, page_number);
-        CYPDF_PageAddContent(page, stream);
-
-        CYPDF_DocAppendObject(pdf, stream);
+        free(pdf);
     }
 }
 
-void CYPDF_PrintDoc(CYPDF_Doc* const pdf, const char file_path[restrict static 1]) {
+void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict static 1]) {
     if (pdf) {
-        FILE* fp = fopen("../out/test.txt", "wb");
+        FILE* fp = fopen(file_path, "wb");
+        CYPDF_Channel* file_channel = CYPDF_NewChannel(fp, CYPDF_CHANNEL_FILE);
 
-        CYPDF_PrintFileHeader(fp, pdf->file_header);
+        CYPDF_PrintFileHeader(file_channel);
 
         CYPDF_Object** objs = pdf->objs;
-        pdf->offsets = CYPDF_smalloc(pdf->obj_count * sizeof(pdf->offsets[0]));
+        pdf->offsets = CYPDF_malloc(pdf->obj_count * sizeof(pdf->offsets[0]));
         for (size_t i = 0; i < pdf->obj_count; ++i) {
-            pdf->offsets[i] = (size_t)ftell(fp);
-            CYPDF_PrintObjDef(fp, objs[i]);
+            pdf->offsets[i] = (size_t)CYPDF_Channeltell(file_channel);
+            CYPDF_PrintObjDef(file_channel, objs[i]);
         }
 
-        size_t xref_offset = (size_t)ftell(fp);
-        CYPDF_PrintXref(fp, pdf);
-        CYPDF_PrintTrailer(fp, pdf, file_path, xref_offset);
+        size_t xref_offset = (size_t)CYPDF_Channeltell(file_channel);
+        CYPDF_PrintXref(file_channel, pdf);
+        CYPDF_PrintTrailer(file_channel, pdf, file_path, xref_offset);
 
+        free(file_channel);
         fclose(fp);
     }
 }
 
-void CYPDF_FreeDoc(CYPDF_Doc* pdf) {
+
+static void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj) {
     if (pdf) {
-        CYPDF_FreeFileHeader(pdf->file_header);
+        pdf->objs = CYPDF_realloc(pdf->objs, (pdf->obj_count + 1) * sizeof(CYPDF_Object*));
+        pdf->objs[pdf->obj_count] = obj;
+        ++pdf->obj_count;
 
-        CYPDF_DestroyMMgr(pdf->obj_mmgr);
+        /* Once an object has been appended to the pdf document, it can receive an object number. */
+        ((CYPDF_ObjNull*)obj)->header.obj_num = (unsigned int)(pdf->obj_count & 0x7FFFFF);
+        ((CYPDF_ObjNull*)obj)->header.indirect = true;
+    }
+}
 
-        free(pdf->objs);
-        free(pdf->offsets);
-        free(pdf);
+CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf) {
+    if (pdf) {
+        CYPDF_ObjPage* page =  CYPDF_NewPage(pdf->memmgr, pdf->page_root, CYPDF_A4_MEDIABOX);
+        CYPDF_DocAppendObject(pdf, page);
+
+        return page;
+    }
+
+    return NULL;
+}
+
+void CYPDF_AddPathToPage(CYPDF_Doc* const restrict pdf, CYPDF_ObjPage* const restrict page, const CYPDF_Path* const restrict path) {
+    if (path && pdf) {
+        CYPDF_ObjStream* stream = CYPDF_NewStream(pdf->memmgr);
+
+        CYPDF_Channel* channel = CYPDF_NewChannel(stream, CYPDF_CHANNEL_OBJSTREAM);
+        CYPDF_PrintPath(channel, path);
+        free(channel);
+
+        CYPDF_PageAddContent(page, stream);
+        CYPDF_DocAppendObject(pdf, stream);
     }
 }

@@ -1,75 +1,91 @@
 #include <stdarg.h>
-#include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "cypdf_stream.h"
 #include "cypdf_dict.h"
-#include "cypdf_mmgr.h"
-#include "cypdf_number.h"
+#include "cypdf_dict_parameters.h"
+#include "cypdf_integer.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 #include "cypdf_types.h"
-#include "cypdf_utils.h"
 
 
 
-CYPDF_ObjStream* CYPDF_NewStream(CYPDF_MMgr* const mmgr) {
-    CYPDF_ObjStream* stream = (CYPDF_ObjStream*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjStream));
+CYPDF_ObjStream* CYPDF_NewStream(CYPDF_MemMgr* const restrict memmgr) {
+    CYPDF_ObjStream* stream = (CYPDF_ObjStream*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjStream));
 
     if (stream) {
-        CYPDF_InitHeader(stream, CYPDF_OCLASS_STREAM);
+        stream->header.class = CYPDF_OBJ_CLASS_STREAM;
         stream->bytes = NULL;
-        stream->length = CYPDF_NewNumber(mmgr, 0);
+        stream->length = 0;
 
-        stream->dict = CYPDF_NewDict(mmgr);
-        if (stream->dict) {
-            CYPDF_DictAppend(mmgr, stream->dict, "Length", stream->length);
-        }
+        stream->dict = CYPDF_NewDict(memmgr);
     }
 
     return stream;
 }
 
-void CYPDF_PrintToStream(CYPDF_ObjStream* const stream, const char format[restrict static 1], ...) {
-    if (stream) {
-        va_list args;
-        va_start(args, format);
+void CYPDF_FreeStream(CYPDF_Object* obj) {
+    CYPDF_ObjStream* stream = (CYPDF_ObjStream*)obj;
 
+    /* stream->dict is controlled by a memory manager. */
+    free(stream->bytes);
+
+    free(stream);
+}
+
+void CYPDF_PrintStream(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    if (channel && obj) {
+        CYPDF_ObjStream* stream = (CYPDF_ObjStream*)obj;
+
+        CYPDF_DictAppend(stream->dict, CYPDF_STREAM_LENGTH_K, CYPDF_NewInteger(stream->dict->memmgr, (int)stream->length));
+
+        CYPDF_PrintObjDirect(channel, stream->dict);
+        CYPDF_ChannelPrintNL(channel);
+        CYPDF_ChannelPrintLine(channel, "stream");
+
+        CYPDF_ChannelWrite(channel, stream->bytes, sizeof(unsigned char), stream->length);
+
+        CYPDF_ChannelPrintNL(channel);
+        CYPDF_ChannelPrint(channel, "endstream");
+    }
+}
+
+
+int CYPDF_PrintToStream(CYPDF_ObjStream* const restrict stream, const char format[restrict static 1], va_list args) {
+    int ret = 0;
+
+    if (stream) {
         va_list args_copy;
         va_copy(args_copy, args);
 
         size_t size = (size_t)vsnprintf(NULL, 0, format, args_copy);
+        
 
         va_end(args_copy);
 
-        size_t curr_len = (size_t)CYPDF_NumberGetValue(stream->length);
-        stream->bytes = CYPDF_srealloc(stream->bytes, (curr_len + size) * sizeof(unsigned char));
-        vsnprintf((char*)(stream->bytes + curr_len), size + 1, format, args);
+        stream->bytes = CYPDF_realloc(stream->bytes, (stream->length + size + 1) * sizeof(unsigned char));
+        ret = vsnprintf((char*)(stream->bytes + stream->length), size + 1, format, args);
+        stream->bytes = CYPDF_realloc(stream->bytes, (stream->length + size) * sizeof(unsigned char));
 
-        va_end(args);
-
-        CYPDF_NumberSetValue(stream->length, (int)(curr_len + size));
+        stream->length += size;
     }
+
+    return ret;
 }
 
-void CYPDF_PrintStream(FILE* restrict fp, const CYPDF_Object* const obj) {
-    CYPDF_ObjStream* stream = (CYPDF_ObjStream*)obj;
+size_t CYPDF_WriteToStream(CYPDF_ObjStream* const restrict stream, const void* restrict buffer, const size_t size, size_t count) {
+    if (stream) {
+        count *= size;
+        stream->bytes = CYPDF_realloc(stream->bytes, stream->length + count);
+        memcpy(stream->bytes + stream->length, (unsigned char*)buffer, count);
 
-    CYPDF_PrintObjDirect(fp, stream->dict);
-    CYPDF_PrintNL(fp);
-    CYPDF_fprintfNL(fp, "stream");
+        stream->length += count;
 
-    fwrite(stream->bytes, sizeof(stream->bytes[0]), (size_t)CYPDF_NumberGetValue(stream->length), fp);
+        return count;
+    }
 
-    CYPDF_PrintNL(fp);
-    fprintf(fp, "endstream");
-}
-
-void CYPDF_FreeStream(CYPDF_Object* obj) {
-    CYPDF_ObjStream* stream = (CYPDF_ObjStream*)obj;
-
-    free(stream->bytes);
-    free(stream);
+    return 0;
 }

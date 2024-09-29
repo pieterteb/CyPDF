@@ -2,35 +2,41 @@
 #define CYPDF_DICT_H
 
 
-#include <stdbool.h>
-#include <stdio.h>
+#include <stddef.h>
 
-#include "cypdf_mmgr.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_name.h"
 #include "cypdf_object.h"
+#include "cypdf_print.h"
 #include "cypdf_types.h"
 
 
 
-#define CYPDF_PRINT_DICT                CYPDF_PrintDict
-#define CYPDF_FREE_DICT                 CYPDF_FreeDict
+#define CYPDF_FREE_DICT     CYPDF_FreeDict
+#define CYPDF_PRINT_DICT    CYPDF_PrintDict
 
 
 typedef struct CYPDF_ObjDict {
     CYPDF_ObjHeader header;
+
     CYPDF_ObjName** keys;
     CYPDF_Object**  values;
     size_t          count;
+
+    CYPDF_MemMgr*   memmgr;
 } CYPDF_ObjDict;
 
 
-CYPDF_ObjDict* CYPDF_NewDict(CYPDF_MMgr* const mmgr);
-
-void CYPDF_DictAppend(CYPDF_MMgr* const mmgr, CYPDF_ObjDict* const dict, char key_name[restrict static 1], CYPDF_Object* const value);
-
-void CYPDF_PrintDict(FILE* restrict fp, const CYPDF_Object* const obj);
+CYPDF_ObjDict* CYPDF_NewDict(CYPDF_MemMgr* const restrict memmgr);
 
 void CYPDF_FreeDict(CYPDF_Object* obj);
+
+void CYPDF_PrintDict(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
+
+
+void CYPDF_DictAppend(CYPDF_ObjDict* const restrict dict, const char key_name[restrict static 1], CYPDF_Object* const value);
+
+CYPDF_Object* CYPDF_DictGetValue(CYPDF_ObjDict* const restrict dict, const char key_name[restrict static 1]);
 
 
 

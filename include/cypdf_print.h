@@ -2,51 +2,37 @@
 #define CYPDF_PRINT_H
 
 
-#include <stdio.h>
+#include <stddef.h>
 
 
 
-/**
- * @brief Writes buffer followed by an end of line sequence to stream.
- * 
- * @param buffer 
- * @param element_size 
- * @param element_count 
- * @param stream 
- * @return size_t | Returns the amount of bytes successfully written.
- */
-size_t CYPDF_fwriteNL(const void* buffer, size_t element_size, size_t element_count, FILE* stream);
+enum CYPDF_CHANNEL_TYPE {
+    CYPDF_CHANNEL_FILE,
+    CYPDF_CHANNEL_OBJSTREAM,
+};
 
-size_t CYPDF_PrintNL(FILE* fp);
 
-/**
- * @brief Behaves like fprintf but appends the newline sequence to the printed chars. If format is NULL, only the newline sequence is printed.
- * 
- * @param fp 
- * @param format 
- * @param ... 
- * @return int | The amount of characters printed.
- */
-int CYPDF_fprintfNL(FILE* fp, const char* format, ...);
+typedef struct CYPDF_Channel {
+    enum CYPDF_CHANNEL_TYPE type;
+    void*                   stream;
+} CYPDF_Channel;
 
-/**
- * @brief Behaves like sprintf but appends the newline sequence to the printed chars. If format is NULL, only the newline sequence is printed.
- * 
- * @param dest 
- * @param format 
- * @param ... 
- * @return int | The amount of characters printed.
- */
-int CYPDF_sprintfNL(char* dest, const char* format, ...);
 
-/**
- * @brief Writes src as a comment to fp.
- * 
- * @param fp 
- * @param src 
- * @return size_t | Returns the amount of bytes successfully written.
- */
-size_t CYPDF_PrintComment(FILE* fp, const char* src);
+CYPDF_Channel* CYPDF_NewChannel(void* const restrict stream, const enum CYPDF_CHANNEL_TYPE type);
+
+
+int CYPDF_ChannelPrint(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...);
+
+size_t CYPDF_ChannelWrite(CYPDF_Channel* const restrict channel, const void* restrict buffer, size_t size, size_t count);
+
+int CYPDF_ChannelPrintNL(CYPDF_Channel* const restrict channel);
+
+int CYPDF_ChannelPrintComment(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...);
+
+int CYPDF_ChannelPrintLine(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...);
+
+
+long CYPDF_Channeltell(CYPDF_Channel* const restrict channel);
 
 
 

@@ -3,29 +3,27 @@
 
 
 #include <stdbool.h>
-#include <stdio.h>
 
-#include "cypdf_mmgr.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_object.h"
+#include "cypdf_print.h"
 #include "cypdf_types.h"
 
 
 
-#define CYPDF_PRINT_BOOL            CYPDF_PrintBool
-#define CYPDF_FREE_BOOL             CYPDF_FreeBool
+#define CYPDF_PRINT_BOOL    CYPDF_PrintBool
 
 
 typedef struct CYPDF_ObjBool {
     CYPDF_ObjHeader header;
-    bool            val;
+
+    bool            value;
 } CYPDF_ObjBool;
 
 
-CYPDF_ObjBool* CYPDF_NewBool(CYPDF_MMgr* const mmgr, const bool val);
+CYPDF_ObjBool* CYPDF_NewBool(CYPDF_MemMgr* const restrict memmgr, const bool value);
 
-void CYPDF_PrintBool(FILE* restrict fp, const CYPDF_Object* const obj);
-
-void CYPDF_FreeBool(CYPDF_Object* obj);
+void CYPDF_PrintBool(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
 
 
 

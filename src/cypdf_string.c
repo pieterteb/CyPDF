@@ -1,61 +1,58 @@
-#include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "cypdf_string.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_object.h"
-#include "cypdf_utils.h"
+#include "cypdf_print.h"
+#include "cypdf_types.h"
 
 
 
-CYPDF_ObjString* CPYDF_NewString(CYPDF_MMgr* const mmgr, const enum CYPDF_STRING_TYPE type, const char* restrict val) {
-    CYPDF_ObjString* string = (CYPDF_ObjString*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjString));
+CYPDF_ObjString* CPYDF_NewString(CYPDF_MemMgr* const restrict memmgr, const enum CYPDF_STRING_TYPE type, const char* restrict value) {
+    CYPDF_ObjString* string = (CYPDF_ObjString*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjString));
 
     if (string) {
-        CYPDF_InitHeader(string, CYPDF_OCLASS_STRING);
-        string->type = type;
-        string->val = CYPDF_smalloc(strlen(val) + 1);
+        string->header.class = CYPDF_OBJ_CLASS_STRING;
 
-        strcpy(string->val, val);
+        string->type = type;
+        string->value = CYPDF_malloc(strlen(value) + 1);
+        strcpy(string->value, value);
     }
 
     return string;
-}
-
-char* CYPDF_GetString(const CYPDF_ObjString* const string) {
-    if (string) {
-        return string->val;
-    }
-
-    return NULL;
-}
-
-void CYPDF_PrintString(FILE* restrict fp, const CYPDF_Object* const obj) {
-    if (fp && obj) {
-        CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
-
-        switch (string->type)
-        {
-        case CYPDF_STRTYPE_BYTE:
-            fputc('<', fp);
-            fprintf(fp, "%s", string->val);
-            fputc('>', fp);
-            break;
-        default:
-            fputc('(', fp);
-            fprintf(fp, "%s", string->val);
-            fputc(')', fp);
-            break;
-        }
-    }    
 }
 
 void CYPDF_FreeString(CYPDF_Object* obj) {
     if (obj) {
         CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
 
-        free(string->val);
+        free(string->value);
         free(string);
     }
+}
+
+void CYPDF_PrintString(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    if (channel && obj) {
+        CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
+
+        switch (string->type)
+        {
+        case CYPDF_STRTYPE_BYTE:
+            CYPDF_ChannelPrint(channel, "<%s>", string->value);
+            break;
+        default:
+            CYPDF_ChannelPrint(channel, "(%s)", string->value);
+            break;
+        }
+    }    
+}
+
+
+char* CYPDF_StringGet(const CYPDF_ObjString* const restrict string) {
+    if (string) {
+        return string->value;
+    }
+
+    return NULL;
 }

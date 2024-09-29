@@ -2,13 +2,12 @@
 #define CYPDF_XREF_H
 
 
-#include <stdio.h>
-
 #include "cypdf_doc.h"
+#include "cypdf_print.h"
 
 
 
-void CYPDF_PrintXref(FILE* fp, CYPDF_Doc* pdf);
+void CYPDF_PrintXref(CYPDF_Channel* const restrict channel, CYPDF_Doc* const restrict pdf);
 
 
 

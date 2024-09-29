@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 
+#include "cypdf_print.h"
+
 
 
 /* CYPDF_Point struct */
@@ -29,7 +31,7 @@ typedef void CYPDF_Object;
 
 /* CYPDF function types */
 typedef void (*CYPDF_FreeFunc)(void*);
-typedef void (*CYPDF_PrintFunc)(FILE* restrict, const CYPDF_Object* const);
+typedef void (*CYPDF_PrintFunc)(CYPDF_Channel* const restrict, const CYPDF_Object* const);
 
 
 

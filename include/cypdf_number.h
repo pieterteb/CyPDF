@@ -2,34 +2,31 @@
 #define CYPDF_NUMBER_H
 
 
-#include <stdbool.h>
-#include <stdio.h>
-
-#include "cypdf_mmgr.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_object.h"
+#include "cypdf_print.h"
 #include "cypdf_types.h"
 
 
 
-#define CYPDF_PRINT_NUMBER              CYPDF_PrintNumber
-#define CYDPF_FREE_NUMBER               CYPDF_FreeNumber
+#define CYPDF_PRINT_NUMBER  CYPDF_PrintNumber
 
 
 typedef struct CYPDF_ObjNumber {
     CYPDF_ObjHeader header;
-    int             value;
+
+    float           value;
 } CYPDF_ObjNumber;
 
 
-CYPDF_ObjNumber* CYPDF_NewNumber(CYPDF_MMgr* const mmgr, const int value);
+CYPDF_ObjNumber* CYPDF_NewNumber(CYPDF_MemMgr* const restrict memmgr, const float value);
 
-void CYPDF_NumberSetValue(CYPDF_ObjNumber* const number, const int value);
+void CYPDF_PrintNumber(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
 
-int CYPDF_NumberGetValue(const CYPDF_ObjNumber* const number);
 
-void CYPDF_PrintNumber(FILE* restrict fp, const CYPDF_Object* const obj);
+void CYPDF_NumberSetValue(CYPDF_ObjNumber* const restrict number, const float value);
 
-void CYPDF_FreeNumber(CYPDF_Object* obj);
+float CYPDF_NumberGetValue(const CYPDF_ObjNumber* const number);
 
 
 

@@ -2,22 +2,14 @@
 #define CYPDF_TRAILER_H
 
 
-#include <stdint.h>
-#include <stdio.h>
+#include <stddef.h>
 
 #include "cypdf_doc.h"
+#include "cypdf_print.h"
 
 
 
-/**
- * @brief Writes a trailer to pdf.
- * 
- * @param fp 
- * @param pdf 
- * @param file_path 
- * @param xref_offset 
- */
-void CYPDF_PrintTrailer(FILE* fp, CYPDF_Doc* pdf, const char* file_path, uint64_t xref_offset);
+void CYPDF_PrintTrailer(CYPDF_Channel* const restrict channel, const CYPDF_Doc* const restrict pdf, const char* restrict file_path, const size_t xref_offset);
 
 
 

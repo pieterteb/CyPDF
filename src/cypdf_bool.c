@@ -1,40 +1,32 @@
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #include "cypdf_bool.h"
-#include "cypdf_mmgr.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_object.h"
+#include "cypdf_print.h"
+#include "cypdf_types.h"
 
 
 
-CYPDF_ObjBool* CYPDF_NewBool(CYPDF_MMgr* const mmgr, const bool val) {
-    CYPDF_ObjBool* boolean = (CYPDF_ObjBool*)CYPDF_GetMem(mmgr, sizeof(CYPDF_ObjBool));
+CYPDF_ObjBool* CYPDF_NewBool(CYPDF_MemMgr* const restrict memmgr, const bool value) {
+    CYPDF_ObjBool* boolean = (CYPDF_ObjBool*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjBool));
 
     if (boolean) {
-        CYPDF_InitHeader(boolean, CYPDF_OCLASS_BOOL);
-        boolean->val = val;
+        boolean->header.class = CYPDF_OBJ_CLASS_BOOL;
+        boolean->value = value;
     }
 
     return boolean;
 }
 
-void CYPDF_PrintBool(FILE* restrict fp, const CYPDF_Object* const obj) {
-    if (fp && obj) {
+void CYPDF_PrintBool(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    if (channel && obj) {
         CYPDF_ObjBool* boolean = (CYPDF_ObjBool*)obj;
 
-        if (boolean->val) {
-            fprintf(fp, "true");
+        if (boolean->value) {
+            CYPDF_ChannelPrint(channel, "true");
         } else {
-            fprintf(fp, "false");
+            CYPDF_ChannelPrint(channel, "false");
         }
     }    
-}
-
-void CYPDF_FreeBool(CYPDF_Object* obj) {
-    if (obj) {
-        CYPDF_ObjBool* boolean = (CYPDF_ObjBool*)obj;
-
-        free(boolean);
-    }
 }

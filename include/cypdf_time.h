@@ -3,7 +3,7 @@
 
 
 
-char* CYPDF_GetDate(void);
+char* CYPDF_Date(void);
 
 
 

@@ -2,17 +2,15 @@
 #define CYPDF_NULL_H
 
 
-#include <stdbool.h>
-#include <stdio.h>
-
-#include "cypdf_mmgr.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_object.h"
+#include "cypdf_print.h"
 #include "cypdf_types.h"
 
 
 
-#define CYPDF_PRINT_NULL            CYPDF_PrintNull
-#define CYPDF_FREE_NULL             CYPDF_FreeNull
+#define CYPDF_FREE_NULL     CYPDF_FreeNull
+#define CYPDF_PRINT_NULL    CYPDF_PrintNull
 
 
 typedef struct CYPDF_ObjNull {
@@ -20,11 +18,11 @@ typedef struct CYPDF_ObjNull {
 } CYPDF_ObjNull;
 
 
-CYPDF_ObjNull* CYPDF_New_Null(CYPDF_MMgr* const mmgr);
-
-void CYPDF_PrintNull(FILE* restrict fp, const CYPDF_Object* const obj __attribute_maybe_unused__);
+CYPDF_ObjNull* CYPDF_NewNull(CYPDF_MemMgr* const restrict memmgr);
 
 void CYPDF_FreeNull(CYPDF_Object* obj);
+
+void CYPDF_PrintNull(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj __attribute_maybe_unused__);
 
 
 

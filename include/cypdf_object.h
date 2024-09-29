@@ -6,70 +6,72 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "cypdf_mmgr.h"
+#include "cypdf_memmgr.h"
 #include "cypdf_types.h"
 
 
 
-enum CYPDF_OCLASS {
-    CYPDF_OCLASS_NULL = 0,
-    CYPDF_OCLASS_BOOL,
-    CYPDF_OCLASS_NUMBER,
-    CYPDF_OCLASS_REAL,
-    CYPDF_OCLASS_STRING,
-    CYPDF_OCLASS_NAME,
-    CYPDF_OCLASS_ARRAY,
-    CYPDF_OCLASS_DICT,
-    CYPDF_OCLASS_STREAM,        /* A stream is always an indirect object. */
+enum CYPDF_OBJ_CLASS {
+    CYPDF_OBJ_CLASS_UNKNOWN = 0,
 
-    CYPDF_OCLASS_INFO,
-    CYPDF_OCLASS_CATALOG,
-    CYPDF_OCLASS_PAGE,
-    CYPDF_OCLASS_PNODE,
+    CYPDF_OBJ_CLASS_NULL,
+    CYPDF_OBJ_CLASS_BOOL,
+    CYPDF_OBJ_CLASS_INTEGER,
+    CYPDF_OBJ_CLASS_NUMBER,
+    CYPDF_OBJ_CLASS_STRING,
+    CYPDF_OBJ_CLASS_NAME,
+    CYPDF_OBJ_CLASS_ARRAY,
+    CYPDF_OBJ_CLASS_DICT,
+    CYPDF_OBJ_CLASS_STREAM,        /* A stream is always an indirect object. */
+};
 
-    CYPDF_OCLASS_COUNT,
+enum CYPDF_OBJ_SUBCLASS {
+    CYPDF_OBJ_SUBCLASS_UNKNOWN = 0,
 
-    CYPDF_OCLASS_UNKNOWN
+    CYPDF_OBJ_SUBCLASS_NONE,
+    CYPDF_OBJ_SUBCLASS_INFO,
+    CYPDF_OBJ_SUBCLASS_CATALOG,
+    CYPDF_OBJ_SUBCLASS_PAGE,
+    CYPDF_OBJ_SUBCLASS_PAGE_NODE,
+    CYPDF_OBJ_SUBCLASS_GFX_STATE,
+    CYPDF_OBJ_SUBCLASS_RESOURCES,
 };
 
 
-#define CYPDF_DEFAULT_ONUM              0x00000000          /* Used for direct objects. */
-#define CYPDF_DEFAULT_OGEN              0x0000
+#define CYPDF_DEFAULT_OBJ_NUM       0x00000000          /* Used for direct objects. */
+#define CYPDF_DEFAULT_OBJ_GEN       0x0000
+#define CYPDF_DEFAULT_OBJ_CLASS     CYPDF_OBJ_CLASS_NULL
+#define CYPDF_DEFAULT_OBJ_SUBCLASS  CYPDF_OBJ_SUBCLASS_NONE
 
 
 typedef struct CYPDF_ObjHeader {
-    bool                indirect;
-    enum CYPDF_OCLASS   class;
-    uint32_t            onum;
-    uint16_t            ogen;
+    uint64_t    indirect    : 1;
+    uint64_t    class       : 8;
+    uint64_t    subclass    : 8;
+    uint64_t    obj_num     : 23;
+    uint64_t    obj_gen     : 16;
+    uint64_t    reserved    : 8;
 } CYPDF_ObjHeader;
 
 
-void CYPDF_InitHeader(CYPDF_Object* const obj, enum CYPDF_OCLASS class);
+void CYPDF_FreeObj(CYPDF_Object* obj);
 
-void CYPDF_ObjSetOnum(CYPDF_Object* const obj, uint32_t onum);
+void CYPDF_PrintObjDirect(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
 
-void CYPDF_ObjSetIndirect(CYPDF_Object* const obj, const bool indirect);
+void CYPDF_PrintObjDef(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
+
+void CYPDF_PrintObjRef(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
+
 
 bool CYPDF_ObjIsIndirect(const CYPDF_Object* const obj);
 
-enum CYPDF_OCLASS CYPDF_ObjGetClass(const CYPDF_Object* const obj);
+enum CYPDF_OBJ_CLASS CYPDF_ObjGetClass(const CYPDF_Object* const obj);
 
-uint32_t CYPDF_ObjGetOnum(const CYPDF_Object* const obj);
+enum CYPDF_OBJ_SUBCLASS CYPDF_ObjGetSubclass(const CYPDF_Object* const obj);
 
-uint16_t CYPDF_ObjGetOgen(const CYPDF_Object* const obj);
+uint32_t CYPDF_ObjGetObjNum(const CYPDF_Object* const obj);
 
-CYPDF_PrintFunc CYPDF_ObjGetPrint(const CYPDF_Object* const obj);
-
-CYPDF_FreeFunc CYPDF_ObjGetFree(const CYPDF_Object* const obj);
-
-void CYPDF_PrintObjDirect(FILE* restrict fp, const CYPDF_Object* const obj);
-
-void CYPDF_PrintObjDef(FILE* restrict fp, const CYPDF_Object* const obj);
-
-void CYPDF_PrintObjRef(FILE* restrict fp, const CYPDF_Object* const obj);
-
-void CYPDF_FreeObj(CYPDF_Object* obj);
+uint16_t CYPDF_ObjGetObjGen(const CYPDF_Object* const obj);
 
 
 

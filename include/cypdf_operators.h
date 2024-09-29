@@ -3,6 +3,9 @@
 
 
 #include <stddef.h>
+#include <stdbool.h>
+
+#include "cypdf_types.h"
 
 
 
@@ -19,29 +22,29 @@ Operands enclosed in square braces "[]" are optional.
 */
 
 
-/* Path Construction Names */
-#define CYPDF_OPERATOR_PATH_BEGIN_N                 "m"
-#define CYPDF_OPERATOR_PATH_LINESEG_N               "l"
-#define CYPDF_OPERATOR_PATH_CBEZIER_N               "c"
-#define CYPDF_OPERATOR_PATH_VBEZIER_N               "v"
-#define CYPDF_OPERATOR_PATH_YBEZIER_N               "y"
-#define CYPDF_OPERATOR_PATH_CLOSE_N                 "h"
-#define CYPDF_OPERATOR_PATH_RECT_N                  "re"
+/* Path Construction Keywords */
+#define CYPDF_OPERATOR_PATH_BEGIN_K                 "m"
+#define CYPDF_OPERATOR_PATH_LINESEG_K               "l"
+#define CYPDF_OPERATOR_PATH_CBEZIER_K               "c"
+#define CYPDF_OPERATOR_PATH_VBEZIER_K               "v"
+#define CYPDF_OPERATOR_PATH_YBEZIER_K               "y"
+#define CYPDF_OPERATOR_PATH_CLOSE_K                 "h"
+#define CYPDF_OPERATOR_PATH_RECT_K                  "re"
 
-/* Path Painting Names */
-#define CYPDF_OPERATOR_PATH_STROKE_N                "S"
-#define CYPDF_OPERATOR_PATH_CLOSE_STROKE_N          "s"
-#define CYPDF_OPERATOR_PATH_NWNRFILL_N              "f"
-#define CYPDF_OPERATOR_PATH_EORFILL_N               "f*"
-#define CYPDF_OPERATOR_PATH_NWNRFILL_STROKE_N       "B"
-#define CYPDF_OPERATOR_PATH_EORFILL_STROKE_N        "B*"
-#define CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE_N "b"
-#define CYPDF_OPERATOR_PATH_CLOSE_EORFILL_STROKE_N  "b*"
-#define CYPDF_OPERATOR_PATH_END_N                   "n"
+/* Path Painting Keywords */
+#define CYPDF_OPERATOR_PATH_STROKE_K                "S"
+#define CYPDF_OPERATOR_PATH_CLOSE_STROKE_K          "s"
+#define CYPDF_OPERATOR_PATH_NWNRFILL_K              "f"
+#define CYPDF_OPERATOR_PATH_EORFILL_K               "f*"
+#define CYPDF_OPERATOR_PATH_NWNRFILL_STROKE_K       "B"
+#define CYPDF_OPERATOR_PATH_EORFILL_STROKE_K        "B*"
+#define CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE_K "b"
+#define CYPDF_OPERATOR_PATH_CLOSE_EORFILL_STROKE_K  "b*"
+#define CYPDF_OPERATOR_PATH_END_K                   "n"
 
-/* Path Clipping Names */
-#define CYPDF_OPERATOR_PATH_NWNRCLIP_N              "W"
-#define CYPDF_OPERATOR_PATH_EORCLIP_N               "W*"
+/* Path Clipping Keywords */
+#define CYPDF_OPERATOR_PATH_NWNRCLIP_K              "W"
+#define CYPDF_OPERATOR_PATH_EORCLIP_K               "W*"
 
 /* NOTE
 The operation "x y width height re" is equivalent to:
@@ -53,32 +56,32 @@ x (y + height) l
 h
 */
 
-/* Graphics State Names */
-#define CYPDF_OPERATOR_GFX_STATE_SAVE_N             "q"
-#define CYPDF_OPERATOR_GFX_STATE_RESTORE_N          "Q"
-#define CYPDF_OPERATOR_GFX_STATE_MATRIX_N           "cm"
-#define CYPDF_OPERATOR_GFX_STATE_LINE_WIDTH_N       "w"
-#define CYPDF_OPERATOR_GFX_STATE_LINE_CAP_N         "J"
-#define CYPDF_OPERATOR_GFX_STATE_LINE_JOIN_N        "j"
-#define CYPDF_OPERATOR_GFX_STATE_MITER_LIMIT_N      "M"
-#define CYPDF_OPERATOR_GFX_STATE_DASH_PATTERN_N     "d"
-#define CYPDF_OPERATOR_GFX_STATE_INTENT_N           "ri"
-#define CYPDF_OPERATOR_GFX_STATE_FLATNESS_N         "i"
-#define CYPDF_OPERATOR_GFX_STATE_EXTGSTATE_N        "gs"
+/* Graphics State Keywords */
+#define CYPDF_OPERATOR_GFX_STATE_SAVE_K             "q"
+#define CYPDF_OPERATOR_GFX_STATE_RESTORE_K          "Q"
+#define CYPDF_OPERATOR_GFX_STATE_MATRIX_K           "cm"
+#define CYPDF_OPERATOR_GFX_STATE_LINE_WIDTH_K       "w"
+#define CYPDF_OPERATOR_GFX_STATE_LINE_CAP_K         "J"
+#define CYPDF_OPERATOR_GFX_STATE_LINE_JOIN_K        "j"
+#define CYPDF_OPERATOR_GFX_STATE_MITER_LIMIT_K      "M"
+#define CYPDF_OPERATOR_GFX_STATE_DASH_PATTERN_K     "d"
+#define CYPDF_OPERATOR_GFX_STATE_INTENT_K           "ri"
+#define CYPDF_OPERATOR_GFX_STATE_FLATNESS_K         "i"
+#define CYPDF_OPERATOR_GFX_STATE_EXTGSTATE_K        "gs"
 
-/* Color Names */
-#define CYPDF_OPERATOR_COLOR_SPACE_STROKING_N       "CS"
-#define CYPDF_OPERATOR_COLOR_SPACE_NONSTROKING_N    "cs"
-#define CYPDF_OPERATOR_COLOR_STROKING_N             "SC"
-#define CYPDF_OPERATOR_COLOR_STROKING_EXT_N         "SCN"
-#define CYPDF_OPERATOR_COLOR_NONSTROKING_N          "sc"
-#define CYPDF_OPERATOR_COLOR_NONSTROKING_EXT_N      "scn"
-#define CYPDF_OPERATOR_COLOR_STROKING_GRAY_N        "G"
-#define CYPDF_OPERATOR_COLOR_NONSTROKING_GRAY_N     "g"
-#define CYPDF_OPERATOR_COLOR_STROKING_RGB_N         "RG"
-#define CYPDF_OPERATOR_COLOR_NONSTROKING_RGB_N      "rg"
-#define CYPDF_OPERATOR_COLOR_STROKING_CMYK_N        "K"
-#define CYPDF_OPERATOR_COLOR_NONSTROKING_CMYK_N     "k"
+/* Color Keywords */
+#define CYPDF_OPERATOR_COLOR_SPACE_STROKING_K       "CS"
+#define CYPDF_OPERATOR_COLOR_SPACE_NONSTROKING_K    "cs"
+#define CYPDF_OPERATOR_COLOR_STROKING_K             "SC"
+#define CYPDF_OPERATOR_COLOR_STROKING_EXT_K         "SCN"
+#define CYPDF_OPERATOR_COLOR_NONSTROKING_K          "sc"
+#define CYPDF_OPERATOR_COLOR_NONSTROKING_EXT_K      "scn"
+#define CYPDF_OPERATOR_COLOR_STROKING_GRAY_K        "G"
+#define CYPDF_OPERATOR_COLOR_NONSTROKING_GRAY_K     "g"
+#define CYPDF_OPERATOR_COLOR_STROKING_RGB_K         "RG"
+#define CYPDF_OPERATOR_COLOR_NONSTROKING_RGB_K      "rg"
+#define CYPDF_OPERATOR_COLOR_STROKING_CMYK_K        "K"
+#define CYPDF_OPERATOR_COLOR_NONSTROKING_CMYK_K     "k"
 
 
 
@@ -142,7 +145,7 @@ enum CYPDF_OPERATOR_TYPE {
 typedef struct CYPDF_Operator {
     enum CYPDF_OPERATOR_TYPE    type;
 
-    void**                      operands;
+    CYPDF_Object**              operands;
     size_t                      operand_count;
 } CYPDF_Operator;
 
@@ -151,10 +154,15 @@ CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type);
 
 void CYPDF_FreeOperator(CYPDF_Operator* operator);
 
+void CYPDF_PrintOperator(CYPDF_Channel* const restrict channel, const CYPDF_Operator* const operator);
 
-const char* CYPDF_OperatorGetName(const CYPDF_Operator* const operator);
 
-void CYPDF_OperatorAppendOperand(CYPDF_Operator* const operator, void* const operand);
+char* CYPDF_OperatorGetKey(const CYPDF_Operator* const restrict operator);
+
+void CYPDF_OperatorAppendOperand(CYPDF_Operator* const restrict operator, CYPDF_Object* const restrict operand);
+
+
+bool CYPDF_OperatorIsPainting(const CYPDF_Operator* const restrict operator);
 
 
 
