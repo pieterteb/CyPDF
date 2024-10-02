@@ -4,13 +4,15 @@
 
 
 /*
-This header file contains all dictionary parameter keywords.
+This header file contains all dictionary parameter keywords and indices. Keywords have suffix _K and indices have suffic _I.
 */
 
 
 
 /* General Parameters Keywords */
 #define CYPDF_TYPE_K                        "Type"
+
+#define CYPDF_TYPE_I                        0
 
 
 
@@ -20,6 +22,11 @@ This header file contains all dictionary parameter keywords.
 #define CYPDF_STREAM_DECODE_PARAMETERS_K    "DecodeParams"
 #define CYPDF_STREAM_DECODED_LENGTH_K       "DL"
 
+#define CYPDF_STREAM_LENGTH_I               0
+#define CYPDF_STREAM_FILTER_I               1
+#define CYPDF_STREAM_DECODE_PARAMETERS_I    2
+#define CYPDF_STREAM_DECODED_LENGTH_I       3
+
 
 /* Trailer Dictionary */
 #define CYPDF_TRAILER_SIZE_K                "Size"
@@ -27,6 +34,12 @@ This header file contains all dictionary parameter keywords.
 #define CYPDF_TRAILER_ENCRYPT_K             "Encrypt"
 #define CYPDF_TRAILER_INFO_K                "Info"
 #define CYPDF_TRAILER_ID_K                  "ID"
+
+#define CYPDF_TRAILER_SIZE_I                0
+#define CYPDF_TRAILER_CATALOG_I             1
+#define CYPDF_TRAILER_ENCRYPT_I             2
+#define CYPDF_TRAILER_INFO_I                3
+#define CYPDF_TRAILER_ID_I                  4
 
 
 /* Info Dictionary Keywords */
@@ -40,10 +53,22 @@ This header file contains all dictionary parameter keywords.
 #define CYPDF_INFO_MOD_DATE_K               "ModDate"
 #define CYPDF_INFO_TRAPPED_K                "Trapped"
 
+#define CYPDF_INFO_TITLE_I                  0
+#define CYPDF_INFO_AUTHOR_I                 1
+#define CYPDF_INFO_SUBJECT_I                2
+#define CYPDF_INFO_KEYWORDS_I               3
+#define CYPDF_INFO_CREATOR_I                4
+#define CYPDF_INFO_PRODUCER_I               5
+#define CYPDF_INFO_CREATION_DATE_I          6
+#define CYPDF_INFO_MOD_DATE_I               7
+#define CYPDF_INFO_TRAPPED_I                8
+
 
 /* Catalog Dictionary Keywords */
 #define CYPDF_CATALOG_TYPE_K                "Catalog"
 #define CYPDF_CATALOG_PAGE_ROOT_K           "Pages"
+
+#define CYPDF_CATALOG_PAGE_ROOT_I           1
 
 
 /* Page Dictionary Keywords */
@@ -53,12 +78,21 @@ This header file contains all dictionary parameter keywords.
 #define CYPDF_PAGE_MEDIABOX_K               "MediaBox"
 #define CYPDF_PAGE_CONTENTS_K               "Contents"
 
+#define CYPDF_PAGE_PARENT_I                 1
+#define CYPDF_PAGE_RESOURCES_I              2
+#define CYPDF_PAGE_MEDIABOX_I               3
+#define CYPDF_PAGE_CONTENTS_I               4
+
 
 /* Page Node Dictionary Keywords */
 #define CYPDF_PAGE_NODE_TYPE_K              "Pages"
 #define CYPDF_PAGE_NODE_PARENT_K            "Parent"
 #define CYPDF_PAGE_NODE_KIDS                "Kids"
 #define CYPDF_PAGE_NODE_COUNT               "Count"
+
+#define CYPDF_PAGE_NODE_PARENT_I            1
+#define CYPDF_PAGE_NODE_KIDS_I              2
+#define CYPDF_PAGE_NODE_COUNT               3
 
 
 /* Resource Dictionary Keywords */
@@ -71,6 +105,15 @@ This header file contains all dictionary parameter keywords.
 #define CYPDF_RESOURCE_PROCEDURE_SET_K      "ProcSet"
 #define CYPDF_RESOURCE_PROPERTIES_K         "Properties"
 
+#define CYPDF_RESOURCE_GFX_STATE_I          0
+#define CYPDF_RESOURCE_COLOR_SPACE_I        1
+#define CYPDF_RESOURCE_PATTERN_I            2
+#define CYPDF_RESOURCE_SHADING_I            3
+#define CYPDF_RESOURCE_XOBJECT_I            4
+#define CYPDF_RESOURCE_FONT_I               5
+#define CYPDF_RESOURCE_PROCEDURE_SET_I      6
+#define CYPDF_RESOURCE_PROPERTIES_I         7
+
 
 /* Graphics State Parameter Dictionary Keywords */
 #define CYPDF_GFX_STATE_TYPE_K              "ExtGState"
@@ -79,6 +122,11 @@ This header file contains all dictionary parameter keywords.
 #define CYPDF_GFX_STATE_LINE_JOIN_K         "LJ"
 #define CYPDF_GFX_STATE_MITER_LIMIT_K       "ML"
 #define CYPDF_GFX_STATE_DASH_PATTERN_K      "D"
+
+#define CYPDF_GFX_STATE_LINE_WIDTH_I        1
+#define CYPDF_GFX_STATE_LINE_CAP_I          2
+#define CYPDF_GFX_STATE_LINE_JOIN_I         3
+#define CYPDF_GFX_STATE_MITER_LIMIT_I       4
 
 
 
