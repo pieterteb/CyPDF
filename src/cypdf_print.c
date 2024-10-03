@@ -3,6 +3,7 @@
 
 #include "cypdf_print.h"
 #include "cypdf_consts.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_stream.h"
 
@@ -12,6 +13,8 @@ static int CYPDF_ChannelVPrint(CYPDF_Channel* const restrict channel, const char
 
 
 CYPDF_Channel* CYPDF_NewChannel(void* const restrict stream, const enum CYPDF_CHANNEL_TYPE type) {
+    CYPDF_TRACE;
+
     CYPDF_Channel* channel = CYPDF_malloc(sizeof(CYPDF_Channel));
 
     if (channel) {
@@ -24,6 +27,8 @@ CYPDF_Channel* CYPDF_NewChannel(void* const restrict stream, const enum CYPDF_CH
 
 
 int CYPDF_ChannelPrint(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...) {
+    CYPDF_TRACE;
+
     int characters_printed = 0;
 
     if (channel) {
@@ -39,6 +44,8 @@ int CYPDF_ChannelPrint(CYPDF_Channel* const restrict channel, const char format[
 }
 
 size_t CYPDF_ChannelWrite(CYPDF_Channel* const restrict channel, const void* restrict buffer, size_t size, size_t count) {
+    CYPDF_TRACE;
+
     size_t objects_written = 0;
 
     if (channel) {
@@ -59,6 +66,8 @@ size_t CYPDF_ChannelWrite(CYPDF_Channel* const restrict channel, const void* res
 }
 
 int CYPDF_ChannelPrintNL(CYPDF_Channel* const restrict channel) {
+    CYPDF_TRACE;
+
     int characters_printed = 0;
 
     if (channel) {
@@ -69,6 +78,8 @@ int CYPDF_ChannelPrintNL(CYPDF_Channel* const restrict channel) {
 }
 
 int CYPDF_ChannelPrintComment(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...) {
+    CYPDF_TRACE;
+
     int characters_printed = 0;
 
     if (channel) {
@@ -85,6 +96,8 @@ int CYPDF_ChannelPrintComment(CYPDF_Channel* const restrict channel, const char 
 }
 
 int CYPDF_ChannelPrintLine(CYPDF_Channel* const restrict channel, const char format[restrict static 1], ...) {
+    CYPDF_TRACE;
+
     int characters_printed = 0;
 
     if (channel) {
@@ -101,6 +114,8 @@ int CYPDF_ChannelPrintLine(CYPDF_Channel* const restrict channel, const char for
 }
 
 static int CYPDF_ChannelVPrint(CYPDF_Channel* const restrict channel, const char format[restrict static 1], va_list args) {
+    CYPDF_TRACE;
+
     int characters_printed = 0;
 
     if (channel) {
@@ -122,6 +137,8 @@ static int CYPDF_ChannelVPrint(CYPDF_Channel* const restrict channel, const char
 
 
 long CYPDF_Channeltell(CYPDF_Channel* const restrict channel) {
+    CYPDF_TRACE;
+
     long current_position = 0;
 
     if (channel) {

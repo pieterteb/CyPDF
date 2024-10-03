@@ -1,12 +1,15 @@
 #include "cypdf_xref.h"
 #include "cypdf_consts.h"
 #include "cypdf_doc.h"
+#include "cypdf_log.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 
 
 
 void CYPDF_PrintXref(CYPDF_Channel* const restrict channel, CYPDF_Doc* const restrict pdf) {
+    CYPDF_TRACE;
+
     if (channel) {
         CYPDF_ChannelPrintLine(channel, "xref");
         CYPDF_ChannelPrintLine(channel, "0 %zu", pdf->obj_count + 1);

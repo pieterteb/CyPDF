@@ -1,5 +1,4 @@
 #include <math.h>
-#include <stdio.h>
 #ifdef __unix__
     #include <sys/stat.h>
 #elif defined(_WIN64) || defined(_WIN32)
@@ -7,9 +6,7 @@
     #define mkdir(path, mode)   _mkdir(path)
 #endif
 
-#include "cypdf_consts.h"
-#include "cypdf_doc.h"
-#include "cypdf_operators.h"
+#include "cypdf.h"
 
 
 
@@ -47,8 +44,33 @@ void add_polygon(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
     CYPDF_FreePath(path);
 }
 
+void add_circle(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
+    CYPDF_Path* path = CYPDF_NewPath();
+    CYPDF_PathAppendBegin(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_PathAppendCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_PathAppendCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_STROKE);
+    CYPDF_AddPathToPage(pdf, page, path);
+    CYPDF_FreePath(path);
+}
+
+void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
+    CYPDF_Path* path = CYPDF_NewPath();
+    CYPDF_PathAppendBegin(path, CYPDF_TO_POINT(0, CYPDF_A4_HEIGHT));
+    CYPDF_PathAppendLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
+    CYPDF_PathAppendLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH, CYPDF_A4_HEIGHT));
+    CYPDF_PathAppendLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
+    CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+    CYPDF_AddPathToPage(pdf, page, path);
+    CYPDF_FreePath(path);
+
+    // CYPDF_PageSetLineWidth(page, 100.0);
+}
+
 
 int main(void) {
+    CYPDF_LogInit();
+
     CYPDF_Doc* pdf = CYPDF_NewDoc();
 
     CYPDF_ObjPage* page1 = CYPDF_AppendPage(pdf);
@@ -58,13 +80,10 @@ int main(void) {
 
     /* Draws an approximation of a circle using two Bézier curves. */
     CYPDF_ObjPage* page2 = CYPDF_AppendPage(pdf);
-    CYPDF_Path* path = CYPDF_NewPath();
-    CYPDF_PathAppendBegin(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathAppendCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathAppendCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_STROKE);
-    CYPDF_AddPathToPage(pdf, page2, path);
-    CYPDF_FreePath(path);
+    add_circle(pdf, page2);
+
+    CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf);
+    thick_v(pdf, page3);
 
     mkdir("../out", 0700);
 

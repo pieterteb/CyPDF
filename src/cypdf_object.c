@@ -7,6 +7,7 @@
 #include "cypdf_consts.h"
 #include "cypdf_dict.h"
 #include "cypdf_integer.h"
+#include "cypdf_log.h"
 #include "cypdf_name.h"
 #include "cypdf_null.h"
 #include "cypdf_number.h"
@@ -18,6 +19,8 @@
 
 
 void CYPDF_FreeObj(CYPDF_Object* obj) {
+    CYPDF_TRACE;
+
     if (obj) {
         CYPDF_FreeFunc free_func = NULL;
 
@@ -45,6 +48,8 @@ void CYPDF_FreeObj(CYPDF_Object* obj) {
 }
 
 void CYPDF_PrintObjDirect(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     if (obj) {
         CYPDF_PrintFunc print_func = NULL;
 
@@ -84,6 +89,8 @@ void CYPDF_PrintObjDirect(CYPDF_Channel* const restrict channel, const CYPDF_Obj
 }
 
 void CYPDF_PrintObjDef(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     if (channel && obj) {
         /* If the object itself is not indirect, it cannot be written indirectly. 
         This is because it's onum and ogen would be invalid. */
@@ -97,6 +104,8 @@ void CYPDF_PrintObjDef(CYPDF_Channel* const restrict channel, const CYPDF_Object
 }
 
 void CYPDF_PrintObjRef(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     if (channel && obj) {
         /* If the object itself is not indirect, it cannot be written as a reference. 
         This is because it's onum and ogen would be invalid. */
@@ -108,6 +117,8 @@ void CYPDF_PrintObjRef(CYPDF_Channel* const restrict channel, const CYPDF_Object
 
 
 bool CYPDF_ObjIsIndirect(const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     bool indirect = false;
     if (obj) {
         CYPDF_ObjNull* _obj = (CYPDF_ObjNull*)obj;
@@ -118,6 +129,8 @@ bool CYPDF_ObjIsIndirect(const CYPDF_Object* const obj) {
 }
 
 enum CYPDF_OBJ_CLASS CYPDF_ObjGetClass(const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     enum CYPDF_OBJ_CLASS class = CYPDF_OBJ_CLASS_UNKNOWN;
     if (obj) {
         CYPDF_ObjNull* _obj = (CYPDF_ObjNull*)obj;
@@ -128,6 +141,8 @@ enum CYPDF_OBJ_CLASS CYPDF_ObjGetClass(const CYPDF_Object* const obj) {
 }
 
 enum CYPDF_OBJ_SUBCLASS CYPDF_ObjGetSubclass(const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     enum CYPDF_OBJ_SUBCLASS subclass = CYPDF_OBJ_SUBCLASS_UNKNOWN;
     if (obj) {
         CYPDF_ObjNull* _obj = (CYPDF_ObjNull*)obj;
@@ -138,6 +153,8 @@ enum CYPDF_OBJ_SUBCLASS CYPDF_ObjGetSubclass(const CYPDF_Object* const obj) {
 }
 
 uint32_t CYPDF_ObjGetObjNum(const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     uint32_t onum = CYPDF_DEFAULT_OBJ_NUM;
     if (obj) {
         CYPDF_ObjNull* _obj = (CYPDF_ObjNull*)obj;
@@ -148,6 +165,8 @@ uint32_t CYPDF_ObjGetObjNum(const CYPDF_Object* const obj) {
 }
 
 uint16_t CYPDF_ObjGetObjGen(const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     uint16_t ogen = CYPDF_DEFAULT_OBJ_GEN;
     if (obj) {
         CYPDF_ObjNull* _obj = (CYPDF_ObjNull*)obj;

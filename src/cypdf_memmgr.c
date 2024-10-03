@@ -1,11 +1,14 @@
 #include <stdlib.h>
 
 #include "cypdf_memmgr.h"
+#include "cypdf_log.h"
 #include "cypdf_types.h"
 
 
 
 CYPDF_MemMgr* CYPDF_NewMemMgr(const CYPDF_FreeFunc free_func) {
+    CYPDF_TRACE;
+
     CYPDF_MemMgr* memmgr = CYPDF_malloc(sizeof(CYPDF_MemMgr));
 
     memmgr->ptrs = NULL;
@@ -17,6 +20,8 @@ CYPDF_MemMgr* CYPDF_NewMemMgr(const CYPDF_FreeFunc free_func) {
 }
 
 static void CYPDF_MemMgrAppend(CYPDF_MemMgr* const restrict memmgr, void* const restrict ptr) {
+    CYPDF_TRACE;
+
     if (memmgr) {
         if (memmgr->ptr_count == memmgr->tot_size) {
             if (!memmgr->tot_size) {
@@ -33,6 +38,8 @@ static void CYPDF_MemMgrAppend(CYPDF_MemMgr* const restrict memmgr, void* const 
 }
 
 void* CYPDF_GetMem(CYPDF_MemMgr* const restrict memmgr, size_t size) {
+    CYPDF_TRACE;
+
     void* mem = NULL;
 
     if (memmgr) {
@@ -47,6 +54,8 @@ void* CYPDF_GetMem(CYPDF_MemMgr* const restrict memmgr, size_t size) {
 }
 
 void CYPDF_DestroyMemMgr(CYPDF_MemMgr* memmgr) {
+    CYPDF_TRACE;
+
     if (memmgr) {
         for (size_t i = 0; i < memmgr->ptr_count; ++i) {
             memmgr->free_func(memmgr->ptrs[i]);
@@ -59,6 +68,8 @@ void CYPDF_DestroyMemMgr(CYPDF_MemMgr* memmgr) {
 
 
 void* CYPDF_malloc(size_t size) {
+    CYPDF_TRACE;
+
     void* mem = malloc(size);
     if (!mem) {
         fprintf(stderr, "Failed to allocate %zu bytes of memory.\n", size);
@@ -68,6 +79,8 @@ void* CYPDF_malloc(size_t size) {
 }
 
 void* CYPDF_calloc(size_t element_count, size_t element_size) {
+    CYPDF_TRACE;
+
     void* mem = calloc(element_count, element_size);
     if (!mem) {
         fprintf(stderr, "Failed to allocate %zu bytes of memory.\n", element_count * element_size);
@@ -77,6 +90,8 @@ void* CYPDF_calloc(size_t element_count, size_t element_size) {
 }
 
 void* CYPDF_realloc(void* ptr, size_t size) {
+    CYPDF_TRACE;
+
     void* mem = realloc(ptr, size);
     if (mem == NULL) {
         fprintf(stderr, "Failed to reallocate %p to a size of %zu.\n", ptr, size);

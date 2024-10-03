@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "cypdf_array.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_number.h"
 #include "cypdf_object.h"
@@ -10,6 +11,8 @@
 
 
 CYPDF_ObjArray* CYPDF_NewArray(CYPDF_MemMgr* const restrict memmgr) {
+    CYPDF_TRACE;
+
     CYPDF_ObjArray* array = (CYPDF_ObjArray*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjArray));
 
     if (array) {
@@ -25,6 +28,8 @@ CYPDF_ObjArray* CYPDF_NewArray(CYPDF_MemMgr* const restrict memmgr) {
 }
 
 void CYPDF_FreeArray(CYPDF_Object* obj) {
+    CYPDF_TRACE;
+
     if (obj) {
         CYPDF_ObjArray* array = (CYPDF_ObjArray*)obj;
         
@@ -36,6 +41,8 @@ void CYPDF_FreeArray(CYPDF_Object* obj) {
 }
 
 void CYPDF_PrintArray(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     if (channel && obj) {
         CYPDF_ObjArray* array = (CYPDF_ObjArray*)obj;
 
@@ -59,6 +66,8 @@ void CYPDF_PrintArray(CYPDF_Channel* const restrict channel, const CYPDF_Object*
 
 
 void CYPDF_ArrayAppend(CYPDF_ObjArray* const restrict array, CYPDF_Object* const restrict obj) {
+    CYPDF_TRACE;
+
     if (array && obj) {
         array->objs = CYPDF_realloc(array->objs, (array->obj_count + 1) * sizeof(CYPDF_Object*));
         array->objs[array->obj_count] = obj;
@@ -67,6 +76,8 @@ void CYPDF_ArrayAppend(CYPDF_ObjArray* const restrict array, CYPDF_Object* const
 }
 
 CYPDF_ObjArray* CYPDF_ArrayFromRect(CYPDF_MemMgr* const restrict memmgr, const CYPDF_Rect rect) {
+    CYPDF_TRACE;
+
     CYPDF_ObjArray* array = CYPDF_NewArray(memmgr);
 
     if (array) {

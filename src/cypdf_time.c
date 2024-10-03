@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "cypdf_memmgr.h"
 #include "cypdf_time.h"
+#include "cypdf_log.h"
+#include "cypdf_memmgr.h"
 
 
 
 char* CYPDF_Date(void) {
+    CYPDF_TRACE;
+
     char* date = CYPDF_calloc(128, sizeof(char));
     time_t currtime = time(NULL);
     time_t UTC = mktime(gmtime(&currtime));

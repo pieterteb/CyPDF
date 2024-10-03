@@ -2,11 +2,14 @@
 #include "cypdf_dict.h"
 #include "cypdf_dict_parameters.h"
 #include "cypdf_graphics_state.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 
 
 
 CYPDF_ObjResources* CYPDF_NewResources(CYPDF_MemMgr* const restrict memmgr) {
+    CYPDF_TRACE;
+
     CYPDF_ObjResources* resources = CYPDF_NewDict(memmgr);
 
     if (resources) {
@@ -16,8 +19,14 @@ CYPDF_ObjResources* CYPDF_NewResources(CYPDF_MemMgr* const restrict memmgr) {
     return resources;
 }
 
+
 void CYPDF_ResourcesSetGFXState(CYPDF_ObjResources* const restrict resources, CYPDF_ObjGFXState* const restrict gfx_state) {
+    CYPDF_TRACE;
+
     if (resources) {
-        CYPDF_DictAppend(resources, CYPDF_RESOURCE_GFX_STATE_K, gfx_state);
+        if (!gfx_state->count) {
+            return;
+        }
+        CYPDF_DictSetAtIndex(resources, CYPDF_RESOURCE_GFX_STATE_I, CYPDF_RESOURCE_GFX_STATE_K, gfx_state);
     }
 }

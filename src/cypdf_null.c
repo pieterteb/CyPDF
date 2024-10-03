@@ -1,13 +1,16 @@
 #include <stdlib.h>
 
 #include "cypdf_null.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_object.h"
 #include "cypdf_types.h"
 
 
 
-CYPDF_ObjNull* CYPDF_New_Null(CYPDF_MemMgr* const restrict memmgr) {
+CYPDF_ObjNull* CYPDF_NewNull(CYPDF_MemMgr* const restrict memmgr) {
+    CYPDF_TRACE;
+
     CYPDF_ObjNull* null = (CYPDF_ObjNull*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjNull));
 
     if (null) {
@@ -18,6 +21,8 @@ CYPDF_ObjNull* CYPDF_New_Null(CYPDF_MemMgr* const restrict memmgr) {
 }
 
 void CYPDF_FreeNull(CYPDF_Object* obj) {
+    CYPDF_TRACE;
+
     if (obj) {
         CYPDF_ObjNull* null = (CYPDF_ObjNull*)obj;
 
@@ -26,5 +31,7 @@ void CYPDF_FreeNull(CYPDF_Object* obj) {
 }
 
 void CYPDF_PrintNull(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj __attribute_maybe_unused__) {
+    CYPDF_TRACE;
+
     CYPDF_ChannelPrint(channel, "null");
 }

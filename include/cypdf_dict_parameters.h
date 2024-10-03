@@ -87,12 +87,12 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 /* Page Node Dictionary Keywords */
 #define CYPDF_PAGE_NODE_TYPE_K              "Pages"
 #define CYPDF_PAGE_NODE_PARENT_K            "Parent"
-#define CYPDF_PAGE_NODE_KIDS                "Kids"
-#define CYPDF_PAGE_NODE_COUNT               "Count"
+#define CYPDF_PAGE_NODE_KIDS_K              "Kids"
+#define CYPDF_PAGE_NODE_COUNT_K             "Count"
 
 #define CYPDF_PAGE_NODE_PARENT_I            1
 #define CYPDF_PAGE_NODE_KIDS_I              2
-#define CYPDF_PAGE_NODE_COUNT               3
+#define CYPDF_PAGE_NODE_COUNT_I             3
 
 
 /* Resource Dictionary Keywords */

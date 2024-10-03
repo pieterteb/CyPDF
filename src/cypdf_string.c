@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "cypdf_string.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
@@ -10,6 +11,8 @@
 
 
 CYPDF_ObjString* CPYDF_NewString(CYPDF_MemMgr* const restrict memmgr, const enum CYPDF_STRING_TYPE type, const char* restrict value) {
+    CYPDF_TRACE;
+
     CYPDF_ObjString* string = (CYPDF_ObjString*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjString));
 
     if (string) {
@@ -24,6 +27,8 @@ CYPDF_ObjString* CPYDF_NewString(CYPDF_MemMgr* const restrict memmgr, const enum
 }
 
 void CYPDF_FreeString(CYPDF_Object* obj) {
+    CYPDF_TRACE;
+
     if (obj) {
         CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
 
@@ -33,6 +38,8 @@ void CYPDF_FreeString(CYPDF_Object* obj) {
 }
 
 void CYPDF_PrintString(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     if (channel && obj) {
         CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
 
@@ -50,6 +57,8 @@ void CYPDF_PrintString(CYPDF_Channel* const restrict channel, const CYPDF_Object
 
 
 char* CYPDF_StringGet(const CYPDF_ObjString* const restrict string) {
+    CYPDF_TRACE;
+
     if (string) {
         return string->value;
     }

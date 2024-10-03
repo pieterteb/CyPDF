@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "cypdf_name.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
@@ -9,6 +10,8 @@
 
 
 CYPDF_ObjName* CYPDF_NewName(CYPDF_MemMgr* const restrict memmgr, const char value[restrict static 1]) {
+    CYPDF_TRACE;
+
     CYPDF_ObjName* name = (CYPDF_ObjName*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjName));
 
     if (name) {
@@ -21,6 +24,8 @@ CYPDF_ObjName* CYPDF_NewName(CYPDF_MemMgr* const restrict memmgr, const char val
 }
 
 void CYPDF_PrintName(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     if (channel && obj) {
         CYPDF_ObjName* name = (CYPDF_ObjName*)obj;
 

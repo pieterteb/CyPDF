@@ -2,6 +2,7 @@
 
 #include "cypdf_path_operators.h"
 #include "cypdf_consts.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_number.h"
 #include "cypdf_print.h"
@@ -12,6 +13,8 @@ static void CYPDF_PathAppend(CYPDF_Path* const restrict path, CYPDF_Operator* co
 
 
 CYPDF_Path* CYPDF_NewPath(void) {
+    CYPDF_TRACE;
+
     CYPDF_Path* path = (CYPDF_Path*)CYPDF_malloc(sizeof(CYPDF_Path));
 
     if (path) {
@@ -28,6 +31,8 @@ CYPDF_Path* CYPDF_NewPath(void) {
 }
 
 void CYPDF_FreePath(CYPDF_Path* path) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_DestroyMemMgr(path->memmgr);
         for (size_t i = 0; i < path->operator_count; ++i) {
@@ -40,6 +45,8 @@ void CYPDF_FreePath(CYPDF_Path* path) {
 }
 
 void CYPDF_PrintPath(CYPDF_Channel* const restrict channel, const CYPDF_Path* const restrict path) {
+    CYPDF_TRACE;
+
     if (path && channel) {
         CYPDF_Operator* operator = NULL;
         for (size_t i = 0; i < path->operator_count; ++i) {
@@ -55,6 +62,8 @@ void CYPDF_PrintPath(CYPDF_Channel* const restrict channel, const CYPDF_Path* co
 
 
 static void CYPDF_PathAppend(CYPDF_Path* const restrict path, CYPDF_Operator* const restrict operator, const CYPDF_Point new_current_point) {
+    CYPDF_TRACE;
+
     if (path && operator) {
         path->operators = CYPDF_realloc(path->operators, (path->operator_count + 1) * sizeof(CYPDF_Operator*));
         path->operators[path->operator_count] = operator;
@@ -65,6 +74,8 @@ static void CYPDF_PathAppend(CYPDF_Path* const restrict path, CYPDF_Operator* co
 }
 
 void CYPDF_PathAppendBegin(CYPDF_Path* const restrict path, const CYPDF_Point start_point) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_Operator* operator = CYPDF_NewOperator(CYPDF_OPERATOR_PATH_BEGIN);
 
@@ -77,6 +88,8 @@ void CYPDF_PathAppendBegin(CYPDF_Path* const restrict path, const CYPDF_Point st
 }
 
 void CYPDF_PathAppendLineseg(CYPDF_Path* const restrict path, const CYPDF_Point end_point) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_Operator* operator = CYPDF_NewOperator(CYPDF_OPERATOR_PATH_LINESEG);
 
@@ -88,6 +101,8 @@ void CYPDF_PathAppendLineseg(CYPDF_Path* const restrict path, const CYPDF_Point 
 }
 
 void CYPDF_PathAppendCBezier(CYPDF_Path* const restrict path, const CYPDF_Point ctrl_point1, const CYPDF_Point ctrl_point2, const CYPDF_Point end_point) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_Operator* operator = CYPDF_NewOperator(CYPDF_OPERATOR_PATH_CBEZIER);
 
@@ -103,6 +118,8 @@ void CYPDF_PathAppendCBezier(CYPDF_Path* const restrict path, const CYPDF_Point 
 }
 
 void CYPDF_PathAppendVBezier(CYPDF_Path* const restrict path, const CYPDF_Point ctrl_point2, const CYPDF_Point end_point) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_Operator* operator = CYPDF_NewOperator(CYPDF_OPERATOR_PATH_VBEZIER);
 
@@ -116,6 +133,8 @@ void CYPDF_PathAppendVBezier(CYPDF_Path* const restrict path, const CYPDF_Point 
 }
 
 void CYPDF_PathAppendYBezier(CYPDF_Path* const restrict path, const CYPDF_Point ctrl_point1, const CYPDF_Point end_point) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_Operator* operator = CYPDF_NewOperator(CYPDF_OPERATOR_PATH_YBEZIER);
 
@@ -129,12 +148,16 @@ void CYPDF_PathAppendYBezier(CYPDF_Path* const restrict path, const CYPDF_Point 
 }
 
 void CYPDF_PathAppendClose(CYPDF_Path* const restrict path) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_PathAppend(path, CYPDF_NewOperator(CYPDF_OPERATOR_PATH_CLOSE), path->current_subpath_point);
     }
 }
 
 void CYPDF_PathAppendRect(CYPDF_Path* const restrict path, const CYPDF_Point lowleft_corner, const float width, const float height) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_Operator* operator = CYPDF_NewOperator(CYPDF_OPERATOR_PATH_RECT);
 
@@ -148,12 +171,16 @@ void CYPDF_PathAppendRect(CYPDF_Path* const restrict path, const CYPDF_Point low
 }
 
 void CYPDF_PathSetClip(CYPDF_Path* const restrict path, const enum CYPDF_OPERATOR_TYPE clip_operator) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_PathAppend(path, CYPDF_NewOperator(clip_operator), path->current_point);
     }
 }
 
 void CYPDF_PathSetPaint(CYPDF_Path* const restrict path, const enum CYPDF_OPERATOR_TYPE paint_operator) {
+    CYPDF_TRACE;
+
     if (path) {
         CYPDF_PathAppend(path, CYPDF_NewOperator(paint_operator), path->current_point);
     }

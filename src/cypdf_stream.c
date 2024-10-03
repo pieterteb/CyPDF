@@ -6,6 +6,7 @@
 #include "cypdf_dict.h"
 #include "cypdf_dict_parameters.h"
 #include "cypdf_integer.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
@@ -14,6 +15,8 @@
 
 
 CYPDF_ObjStream* CYPDF_NewStream(CYPDF_MemMgr* const restrict memmgr) {
+    CYPDF_TRACE;
+
     CYPDF_ObjStream* stream = (CYPDF_ObjStream*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjStream));
 
     if (stream) {
@@ -28,6 +31,8 @@ CYPDF_ObjStream* CYPDF_NewStream(CYPDF_MemMgr* const restrict memmgr) {
 }
 
 void CYPDF_FreeStream(CYPDF_Object* obj) {
+    CYPDF_TRACE;
+
     CYPDF_ObjStream* stream = (CYPDF_ObjStream*)obj;
 
     /* stream->dict is controlled by a memory manager. */
@@ -37,10 +42,12 @@ void CYPDF_FreeStream(CYPDF_Object* obj) {
 }
 
 void CYPDF_PrintStream(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
+    CYPDF_TRACE;
+
     if (channel && obj) {
         CYPDF_ObjStream* stream = (CYPDF_ObjStream*)obj;
 
-        CYPDF_DictAppend(stream->dict, CYPDF_STREAM_LENGTH_K, CYPDF_NewInteger(stream->dict->memmgr, (int)stream->length));
+        CYPDF_DictSetAtIndex(stream->dict, CYPDF_STREAM_LENGTH_I, CYPDF_STREAM_LENGTH_K, CYPDF_NewInteger(stream->dict->memmgr, (int)stream->length));
 
         CYPDF_PrintObjDirect(channel, stream->dict);
         CYPDF_ChannelPrintNL(channel);
@@ -55,6 +62,8 @@ void CYPDF_PrintStream(CYPDF_Channel* const restrict channel, const CYPDF_Object
 
 
 int CYPDF_PrintToStream(CYPDF_ObjStream* const restrict stream, const char format[restrict static 1], va_list args) {
+    CYPDF_TRACE;
+
     int ret = 0;
 
     if (stream) {
@@ -77,6 +86,8 @@ int CYPDF_PrintToStream(CYPDF_ObjStream* const restrict stream, const char forma
 }
 
 size_t CYPDF_WriteToStream(CYPDF_ObjStream* const restrict stream, const void* restrict buffer, const size_t size, size_t count) {
+    CYPDF_TRACE;
+
     if (stream) {
         count *= size;
         stream->bytes = CYPDF_realloc(stream->bytes, stream->length + count);

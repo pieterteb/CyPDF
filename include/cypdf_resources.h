@@ -13,6 +13,7 @@ typedef CYPDF_ObjDict CYPDF_ObjResources;
 
 CYPDF_ObjResources* CYPDF_NewResources(CYPDF_MemMgr* const restrict memmgr);
 
+
 void CYPDF_ResourcesSetGFXState(CYPDF_ObjResources* const restrict resources, CYPDF_ObjGFXState* const restrict gfx_state);
 
 

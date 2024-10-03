@@ -5,6 +5,7 @@
 #include "cypdf_catalog.h"
 #include "cypdf_consts.h"
 #include "cypdf_header.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_null.h"
 #include "cypdf_object.h"
@@ -21,6 +22,8 @@ static void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* c
 
 
 CYPDF_Doc* CYPDF_NewDoc(void) {
+    CYPDF_TRACE;
+
     CYPDF_Doc* pdf = CYPDF_malloc(sizeof(CYPDF_Doc));
 
     if (pdf) {
@@ -46,6 +49,8 @@ CYPDF_Doc* CYPDF_NewDoc(void) {
 }
 
 void CYPDF_FreeDoc(CYPDF_Doc* pdf) {
+    CYPDF_TRACE;
+
     if (pdf) {
         CYPDF_DestroyMemMgr(pdf->memmgr);
 
@@ -57,6 +62,8 @@ void CYPDF_FreeDoc(CYPDF_Doc* pdf) {
 }
 
 void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict static 1]) {
+    CYPDF_TRACE;
+
     if (pdf) {
         FILE* fp = fopen(file_path, "wb");
         CYPDF_Channel* file_channel = CYPDF_NewChannel(fp, CYPDF_CHANNEL_FILE);
@@ -81,6 +88,8 @@ void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict
 
 
 static void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj) {
+    CYPDF_TRACE;
+
     if (pdf) {
         pdf->objs = CYPDF_realloc(pdf->objs, (pdf->obj_count + 1) * sizeof(CYPDF_Object*));
         pdf->objs[pdf->obj_count] = obj;
@@ -93,6 +102,8 @@ static void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* c
 }
 
 CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf) {
+    CYPDF_TRACE;
+
     if (pdf) {
         CYPDF_ObjPage* page =  CYPDF_NewPage(pdf->memmgr, pdf->page_root, CYPDF_A4_MEDIABOX);
         CYPDF_DocAppendObject(pdf, page);
@@ -104,6 +115,8 @@ CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf) {
 }
 
 void CYPDF_AddPathToPage(CYPDF_Doc* const restrict pdf, CYPDF_ObjPage* const restrict page, const CYPDF_Path* const restrict path) {
+    CYPDF_TRACE;
+
     if (path && pdf) {
         CYPDF_ObjStream* stream = CYPDF_NewStream(pdf->memmgr);
 

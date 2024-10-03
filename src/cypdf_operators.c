@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "cypdf_operators.h"
+#include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
@@ -56,6 +57,8 @@ static char* operator_names[CYPDF_OPERATOR_COUNT] = {
 
 
 CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type) {
+    CYPDF_TRACE;
+
     CYPDF_Operator* operator = (CYPDF_Operator*)CYPDF_malloc(sizeof(CYPDF_Operator));
 
     if (operator) {
@@ -68,6 +71,8 @@ CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type) {
 }
 
 void CYPDF_FreeOperator(CYPDF_Operator* operator) {
+    CYPDF_TRACE;
+
     if (operator) {
         free(operator->operands);
 
@@ -76,6 +81,8 @@ void CYPDF_FreeOperator(CYPDF_Operator* operator) {
 }
 
 void CYPDF_PrintOperator(CYPDF_Channel* const restrict channel, const CYPDF_Operator* const operator) {
+    CYPDF_TRACE;
+
     if (operator) {
         for (size_t i = 0; i < operator->operand_count; ++i) {
             CYPDF_PrintObjDirect(channel, operator->operands[i]);
@@ -88,6 +95,8 @@ void CYPDF_PrintOperator(CYPDF_Channel* const restrict channel, const CYPDF_Oper
 
 
 char* CYPDF_OperatorGetKey(const CYPDF_Operator* const operator) {
+    CYPDF_TRACE;
+
     char* name = NULL;
 
     if (operator) {
@@ -98,6 +107,8 @@ char* CYPDF_OperatorGetKey(const CYPDF_Operator* const operator) {
 }
 
 void CYPDF_OperatorAppendOperand(CYPDF_Operator* const restrict operator, CYPDF_Object* const restrict operand) {
+    CYPDF_TRACE;
+
     if (operator && operand) {
         operator->operands = CYPDF_realloc(operator->operands, (operator->operand_count + 1) * sizeof(CYPDF_Object*));
         operator->operands[operator->operand_count] = operand;
@@ -107,6 +118,8 @@ void CYPDF_OperatorAppendOperand(CYPDF_Operator* const restrict operator, CYPDF_
 
 
 bool CYPDF_OperatorIsPainting(const CYPDF_Operator* const restrict operator) {
+    CYPDF_TRACE;
+
     if (operator) {
         return operator->type >= CYPDF_OPERATOR_PATH_STROKE && operator->type <= CYPDF_OPERATOR_PATH_END;
     }

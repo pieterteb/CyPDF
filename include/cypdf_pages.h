@@ -4,6 +4,7 @@
 
 #include "cypdf_dict.h"
 #include "cypdf_memmgr.h"
+#include "cypdf_resources.h"
 #include "cypdf_stream.h"
 #include "cypdf_types.h"
 
@@ -18,9 +19,10 @@ CYPDF_ObjPage* CYPDF_NewPage(CYPDF_MemMgr* const restrict memmgr, CYPDF_ObjPageN
 CYPDF_ObjPageNode* CYPDF_NewPageNode(CYPDF_MemMgr* const restrict memmgr, CYPDF_ObjPageNode* const restrict parent);
 
 
-void CYPDF_PageNodeAddKid(CYPDF_ObjPageNode* const restrict page_node, CYPDF_ObjPage* const restrict page);
-
 void CYPDF_PageAddContent(CYPDF_ObjPage* const restrict page, CYPDF_ObjStream* const restrict stream);
+
+
+void CYPDF_PageSetResources(CYPDF_ObjPage* const restrict page, CYPDF_ObjResources* const restrict resources);
 
 
 
