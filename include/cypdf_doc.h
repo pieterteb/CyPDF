@@ -36,6 +36,8 @@ void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict
 
 CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf);
 
+void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
+
 void CYPDF_AddPathToPage(CYPDF_Doc* const restrict pdf, CYPDF_ObjPage* const restrict page, const CYPDF_Path* const restrict path);
 
 

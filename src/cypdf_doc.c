@@ -18,7 +18,7 @@
 
 
 
-static void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
+void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
 
 
 CYPDF_Doc* CYPDF_NewDoc(void) {
@@ -87,7 +87,7 @@ void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict
 }
 
 
-static void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj) {
+void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj) {
     CYPDF_TRACE;
 
     if (pdf) {

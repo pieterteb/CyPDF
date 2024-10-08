@@ -54,6 +54,16 @@ void add_circle(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_FreePath(path);
 }
 
+void add_gfx(CYPDF_ObjPage* page, CYPDF_Doc* pdf) {
+    CYPDF_ObjResources* resources = CYPDF_NewResources(pdf->memmgr);
+    CYPDF_DocAppendObject(pdf, resources);
+    CYPDF_ObjGFXState* gfx_state = CYPDF_NewGFXState(pdf->memmgr);
+    CYPDF_DocAppendObject(pdf, gfx_state);
+    CYPDF_GFXStateSetLineWidth(gfx_state, 10.0);
+    CYPDF_ResourcesAddGFXState(resources, gfx_state);
+    CYPDF_PageSetResources(page, resources);
+}
+
 void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_Path* path = CYPDF_NewPath();
     CYPDF_PathAppendBegin(path, CYPDF_TO_POINT(0, CYPDF_A4_HEIGHT));
@@ -64,7 +74,7 @@ void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_AddPathToPage(pdf, page, path);
     CYPDF_FreePath(path);
 
-    // CYPDF_PageSetLineWidth(page, 100.0);
+    add_gfx(page, pdf);
 }
 
 

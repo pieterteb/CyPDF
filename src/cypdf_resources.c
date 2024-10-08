@@ -20,13 +20,19 @@ CYPDF_ObjResources* CYPDF_NewResources(CYPDF_MemMgr* const restrict memmgr) {
 }
 
 
-void CYPDF_ResourcesSetGFXState(CYPDF_ObjResources* const restrict resources, CYPDF_ObjGFXState* const restrict gfx_state) {
+void CYPDF_ResourcesAddGFXState(CYPDF_ObjResources* const restrict resources, CYPDF_ObjGFXState* const restrict gfx_state) {
     CYPDF_TRACE;
 
     if (resources) {
-        if (!gfx_state->count) {
-            return;
+        CYPDF_ObjDict* gfx_state_dict;
+        if (resources->count < CYPDF_RESOURCE_GFX_STATE_I - 1U) {
+            gfx_state_dict = CYPDF_NewDict(resources->memmgr);
+            CYPDF_DictSetAtIndex(resources, CYPDF_RESOURCE_GFX_STATE_I, CYPDF_GFX_STATE_TYPE_K, gfx_state_dict);
+        } else {
+            gfx_state_dict = (CYPDF_ObjDict*)resources->values[CYPDF_RESOURCE_GFX_STATE_I];
         }
-        CYPDF_DictSetAtIndex(resources, CYPDF_RESOURCE_GFX_STATE_I, CYPDF_RESOURCE_GFX_STATE_K, gfx_state);
+        char entry[sizeof(CYPDF_RESOURCES_GFXSTATE_ENUM) + 16] = { 0 };
+        sprintf(entry, "%s%zu", CYPDF_RESOURCES_GFXSTATE_ENUM, gfx_state_dict->count);
+        CYPDF_DictAppend(gfx_state_dict, entry, gfx_state);
     }
 }

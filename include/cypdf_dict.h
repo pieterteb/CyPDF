@@ -34,6 +34,8 @@ void CYPDF_FreeDict(CYPDF_Object* obj);
 void CYPDF_PrintDict(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
 
 
+void CYPDF_DictAppend(CYPDF_ObjDict* const restrict dict, const char key_name[restrict static 1], CYPDF_Object* const restrict value);
+
 void CYPDF_DictSetAtIndex(CYPDF_ObjDict* const restrict dict, const size_t index, const char* restrict key_name, CYPDF_Object* const restrict value);
 
 CYPDF_Object* CYPDF_DictGetValueName(CYPDF_ObjDict* const restrict dict, const char key_name[restrict static 1]);

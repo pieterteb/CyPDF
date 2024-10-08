@@ -14,8 +14,6 @@
 
 static void CYPDF_DictResize(CYPDF_ObjDict* const restrict dict, const size_t count);
 
-__attribute_maybe_unused__ static void CYPDF_DictAppend(CYPDF_ObjDict* const restrict dict, const char key_name[restrict static 1], CYPDF_Object* const restrict value);
-
 
 CYPDF_ObjDict* CYPDF_NewDict(CYPDF_MemMgr* const restrict memmgr) {
     CYPDF_TRACE;
@@ -77,7 +75,7 @@ void CYPDF_PrintDict(CYPDF_Channel* const restrict channel, const CYPDF_Object* 
 }
 
 
-__attribute_maybe_unused__ static void CYPDF_DictAppend(CYPDF_ObjDict* const restrict dict, const char key_name[restrict static 1], CYPDF_Object* const restrict value) {
+void CYPDF_DictAppend(CYPDF_ObjDict* const restrict dict, const char key_name[restrict static 1], CYPDF_Object* const restrict value) {
     CYPDF_TRACE;
 
     if (dict) {
