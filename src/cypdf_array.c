@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "cypdf_array.h"
+#include "cypdf_integer.h"
 #include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_number.h"
@@ -85,6 +86,20 @@ CYPDF_ObjArray* CYPDF_ArrayFromRect(CYPDF_MemMgr* const restrict memmgr, const C
         CYPDF_ArrayAppend(array, CYPDF_NewNumber(array->memmgr, rect.lower_left.y));
         CYPDF_ArrayAppend(array, CYPDF_NewNumber(array->memmgr, rect.upper_right.x));
         CYPDF_ArrayAppend(array, CYPDF_NewNumber(array->memmgr, rect.upper_right.y));
+    }
+
+    return array;
+}
+
+CYPDF_ObjArray* CYPDF_ArrayFromIntArray(CYPDF_MemMgr* const restrict memmgr, const int* const arr, const size_t count) {
+    CYPDF_TRACE;
+
+    CYPDF_ObjArray* array = CYPDF_NewArray(memmgr);
+
+    if (array) {
+        for (size_t i = 0; i < count; ++i) {
+            CYPDF_ArrayAppend(array, CYPDF_NewInteger(array->memmgr, arr[i]));
+        }
     }
 
     return array;

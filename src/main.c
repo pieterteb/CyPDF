@@ -29,15 +29,18 @@ void add_polygon(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
     float radius = CYPDF_MM_TO_UU(100);
 
     CYPDF_Path* path = CYPDF_NewPath();
-    CYPDF_PathAppendBegin(path, CYPDF_TO_POINT(centerx + radius, centery));
+    CYPDF_PathBegin(path, CYPDF_TO_POINT(centerx + radius, centery));
     for (size_t i = 1; i < n; ++i) {
-        CYPDF_PathAppendLineseg(path, CYPDF_TO_POINT(centerx + radius * cos(2 * M_PI / (double)n * (double)i), centery + radius * sin(2 * M_PI / (double)n * (double)i)));
+        CYPDF_PathLineseg(path, CYPDF_TO_POINT(centerx + radius * cos(2 * M_PI / (double)n * (double)i), centery + radius * sin(2 * M_PI / (double)n * (double)i)));
     }
 
     if (n == 5) {
-        CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE);
+        CYPDF_PathSave(path);
+        CYPDF_PathFillRGB(path, (CYPDF_RGB){ 0.0, 1.0, 0.0 });
+        CYPDF_PathPaint(path, CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE);
+        CYPDF_PathRestore(path);
     } else {
-        CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+        CYPDF_PathPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
     }
     
     CYPDF_AddPathToPage(pdf, page, path);
@@ -46,35 +49,26 @@ void add_polygon(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
 
 void add_circle(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_Path* path = CYPDF_NewPath();
-    CYPDF_PathAppendBegin(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathAppendCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathAppendCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_STROKE);
+    CYPDF_PathBegin(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_PathCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_PathCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_PathPaint(path, CYPDF_OPERATOR_PATH_STROKE);
     CYPDF_AddPathToPage(pdf, page, path);
     CYPDF_FreePath(path);
-}
-
-void add_gfx(CYPDF_ObjPage* page, CYPDF_Doc* pdf) {
-    CYPDF_ObjResources* resources = CYPDF_NewResources(pdf->memmgr);
-    CYPDF_DocAppendObject(pdf, resources);
-    CYPDF_ObjGFXState* gfx_state = CYPDF_NewGFXState(pdf->memmgr);
-    CYPDF_DocAppendObject(pdf, gfx_state);
-    CYPDF_GFXStateSetLineWidth(gfx_state, 10.0);
-    CYPDF_ResourcesAddGFXState(resources, gfx_state);
-    CYPDF_PageSetResources(page, resources);
 }
 
 void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_Path* path = CYPDF_NewPath();
-    CYPDF_PathAppendBegin(path, CYPDF_TO_POINT(0, CYPDF_A4_HEIGHT));
-    CYPDF_PathAppendLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
-    CYPDF_PathAppendLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH, CYPDF_A4_HEIGHT));
-    CYPDF_PathAppendLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
-    CYPDF_PathSetPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+    CYPDF_PathBegin(path, CYPDF_TO_POINT(0, CYPDF_A4_HEIGHT));
+    CYPDF_PathLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
+    CYPDF_PathLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH, CYPDF_A4_HEIGHT));
+    CYPDF_PathLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
+    CYPDF_PathSave(path);
+    CYPDF_PathLineWidth(path, 20.0);
+    CYPDF_PathPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+    CYPDF_PathRestore(path);
     CYPDF_AddPathToPage(pdf, page, path);
     CYPDF_FreePath(path);
-
-    add_gfx(page, pdf);
 }
 
 

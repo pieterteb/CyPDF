@@ -36,6 +36,8 @@ void CYPDF_ArrayAppend(CYPDF_ObjArray* const restrict array, CYPDF_Object* const
 
 CYPDF_ObjArray* CYPDF_ArrayFromRect(CYPDF_MemMgr* const restrict memmgr, const CYPDF_Rect rect);
 
+CYPDF_ObjArray* CYPDF_ArrayFromIntArray(CYPDF_MemMgr* const restrict memmgr, const int* const arr, const size_t count);
+
 
 
 #endif /* CYPDF_ARRAY_H */
