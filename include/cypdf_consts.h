@@ -81,6 +81,9 @@
     #define M_PI 3.14159265358979323846
 #endif
 
+/* High value bytes for header. */
+#define CYPDF_HIVAL_BYTES           "\x80\x81\x82\x83"
+
 
 
 #endif /* CYPDF_CONSTS_H */

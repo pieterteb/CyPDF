@@ -4,7 +4,6 @@
 #include "cypdf_doc.h"
 #include "cypdf_catalog.h"
 #include "cypdf_consts.h"
-#include "cypdf_header.h"
 #include "cypdf_log.h"
 #include "cypdf_memmgr.h"
 #include "cypdf_null.h"
@@ -14,6 +13,7 @@
 #include "cypdf_print.h"
 #include "cypdf_time.h"
 #include "cypdf_trailer.h"
+#include "cypdf_version.h"
 #include "cypdf_xref.h"
 
 
@@ -68,7 +68,11 @@ void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict
         FILE* fp = fopen(file_path, "wb");
         CYPDF_Channel* file_channel = CYPDF_NewChannel(fp, CYPDF_CHANNEL_FILE);
 
-        CYPDF_PrintFileHeader(file_channel);
+        /* header */
+        CYPDF_ChannelPrintComment(file_channel, CYPDF_PDF_VERSION);
+        CYPDF_ChannelPrintNL(file_channel);
+        CYPDF_ChannelPrintComment(file_channel, CYPDF_HIVAL_BYTES);
+        CYPDF_ChannelPrintNL(file_channel);
 
         CYPDF_Object** objs = pdf->objs;
         pdf->offsets = CYPDF_malloc(pdf->obj_count * sizeof(pdf->offsets[0]));
