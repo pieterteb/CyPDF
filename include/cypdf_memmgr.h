@@ -8,13 +8,14 @@
 
 
 
-typedef struct CYPDF_MemMgr {
+typedef struct CYPDF_MemMgr CYPDF_MemMgr;
+struct CYPDF_MemMgr {
     void**          ptrs;
     size_t          ptr_count;  /* Number of void* in ptrs. */
     size_t          tot_size;   /* Total amount of void pointers that can be stored. */
 
     CYPDF_FreeFunc  free_func;
-} CYPDF_MemMgr;
+};
 
 
 CYPDF_MemMgr* CYPDF_NewMemMgr(const CYPDF_FreeFunc free_func);

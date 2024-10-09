@@ -18,9 +18,6 @@
 
 
 
-void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
-
-
 CYPDF_Doc* CYPDF_NewDoc(void) {
     CYPDF_TRACE;
 
@@ -33,7 +30,7 @@ CYPDF_Doc* CYPDF_NewDoc(void) {
         pdf->catalog = CYPDF_NewCatalog(pdf->memmgr, pdf->page_root);
 
         char* creation_date = CYPDF_Date();
-        pdf->info = CYPDF_NewInfo(pdf->memmgr, "Test", "Bob", "Test", "CyPDF", "CyProducer", creation_date);
+        pdf->info = CYPDF_NewInfo(pdf->memmgr, "Test", "Alice & Bob", "Test", "CyPDF", "CyProducer", creation_date);
         free(creation_date);
 
         pdf->objs = NULL;

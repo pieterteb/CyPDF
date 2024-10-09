@@ -22,7 +22,7 @@ CYPDF_ObjNull* CYPDF_NewNull(CYPDF_MemMgr* const restrict memmgr);
 
 void CYPDF_FreeNull(CYPDF_Object* obj);
 
-void CYPDF_PrintNull(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj __attribute_maybe_unused__);
+void CYPDF_PrintNull(CYPDF_Channel* const restrict channel, const CYPDF_Object* const restrict obj __attribute_maybe_unused__);
 
 
 

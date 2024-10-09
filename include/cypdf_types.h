@@ -2,7 +2,6 @@
 #define CYPDF_TYPES_H
 
 
-#include <stdio.h>
 
 #include "cypdf_print.h"
 
