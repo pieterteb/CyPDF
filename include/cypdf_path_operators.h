@@ -92,6 +92,8 @@ void CYPDF_PathFillRGB(CYPDF_Path* const restrict path, const CYPDF_RGB rgb);
 
 void CYPDF_PathLineCMYK(CYPDF_Path* const restrict path, const CYPDF_CMYK cmyk);
 
+void CYPDF_PathFillCMYK(CYPDF_Path* const restrict path, const CYPDF_CMYK cmyk);
+
 
 
 #endif /* CYPDF_GRAPHICS_H */

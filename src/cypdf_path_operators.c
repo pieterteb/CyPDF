@@ -16,7 +16,7 @@
 
 
 
-static void CYPDF_PathAppend(CYPDF_Path* const restrict path, CYPDF_Operator* const restrict operator, const CYPDF_Point new_current_point);
+static void CYPDF_PathAppend(CYPDF_Path* const restrict path, CYPDF_Operator* const restrict operator);
 
 
 CYPDF_Path* CYPDF_NewPath(void) {
@@ -68,15 +68,13 @@ void CYPDF_PrintPath(CYPDF_Channel* const restrict channel, const CYPDF_Path* co
 }
 
 
-static void CYPDF_PathAppend(CYPDF_Path* const restrict path, CYPDF_Operator* const restrict operator, const CYPDF_Point new_current_point) {
+static void CYPDF_PathAppend(CYPDF_Path* const restrict path, CYPDF_Operator* const restrict operator) {
     CYPDF_TRACE;
 
     if (path && operator) {
         path->operators = CYPDF_realloc(path->operators, (path->operator_count + 1) * sizeof(CYPDF_Operator*));
         path->operators[path->operator_count] = operator;
         ++path->operator_count;
-
-        path->current_point = new_current_point;
     }
 }
 
@@ -89,7 +87,8 @@ void CYPDF_PathBegin(CYPDF_Path* const restrict path, const CYPDF_Point start_po
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, start_point.x));
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, start_point.y));
 
-        CYPDF_PathAppend(path, operator, start_point);
+        CYPDF_PathAppend(path, operator);
+        path->current_point = start_point;
         path->current_subpath_point = start_point;
     }
 }
@@ -103,7 +102,8 @@ void CYPDF_PathLineseg(CYPDF_Path* const restrict path, const CYPDF_Point end_po
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, end_point.x));
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, end_point.y));
 
-        CYPDF_PathAppend(path, operator, end_point);
+        CYPDF_PathAppend(path, operator);
+        path->current_point = end_point;
     }
 }
 
@@ -120,7 +120,8 @@ void CYPDF_PathCBezier(CYPDF_Path* const restrict path, const CYPDF_Point ctrl_p
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, end_point.x));
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, end_point.y));
         
-        CYPDF_PathAppend(path, operator, end_point);
+        CYPDF_PathAppend(path, operator);
+        path->current_point = end_point;
     }
 }
 
@@ -135,7 +136,8 @@ void CYPDF_PathVBezier(CYPDF_Path* const restrict path, const CYPDF_Point ctrl_p
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, end_point.x));
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, end_point.y));
         
-        CYPDF_PathAppend(path, operator, end_point);
+        CYPDF_PathAppend(path, operator);
+        path->current_point = end_point;
     }
 }
 
@@ -150,7 +152,8 @@ void CYPDF_PathYBezier(CYPDF_Path* const restrict path, const CYPDF_Point ctrl_p
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, end_point.x));
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, end_point.y));
         
-        CYPDF_PathAppend(path, operator, end_point);
+        CYPDF_PathAppend(path, operator);
+        path->current_point = end_point;
     }
 }
 
@@ -158,7 +161,8 @@ void CYPDF_PathClose(CYPDF_Path* const restrict path) {
     CYPDF_TRACE;
 
     if (path) {
-        CYPDF_PathAppend(path, CYPDF_NewOperator(CYPDF_OPERATOR_PATH_CLOSE), path->current_subpath_point);
+        CYPDF_PathAppend(path, CYPDF_NewOperator(CYPDF_OPERATOR_PATH_CLOSE));
+        path->current_point = path->current_subpath_point;
     }
 }
 
@@ -173,7 +177,8 @@ void CYPDF_PathRect(CYPDF_Path* const restrict path, const CYPDF_Point lowleft_c
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, width));
         CYPDF_OperatorAppendOperand(operator, CYPDF_NewNumber(path->memmgr, height));
 
-        CYPDF_PathAppend(path, operator, lowleft_corner);
+        CYPDF_PathAppend(path, operator);
+        path->current_point = lowleft_corner;
     }
 }
 
@@ -181,7 +186,7 @@ void CYPDF_PathClip(CYPDF_Path* const restrict path, const enum CYPDF_OPERATOR_T
     CYPDF_TRACE;
 
     if (path) {
-        CYPDF_PathAppend(path, CYPDF_NewOperator(clip_operator), path->current_point);
+        CYPDF_PathAppend(path, CYPDF_NewOperator(clip_operator));
     }
 }
 
@@ -189,7 +194,7 @@ void CYPDF_PathPaint(CYPDF_Path* const restrict path, const enum CYPDF_OPERATOR_
     CYPDF_TRACE;
 
     if (path) {
-        CYPDF_PathAppend(path, CYPDF_NewOperator(paint_operator), path->current_point);
+        CYPDF_PathAppend(path, CYPDF_NewOperator(paint_operator));
     }
 }
 
@@ -198,7 +203,7 @@ void CYPDF_PathSave(CYPDF_Path* const restrict path) {
     CYPDF_TRACE;
 
     if (path) {
-        CYPDF_PathAppend(path, CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_SAVE), path->current_point);
+        CYPDF_PathAppend(path, CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_SAVE));
     }
 }
 
@@ -206,7 +211,7 @@ void CYPDF_PathRestore(CYPDF_Path* const restrict path) {
     CYPDF_TRACE;
 
     if (path) {
-        CYPDF_PathAppend(path, CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_RESTORE), path->current_point);
+        CYPDF_PathAppend(path, CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_RESTORE));
     }
 }
 
@@ -222,7 +227,7 @@ void CYPDF_PathTransformMatrix(CYPDF_Path* const restrict path, const float a, c
         CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(path->memmgr, e));
         CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(path->memmgr, f));
 
-        CYPDF_PathAppend(path, transform_matrix, path->current_point);
+        CYPDF_PathAppend(path, transform_matrix);
     }
 }
 
@@ -233,7 +238,7 @@ void CYPDF_PathLineWidth(CYPDF_Path* const restrict path, const float line_width
         CYPDF_Operator* line_width_op = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_LINE_WIDTH);
         CYPDF_OperatorAppendOperand(line_width_op, CYPDF_NewNumber(path->memmgr, line_width));
 
-        CYPDF_PathAppend(path, line_width_op, path->current_point);
+        CYPDF_PathAppend(path, line_width_op);
     }
 }
 
@@ -244,7 +249,7 @@ void CYPDF_PathLineCap(CYPDF_Path* const restrict path, const int line_cap) {
         CYPDF_Operator* line_cap_op = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_LINE_CAP);
         CYPDF_OperatorAppendOperand(line_cap_op, CYPDF_NewInteger(path->memmgr, line_cap));
 
-        CYPDF_PathAppend(path, line_cap_op, path->current_point);
+        CYPDF_PathAppend(path, line_cap_op);
     }
 }
 
@@ -255,7 +260,7 @@ void CYPDF_PathLineJoin(CYPDF_Path* const restrict path, const int line_join) {
         CYPDF_Operator* line_join_op = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_LINE_JOIN);
         CYPDF_OperatorAppendOperand(line_join_op, CYPDF_NewInteger(path->memmgr, line_join));
 
-        CYPDF_PathAppend(path, line_join_op, path->current_point);
+        CYPDF_PathAppend(path, line_join_op);
     }
 }
 
@@ -266,7 +271,7 @@ void CYPDF_PathMiterLimit(CYPDF_Path* const restrict path, const float miter_lim
         CYPDF_Operator* miter_limit_op = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_MITER_LIMIT);
         CYPDF_OperatorAppendOperand(miter_limit_op, CYPDF_NewNumber(path->memmgr, miter_limit));
 
-        CYPDF_PathAppend(path, miter_limit_op, path->current_point);
+        CYPDF_PathAppend(path, miter_limit_op);
     }
 }
 
@@ -278,7 +283,7 @@ void CYPDF_PathDashPattern(CYPDF_Path* const restrict path, const int* const das
         CYPDF_OperatorAppendOperand(dash_pattern, CYPDF_ArrayFromIntArray(path->memmgr, dash_array, dash_array_size));
         CYPDF_OperatorAppendOperand(dash_pattern, CYPDF_NewInteger(path->memmgr, dash_phase));
 
-        CYPDF_PathAppend(path, dash_pattern, path->current_point);
+        CYPDF_PathAppend(path, dash_pattern);
     }
 }
 
@@ -289,7 +294,7 @@ void CYPDF_PathIntent(CYPDF_Path* const restrict path, const char intent[restric
         CYPDF_Operator* intent_op = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_INTENT);
         CYPDF_OperatorAppendOperand(intent_op, CYPDF_NewName(path->memmgr, intent));
 
-        CYPDF_PathAppend(path, intent_op, path->current_point);
+        CYPDF_PathAppend(path, intent_op);
     }
 }
 
@@ -300,7 +305,7 @@ void CYPDF_PathFlatness(CYPDF_Path* const restrict path, const float flatness) {
         CYPDF_Operator* flatness_op = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_FLATNESS);
         CYPDF_OperatorAppendOperand(flatness_op, CYPDF_NewNumber(path->memmgr, flatness));
 
-        CYPDF_PathAppend(path, flatness_op, path->current_point);
+        CYPDF_PathAppend(path, flatness_op);
     }
 }
 
@@ -311,7 +316,7 @@ void CYPDF_PathGFXState(CYPDF_Path* const restrict path, CYPDF_ObjGFXState* cons
         CYPDF_Operator* gfx_state_op = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_EXTGSTATE);
         CYPDF_OperatorAppendOperand(gfx_state_op, gfx_state);
 
-        CYPDF_PathAppend(path, gfx_state_op, path->current_point);
+        CYPDF_PathAppend(path, gfx_state_op);
     }
 }
 
@@ -323,7 +328,7 @@ void CYPDF_PathLineColorSpace(CYPDF_Path* const restrict path, const char color_
         CYPDF_Operator* line_color_space = CYPDF_NewOperator(CYPDF_OPERATOR_COLOR_SPACE_STROKING);
         CYPDF_OperatorAppendOperand(line_color_space, CYPDF_NewName(path->memmgr, color_space));
 
-        CYPDF_PathAppend(path, line_color_space, path->current_point);
+        CYPDF_PathAppend(path, line_color_space);
     }
 }
 
@@ -334,7 +339,7 @@ void CYPDF_PathFillColorSpace(CYPDF_Path* const restrict path, const char color_
         CYPDF_Operator* fill_color_space = CYPDF_NewOperator(CYPDF_OPERATOR_COLOR_SPACE_NONSTROKING);
         CYPDF_OperatorAppendOperand(fill_color_space, CYPDF_NewName(path->memmgr, color_space));
 
-        CYPDF_PathAppend(path, fill_color_space, path->current_point);
+        CYPDF_PathAppend(path, fill_color_space);
     }
 }
 
@@ -353,7 +358,7 @@ void CYPDF_PathLineColor(CYPDF_Path* const restrict path, CYPDF_Object** const r
             CYPDF_OperatorAppendOperand(line_color, operands[i]);
         }
 
-        CYPDF_PathAppend(path, line_color, path->current_point);
+        CYPDF_PathAppend(path, line_color);
     }
 }
 
@@ -372,7 +377,7 @@ void CYPDF_PathFillColor(CYPDF_Path* const restrict path, CYPDF_Object** const r
             CYPDF_OperatorAppendOperand(fill_color, operands[i]);
         }
 
-        CYPDF_PathAppend(path, fill_color, path->current_point);
+        CYPDF_PathAppend(path, fill_color);
     }
 }
 
@@ -383,7 +388,7 @@ void CYPDF_PathLineGray(CYPDF_Path* const restrict path, const float gray) {
         CYPDF_Operator* line_gray = CYPDF_NewOperator(CYPDF_OPERATOR_COLOR_STROKING_GRAY);
         CYPDF_OperatorAppendOperand(line_gray, CYPDF_NewNumber(path->memmgr, gray));
 
-        CYPDF_PathAppend(path, line_gray, path->current_point);
+        CYPDF_PathAppend(path, line_gray);
     }
 }
 
@@ -394,7 +399,7 @@ void CYPDF_PathFillGray(CYPDF_Path* const restrict path, const float gray) {
         CYPDF_Operator* fill_gray = CYPDF_NewOperator(CYPDF_OPERATOR_COLOR_NONSTROKING_GRAY);
         CYPDF_OperatorAppendOperand(fill_gray, CYPDF_NewNumber(path->memmgr, gray));
 
-        CYPDF_PathAppend(path, fill_gray, path->current_point);
+        CYPDF_PathAppend(path, fill_gray);
     }
 }
 
@@ -407,7 +412,7 @@ void CYPDF_PathLineRGB(CYPDF_Path* const restrict path, const CYPDF_RGB rgb) {
         CYPDF_OperatorAppendOperand(line_rgb, CYPDF_NewNumber(path->memmgr, rgb.green));
         CYPDF_OperatorAppendOperand(line_rgb, CYPDF_NewNumber(path->memmgr, rgb.blue));
 
-        CYPDF_PathAppend(path, line_rgb, path->current_point);
+        CYPDF_PathAppend(path, line_rgb);
     }
 }
 
@@ -420,7 +425,7 @@ void CYPDF_PathFillRGB(CYPDF_Path* const restrict path, const CYPDF_RGB rgb) {
         CYPDF_OperatorAppendOperand(fill_rgb, CYPDF_NewNumber(path->memmgr, rgb.green));
         CYPDF_OperatorAppendOperand(fill_rgb, CYPDF_NewNumber(path->memmgr, rgb.blue));
 
-        CYPDF_PathAppend(path, fill_rgb, path->current_point);
+        CYPDF_PathAppend(path, fill_rgb);
     }
 }
 
@@ -434,11 +439,11 @@ void CYPDF_PathLineCMYK(CYPDF_Path* const restrict path, const CYPDF_CMYK cmyk) 
         CYPDF_OperatorAppendOperand(line_cmyk, CYPDF_NewNumber(path->memmgr, cmyk.yellow));
         CYPDF_OperatorAppendOperand(line_cmyk, CYPDF_NewNumber(path->memmgr, cmyk.black));
 
-        CYPDF_PathAppend(path, line_cmyk, path->current_point);
+        CYPDF_PathAppend(path, line_cmyk);
     }
 }
 
-void CYPDF_FillCMYK(CYPDF_Path* const restrict path, const CYPDF_CMYK cmyk) {
+void CYPDF_PathFillCMYK(CYPDF_Path* const restrict path, const CYPDF_CMYK cmyk) {
     CYPDF_TRACE;
     
     if (path) {
@@ -448,6 +453,6 @@ void CYPDF_FillCMYK(CYPDF_Path* const restrict path, const CYPDF_CMYK cmyk) {
         CYPDF_OperatorAppendOperand(fill_cmyk, CYPDF_NewNumber(path->memmgr, cmyk.yellow));
         CYPDF_OperatorAppendOperand(fill_cmyk, CYPDF_NewNumber(path->memmgr, cmyk.black));
 
-        CYPDF_PathAppend(path, fill_cmyk, path->current_point);
+        CYPDF_PathAppend(path, fill_cmyk);
     }
 }
