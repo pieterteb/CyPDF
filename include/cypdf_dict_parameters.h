@@ -127,6 +127,7 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 #define CYPDF_GFX_STATE_LINE_CAP_I          2
 #define CYPDF_GFX_STATE_LINE_JOIN_I         3
 #define CYPDF_GFX_STATE_MITER_LIMIT_I       4
+#define CYPDF_GFX_STATE_DASH_PATTERN_I      5
 
 
 

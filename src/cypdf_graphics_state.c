@@ -1,4 +1,5 @@
 #include "cypdf_graphics_state.h"
+#include "cypdf_array.h"
 #include "cypdf_dict.h"
 #include "cypdf_dict_parameters.h"
 #include "cypdf_integer.h"
@@ -25,7 +26,7 @@ CYPDF_ObjGFXState* CYPDF_NewGFXState(CYPDF_MemMgr* const restrict memmgr) {
 }
 
 
-void CYPDF_GFXStateSetLineWidth(CYPDF_ObjGFXState* const restrict gfx_state, const float line_width) {
+void CYPDF_GFXStateLineWidth(CYPDF_ObjGFXState* const restrict gfx_state, const float line_width) {
     CYPDF_TRACE;
 
     if (gfx_state) {
@@ -36,7 +37,7 @@ void CYPDF_GFXStateSetLineWidth(CYPDF_ObjGFXState* const restrict gfx_state, con
     }
 }
 
-void CYPDF_GFXStateSetLineCap(CYPDF_ObjGFXState* const restrict gfx_state, const int line_cap) {
+void CYPDF_GFXStateLineCap(CYPDF_ObjGFXState* const restrict gfx_state, const int line_cap) {
     CYPDF_TRACE;
 
     if (gfx_state) {
@@ -47,7 +48,7 @@ void CYPDF_GFXStateSetLineCap(CYPDF_ObjGFXState* const restrict gfx_state, const
     }
 }
 
-void CYPDF_GFXStateSetLineJoin(CYPDF_ObjGFXState* const restrict gfx_state, const int line_join) {
+void CYPDF_GFXStateLineJoin(CYPDF_ObjGFXState* const restrict gfx_state, const int line_join) {
     CYPDF_TRACE;
 
     if (gfx_state) {
@@ -58,7 +59,7 @@ void CYPDF_GFXStateSetLineJoin(CYPDF_ObjGFXState* const restrict gfx_state, cons
     }
 }
 
-void CYPDF_GFXStateSetMiterLimit(CYPDF_ObjGFXState* const restrict gfx_state, const float miter_limit) {
+void CYPDF_GFXStateMiterLimit(CYPDF_ObjGFXState* const restrict gfx_state, const float miter_limit) {
     CYPDF_TRACE;
 
     if (gfx_state) {
@@ -66,5 +67,20 @@ void CYPDF_GFXStateSetMiterLimit(CYPDF_ObjGFXState* const restrict gfx_state, co
             return;
         }
         CYPDF_DictSetAtIndex(gfx_state, CYPDF_GFX_STATE_MITER_LIMIT_I, CYPDF_GFX_STATE_MITER_LIMIT_K, CYPDF_NewNumber(gfx_state->memmgr, miter_limit));
+    }
+}
+
+void CYPDF_GFXStateDashPattern(CYPDF_ObjGFXState* const restrict gfx_state, const int* const dash_array, const size_t dash_array_size, const int dash_phase) {
+    CYPDF_TRACE;
+
+    if (gfx_state) {
+        if (dash_array_size && dash_phase == CYPDF_DASH_PHASE_DEFAULT) {
+            return;
+        }
+        CYPDF_ObjArray* dash_pattern = CYPDF_NewArray(gfx_state->memmgr);
+        CYPDF_ArrayAppend(dash_pattern, CYPDF_ArrayFromIntArray(dash_pattern->memmgr, dash_array, dash_array_size));
+        CYPDF_ArrayAppend(dash_pattern, CYPDF_NewInteger(dash_pattern->memmgr, dash_phase));
+
+        CYPDF_DictSetAtIndex(gfx_state, CYPDF_GFX_STATE_DASH_PATTERN_I, CYPDF_GFX_STATE_DASH_PATTERN_K, dash_pattern);
     }
 }

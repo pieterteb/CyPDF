@@ -9,6 +9,7 @@
 
 #define CYPDF_LINE_WIDTH_DEFAULT            1.0f
 #define CYPDF_MITER_LIMIT_DEFAULT           10.0f
+#define CYPDF_DASH_PHASE_DEFAULT            0
 
 /* Line Cap Styles */
 #define CYPDF_LINE_CAP_BUTT                 0       /* The stroke is squared off at the endpoint of the path. There is no projection beyond the end of the path. */
@@ -31,13 +32,15 @@ typedef CYPDF_ObjGraphicsState CYPDF_ObjGFXState;
 CYPDF_ObjGFXState* CYPDF_NewGFXState(CYPDF_MemMgr* const restrict memmgr);
 
 
-void CYPDF_GFXStateSetLineWidth(CYPDF_ObjGFXState* const restrict gfx_state, const float line_width);
+void CYPDF_GFXStateLineWidth(CYPDF_ObjGFXState* const restrict gfx_state, const float line_width);
 
-void CYPDF_GFXStateSetLineCap(CYPDF_ObjGFXState* const restrict gfx_state, const int line_cap);
+void CYPDF_GFXStateLineCap(CYPDF_ObjGFXState* const restrict gfx_state, const int line_cap);
 
-void CYPDF_GFXStateSetLineJoin(CYPDF_ObjGFXState* const restrict gfx_state, const int line_join);
+void CYPDF_GFXStateLineJoin(CYPDF_ObjGFXState* const restrict gfx_state, const int line_join);
 
-void CYPDF_GFXStateSetMiterLimit(CYPDF_ObjGFXState* const restrict gfx_state, const float miter_limit);
+void CYPDF_GFXStateMiterLimit(CYPDF_ObjGFXState* const restrict gfx_state, const float miter_limit);
+
+void CYPDF_GFXStateDashPattern(CYPDF_ObjGFXState* const restrict gfx_state, const int* const dash_array, const size_t dash_array_size, const int dash_phase);
 
 
 
