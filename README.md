@@ -8,5 +8,6 @@ This project uses the following PDF documentation:
 
 
 Current functionalities:
-* Creation of pages of A4 size.
-* Addition of simple graphical elements to specific pages. That is, sequences of lines and Bézier curves with default settings.
+* Creation of pages of any (by PDF supported) size.
+* Addition of simple graphical elements to specific pages. These are shapes constructed with lines and Bézier curves.
+* Full visual customization of aforementioned elements, i.e. being able to change colour, line width, dash patterns etc.
