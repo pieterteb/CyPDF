@@ -23,52 +23,55 @@ void copy_file(const char* source_path, const char* dest_path) {
     fclose(dest);
 }
 
-void add_polygon(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
-    float centerx = CYPDF_A4_WIDTH / 2;
-    float centery = CYPDF_A4_HEIGHT / 2;
-    float radius = CYPDF_MM_TO_UU(100);
+void first_n_polygons(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
+    for (size_t i = 3; i < n + 3; ++i) {
+        float centerx = CYPDF_A4_WIDTH / 2;
+        float centery = CYPDF_A4_HEIGHT / 2;
+        float radius = CYPDF_MM_TO_UU(100);
 
-    CYPDF_Path* path = CYPDF_NewPath();
-    CYPDF_PathBegin(path, CYPDF_TO_POINT(centerx + radius, centery));
-    for (size_t i = 1; i < n; ++i) {
-        CYPDF_PathLineseg(path, CYPDF_TO_POINT(centerx + radius * cos(2 * M_PI / (double)n * (double)i), centery + radius * sin(2 * M_PI / (double)n * (double)i)));
-    }
+        CYPDF_Graphic* graphic = CYPDF_NewGraphic();
+        CYPDF_GraphicBegin(graphic, CYPDF_TO_POINT(centerx + radius, centery));
+        for (size_t j = 1; j < i; ++j) {
+            CYPDF_GraphicLineseg(graphic, CYPDF_TO_POINT(centerx + radius * cos(2 * M_PI / (double)i * (double)j), centery + radius * sin(2 * M_PI / (double)i * (double)j)));
+        }
 
-    if (n == 5) {
-        CYPDF_PathSave(path);
-        CYPDF_PathFillRGB(path, (CYPDF_RGB){ 0.0, 1.0, 0.0 });
-        CYPDF_PathPaint(path, CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE);
-        CYPDF_PathRestore(path);
-    } else {
-        CYPDF_PathPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+        if (i == 5) {
+            CYPDF_GraphicSave(graphic);
+            CYPDF_GraphicFillRGB(graphic, (CYPDF_RGB){ 0.0, 1.0, 0.0 });
+            CYPDF_GraphicPaint(graphic, CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE);
+            CYPDF_GraphicRestore(graphic);
+        } else {
+            CYPDF_GraphicPaint(graphic, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+        }
+        
+        CYPDF_DocAddGraphic(pdf, page, graphic);
     }
-    
-    CYPDF_AddPathToPage(pdf, page, path);
-    CYPDF_FreePath(path);
 }
 
-void add_circle(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
-    CYPDF_Path* path = CYPDF_NewPath();
-    CYPDF_PathBegin(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathCBezier(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_PathPaint(path, CYPDF_OPERATOR_PATH_STROKE);
-    CYPDF_AddPathToPage(pdf, page, path);
-    CYPDF_FreePath(path);
+void bezier_circle(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
+    CYPDF_Graphic* graphic = CYPDF_NewGraphic();
+
+    CYPDF_GraphicBegin(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_GraphicCBezier(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_GraphicCBezier(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
+    CYPDF_GraphicPaint(graphic, CYPDF_OPERATOR_PATH_STROKE);
+
+    CYPDF_DocAddGraphic(pdf, page, graphic);
 }
 
 void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
-    CYPDF_Path* path = CYPDF_NewPath();
-    CYPDF_PathBegin(path, CYPDF_TO_POINT(0, CYPDF_A4_HEIGHT));
-    CYPDF_PathLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
-    CYPDF_PathLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH, CYPDF_A4_HEIGHT));
-    CYPDF_PathLineseg(path, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
-    CYPDF_PathSave(path);
-    CYPDF_PathLineWidth(path, 20.0);
-    CYPDF_PathPaint(path, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
-    CYPDF_PathRestore(path);
-    CYPDF_AddPathToPage(pdf, page, path);
-    CYPDF_FreePath(path);
+    CYPDF_Graphic* graphic = CYPDF_NewGraphic();
+
+    CYPDF_GraphicBegin(graphic, CYPDF_TO_POINT(0, CYPDF_A4_HEIGHT));
+    CYPDF_GraphicLineseg(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
+    CYPDF_GraphicLineseg(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH, CYPDF_A4_HEIGHT));
+    CYPDF_GraphicLineseg(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
+    CYPDF_GraphicSave(graphic);
+    CYPDF_GraphicLineWidth(graphic, 20.0);
+    CYPDF_GraphicPaint(graphic, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+    CYPDF_GraphicRestore(graphic);
+
+    CYPDF_DocAddGraphic(pdf, page, graphic);
 }
 
 
@@ -77,16 +80,14 @@ int main(void) {
 
     CYPDF_Doc* pdf = CYPDF_NewDoc();
 
-    CYPDF_ObjPage* page1 = CYPDF_AppendPage(pdf);
-    for (size_t i = 0; i < 10; ++i) {
-        add_polygon(pdf, page1, i + 2);
-    }
+    CYPDF_ObjPage* page1 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    first_n_polygons(pdf, page1, 10);
 
     /* Draws an approximation of a circle using two Bézier curves. */
-    CYPDF_ObjPage* page2 = CYPDF_AppendPage(pdf);
-    add_circle(pdf, page2);
+    CYPDF_ObjPage* page2 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    bezier_circle(pdf, page2);
 
-    CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf);
+    CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
     thick_v(pdf, page3);
 
     mkdir("../out", 0700);

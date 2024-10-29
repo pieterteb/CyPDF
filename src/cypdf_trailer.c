@@ -8,7 +8,7 @@
 #include "cypdf_doc.h"
 #include "cypdf_integer.h"
 #include "cypdf_log.h"
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 #include "cypdf_string.h"
@@ -20,11 +20,10 @@
 void CYPDF_PrintTrailer(CYPDF_Channel* const restrict channel, const CYPDF_Doc* const restrict pdf, const char* restrict file_path, const size_t xref_offset) {
     CYPDF_TRACE;
 
-    CYPDF_MemMgr* memmgr = pdf->memmgr;
-    CYPDF_ObjDict* dict = CYPDF_NewDict(memmgr);
+    CYPDF_ObjDict* dict = CYPDF_NewDict(pdf->obj_memmgr);
 
     if (dict) {
-        CYPDF_DictSetAtIndex(dict, CYPDF_TRAILER_SIZE_I, CYPDF_TRAILER_SIZE_K, CYPDF_NewInteger(dict->memmgr, (int)pdf->obj_count + 1)); /* + 1 for the free object entry (0000000000 65535 f) */
+        CYPDF_DictSetAtIndex(dict, CYPDF_TRAILER_SIZE_I, CYPDF_TRAILER_SIZE_K, CYPDF_NewInteger(dict->memmgr, (int)pdf->obj_list->element_count + 1)); /* + 1 for the free object entry (0000000000 65535 f) */
         CYPDF_DictSetAtIndex(dict, CYPDF_TRAILER_CATALOG_I, CYPDF_TRAILER_CATALOG_K, pdf->catalog);
         CYPDF_DictSetAtIndex(dict, CYPDF_TRAILER_INFO_I, CYPDF_TRAILER_INFO_K, pdf->info);
 
@@ -33,16 +32,16 @@ void CYPDF_PrintTrailer(CYPDF_Channel* const restrict channel, const CYPDF_Doc* 
         char* date = CYPDF_Date();
         sprintf(string_to_hash, "%s%s%ld%s%s%s%s%s%s",
                 date, file_path, CYPDF_Channeltell(channel),
-                CYPDF_StringGet(CYPDF_DictGetValueIndex(info, CYPDF_INFO_TITLE_I)),
-                CYPDF_StringGet(CYPDF_DictGetValueIndex(info, CYPDF_INFO_AUTHOR_I)),
-                CYPDF_StringGet(CYPDF_DictGetValueIndex(info, CYPDF_INFO_SUBJECT_I)),
-                CYPDF_StringGet(CYPDF_DictGetValueIndex(info, CYPDF_INFO_CREATOR_I)),
-                CYPDF_StringGet(CYPDF_DictGetValueIndex(info, CYPDF_INFO_PRODUCER_I)),
-                CYPDF_StringGet(CYPDF_DictGetValueIndex(info, CYPDF_INFO_CREATION_DATE_I)));
+                CYPDF_StringGet(CYPDF_DictValueAtIndex(info, CYPDF_INFO_AUTHOR_I)),
+                CYPDF_StringGet(CYPDF_DictValueAtIndex(info, CYPDF_INFO_TITLE_I)),
+                CYPDF_StringGet(CYPDF_DictValueAtIndex(info, CYPDF_INFO_SUBJECT_I)),
+                CYPDF_StringGet(CYPDF_DictValueAtIndex(info, CYPDF_INFO_CREATOR_I)),
+                CYPDF_StringGet(CYPDF_DictValueAtIndex(info, CYPDF_INFO_PRODUCER_I)),
+                CYPDF_StringGet(CYPDF_DictValueAtIndex(info, CYPDF_INFO_CREATION_DATE_I)));
         char* id = md5_string(string_to_hash);
         free(string_to_hash);
 
-        CYPDF_ObjArray* array = CYPDF_NewArray(memmgr);
+        CYPDF_ObjArray* array = CYPDF_NewArray(dict->memmgr);
         CYPDF_ObjString* ID = CPYDF_NewString(array->memmgr, CYPDF_STRTYPE_BYTE, id);
         free(id);
         CYPDF_ArrayAppend(array, ID);

@@ -2,14 +2,14 @@
 
 #include "cypdf_name.h"
 #include "cypdf_log.h"
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 #include "cypdf_types.h"
 
 
 
-CYPDF_ObjName* CYPDF_NewName(CYPDF_MemMgr* const restrict memmgr, const char value[restrict static 1]) {
+CYPDF_ObjName* CYPDF_NewName(CYPDF_MemMgr* const restrict memmgr, const char* restrict value) {
     CYPDF_TRACE;
 
     CYPDF_ObjName* name = (CYPDF_ObjName*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjName));

@@ -5,25 +5,27 @@
 #include <stddef.h>
 
 #include "cypdf_catalog.h"
+#include "cypdf_graphics.h"
 #include "cypdf_info.h"
-#include "cypdf_memmgr.h"
+#include "cypdf_list.h"
+#include "cypdf_memory.h"
 #include "cypdf_pages.h"
-#include "cypdf_path_operators.h"
 #include "cypdf_types.h"
 
 
 
 typedef struct CYPDF_Doc {
-    CYPDF_MemMgr*       memmgr;
-
     CYPDF_ObjCatalog*   catalog;
     CYPDF_ObjPageNode*  page_root;
     CYPDF_ObjInfo*      info;
     
-    CYPDF_Object**      objs;       /* Indirect objects. */
-    size_t	            obj_count;  /* Number of indirect objects. */
+    CYPDF_List*         obj_list;       /* Indirect objects. */
+    CYPDF_List*         graphic_list;
 
-    size_t*             offsets; /* Byte offsets of the objects in objs. */
+    CYPDF_MemMgr*       obj_memmgr;
+    CYPDF_MemMgr*       graphic_memmgr;
+
+    size_t*             offsets;        /* Byte offsets of the objects in obj_list. */
 } CYPDF_Doc;
 
 
@@ -34,11 +36,11 @@ void CYPDF_FreeDoc(CYPDF_Doc* pdf);
 void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict static 1]);
 
 
-void CYPDF_DocAppendObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
+void CYPDF_DocAddObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
 
-CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf);
+void CYPDF_DocAddGraphic(CYPDF_Doc* const pdf, CYPDF_ObjPage* const page, CYPDF_Graphic* const graphic);
 
-void CYPDF_AddPathToPage(CYPDF_Doc* const restrict pdf, CYPDF_ObjPage* const restrict page, const CYPDF_Path* const restrict path);
+CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf, CYPDF_Rect dimensions);
 
 
 

@@ -3,7 +3,7 @@
 
 #include "cypdf_time.h"
 #include "cypdf_log.h"
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 
 
 

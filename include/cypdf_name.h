@@ -2,7 +2,7 @@
 #define CYPDF_NAME_H
 
 
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 #include "cypdf_types.h"
@@ -22,7 +22,7 @@ typedef struct CYPDF_ObjName {
 } CYPDF_ObjName;
 
 
-CYPDF_ObjName* CYPDF_NewName(CYPDF_MemMgr* const restrict memmgr, const char value[restrict static 1]);
+CYPDF_ObjName* CYPDF_NewName(CYPDF_MemMgr* const restrict memmgr, const char* restrict value);
 
 void CYPDF_PrintName(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
 

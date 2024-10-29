@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(CyPDF 
-    VERSION 0.0 
+project(CyPDF
+    VERSION 0.0.0
     LANGUAGES C
 )
 
@@ -18,7 +18,7 @@ target_compile_options(compiler_flags INTERFACE
     "$<${msvc_c}:$<BUILD_INTERFACE:-W3>>"
 )
 
-add_executable(CyPDF 
+add_executable(CyPDF
     src/main.c
     src/cypdf_array.c
     src/cypdf_bool.c
@@ -26,17 +26,18 @@ add_executable(CyPDF
     src/cypdf_dict.c
     src/cypdf_doc.c
     src/cypdf_graphics_state.c
+    src/cypdf_graphics.c
     src/cypdf_info.c
     src/cypdf_integer.c
+    src/cypdf_list.c
     src/cypdf_log.c
-    src/cypdf_memmgr.c
+    src/cypdf_memory.c
     src/cypdf_name.c
     src/cypdf_null.c
     src/cypdf_number.c
     src/cypdf_object.c
     src/cypdf_operators.c
     src/cypdf_pages.c
-    src/cypdf_path_operators.c
     src/cypdf_print.c
     src/cypdf_resources.c
     src/cypdf_stream.c

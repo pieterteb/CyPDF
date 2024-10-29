@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 #include "cypdf_dict.h"
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 #include "cypdf_types.h"
@@ -27,11 +27,11 @@ typedef struct CYPDF_ObjStream {
 } CYPDF_ObjStream;
 
 
-CYPDF_ObjStream* CYPDF_NewStream(CYPDF_MemMgr* const restrict memmgr);
+CYPDF_ObjStream* CYPDF_NewStream(CYPDF_MemMgr* const memmgr);
 
 void CYPDF_FreeStream(CYPDF_Object* obj);
 
-void CYPDF_PrintStream(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
+void CYPDF_PrintStream(CYPDF_Channel* const channel, const CYPDF_Object* const obj);
 
 
 int CYPDF_PrintToStream(CYPDF_ObjStream* const restrict stream, const char format[restrict static 1], va_list args);

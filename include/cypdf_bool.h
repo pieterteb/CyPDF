@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 #include "cypdf_object.h"
 #include "cypdf_print.h"
 #include "cypdf_types.h"

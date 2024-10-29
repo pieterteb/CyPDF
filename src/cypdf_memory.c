@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 #include "cypdf_log.h"
 #include "cypdf_types.h"
 
@@ -31,7 +31,6 @@ static void CYPDF_MemMgrAppend(CYPDF_MemMgr* const restrict memmgr, void* const 
             }
             memmgr->ptrs = CYPDF_realloc(memmgr->ptrs, memmgr->tot_size * sizeof(void*));
         }
-
         memmgr->ptrs[memmgr->ptr_count] = ptr;
         ++memmgr->ptr_count;
     }

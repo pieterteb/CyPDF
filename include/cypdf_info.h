@@ -3,7 +3,7 @@
 
 
 #include "cypdf_dict.h"
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 
 
 

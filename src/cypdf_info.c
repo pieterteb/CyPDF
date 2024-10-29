@@ -2,7 +2,7 @@
 #include "cypdf_dict.h"
 #include "cypdf_dict_parameters.h"
 #include "cypdf_log.h"
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 #include "cypdf_string.h"
 
 

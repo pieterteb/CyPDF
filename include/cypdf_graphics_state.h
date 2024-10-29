@@ -3,7 +3,7 @@
 
 
 #include "cypdf_dict.h"
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
 
 
 
@@ -29,18 +29,18 @@ typedef CYPDF_ObjDict CYPDF_ObjGraphicsState;
 typedef CYPDF_ObjGraphicsState CYPDF_ObjGFXState;
 
 
-CYPDF_ObjGFXState* CYPDF_NewGFXState(CYPDF_MemMgr* const restrict memmgr);
+CYPDF_ObjGFXState* CYPDF_NewGFXState(CYPDF_MemMgr* const memmgr);
 
 
-void CYPDF_GFXStateLineWidth(CYPDF_ObjGFXState* const restrict gfx_state, const float line_width);
+void CYPDF_GFXStateLineWidth(CYPDF_ObjGFXState* const gfx_state, const float line_width);
 
-void CYPDF_GFXStateLineCap(CYPDF_ObjGFXState* const restrict gfx_state, const int line_cap);
+void CYPDF_GFXStateLineCap(CYPDF_ObjGFXState* const gfx_state, const int line_cap);
 
-void CYPDF_GFXStateLineJoin(CYPDF_ObjGFXState* const restrict gfx_state, const int line_join);
+void CYPDF_GFXStateLineJoin(CYPDF_ObjGFXState* const gfx_state, const int line_join);
 
-void CYPDF_GFXStateMiterLimit(CYPDF_ObjGFXState* const restrict gfx_state, const float miter_limit);
+void CYPDF_GFXStateMiterLimit(CYPDF_ObjGFXState* const gfx_state, const float miter_limit);
 
-void CYPDF_GFXStateDashPattern(CYPDF_ObjGFXState* const restrict gfx_state, const int* const dash_array, const size_t dash_array_size, const int dash_phase);
+void CYPDF_GFXStateDashPattern(CYPDF_ObjGFXState* const gfx_state, const int* const dash_array, const size_t dash_array_size, const int dash_phase);
 
 
 

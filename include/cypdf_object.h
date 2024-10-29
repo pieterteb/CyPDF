@@ -6,7 +6,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "cypdf_memmgr.h"
+#include "cypdf_memory.h"
+#include "cypdf_print.h"
 #include "cypdf_types.h"
 
 

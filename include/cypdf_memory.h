@@ -1,5 +1,5 @@
-#ifndef CYPDF_MMGR_H
-#define CYPDF_MMGR_H
+#ifndef CYPDF_MEMORY_H
+#define CYPDF_MEMORY_H
 
 
 #include <stddef.h>
@@ -33,4 +33,4 @@ void* CYPDF_realloc(void* ptr, size_t size);
 
 
 
-#endif /* CYPDF_MMGR_H */
+#endif /* CYPDF_MEMORY_H */

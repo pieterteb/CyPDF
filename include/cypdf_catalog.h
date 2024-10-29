@@ -10,7 +10,7 @@
 typedef CYPDF_ObjDict CYPDF_ObjCatalog;
 
 
-CYPDF_ObjCatalog* CYPDF_NewCatalog(CYPDF_MemMgr* const restrict memmgr, CYPDF_ObjPageNode* const restrict pages);
+CYPDF_ObjCatalog* CYPDF_NewCatalog(CYPDF_MemMgr* const memmgr, CYPDF_ObjPageNode* const pages);
 
 
 
