@@ -39,13 +39,14 @@ CYPDF_ObjName* CYPDF_ResourcesGetName(CYPDF_ObjResources* const resources, const
 void CYPDF_ResourcesAddGFXState(CYPDF_ObjResources* const resources, CYPDF_ObjGFXState* const gfx_state) {
     CYPDF_TRACE;
 
-    CYPDF_ObjDict* gfx_state_dict;
-    if (CYPDF_DictLength(resources) < CYPDF_RESOURCE_GFX_STATE_I - 1U) {
+    CYPDF_ObjDict* gfx_state_dict = NULL;
+    if (!CYPDF_DictKeyAtIndex(resources, CYPDF_RESOURCE_GFX_STATE_I)) {
         gfx_state_dict = CYPDF_NewDict(resources->memmgr);
-        CYPDF_DictAppend(resources, CYPDF_GFX_STATE_TYPE_K, gfx_state_dict);
+        CYPDF_DictSetAtIndex(resources, CYPDF_RESOURCE_GFX_STATE_I, CYPDF_RESOURCE_GFX_STATE_K, gfx_state_dict);
     } else {
         gfx_state_dict = CYPDF_DictValueAtIndex(resources, CYPDF_RESOURCE_GFX_STATE_I);
     }
+
     char entry[sizeof(CYPDF_RESOURCES_GFXSTATE_ENUM) + 16] = { 0 };
     sprintf(entry, "%s%zu", CYPDF_RESOURCES_GFXSTATE_ENUM, CYPDF_DictLength(gfx_state_dict));
     CYPDF_DictAppend(gfx_state_dict, entry, gfx_state);
