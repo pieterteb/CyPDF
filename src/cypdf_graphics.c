@@ -19,7 +19,7 @@
 
 
 
-static void CYPDF_GraphicAppend(CYPDF_Graphic* const restrict graphic, CYPDF_Operator* const restrict operator);
+static void CYPDF_GraphicAppend(CYPDF_Graphic* const graphic, CYPDF_Operator* const operator);
 
 
 CYPDF_Graphic* CYPDF_NewGraphic(void) {
@@ -27,49 +27,39 @@ CYPDF_Graphic* CYPDF_NewGraphic(void) {
 
     CYPDF_Graphic* graphic = (CYPDF_Graphic*)CYPDF_malloc(sizeof(CYPDF_Graphic));
 
-    if (graphic) {
-        graphic->display_page = NULL;
+    graphic->display_page = NULL;
+    graphic->operator_list = CYPF_NewList(CYPDF_LIST_DEFAULT_BLOCK_SIZE);
+    graphic->current_point = CYPDF_DEFAULT_POINT;
+    graphic->current_subpath_point = CYPDF_DEFAULT_POINT;
 
-        graphic->operators = NULL;
-        graphic->operator_count = 0;
-
-        graphic->current_point = CYPDF_DEFAULT_POINT;
-        graphic->current_subpath_point = CYPDF_DEFAULT_POINT;
-
-        graphic->memmgr = CYPDF_NewMemMgr(CYPDF_FreeObj);
-    }
+    graphic->memmgr = CYPDF_NewMemMgr(CYPDF_FreeObj);
 
     return graphic;
 }
 
-void CYPDF_FreeGraphic(void* _graphic) {
+void CYPDF_FreeGraphic(void* ptr) {
     CYPDF_TRACE;
 
-    if (_graphic) {
-        CYPDF_Graphic* graphic = (CYPDF_Graphic*)_graphic;
-        CYPDF_DestroyMemMgr(graphic->memmgr);
-        for (size_t i = 0; i < graphic->operator_count; ++i) {
-            CYPDF_FreeOperator(graphic->operators[i]);
-        }
-        free(graphic->operators);
+    CYPDF_Graphic* graphic = (CYPDF_Graphic*)ptr;
 
-        free(graphic);
-    }
+    CYPDF_FreeList(graphic->operator_list);
+    CYPDF_DestroyMemMgr(graphic->memmgr);
+
+    free(graphic);
 }
 
-void CYPDF_PrintGraphic(CYPDF_Channel* const restrict channel, const CYPDF_Graphic* const restrict graphic) {
+void CYPDF_PrintGraphic(CYPDF_Channel* const channel, const CYPDF_Graphic* const graphic) {
     CYPDF_TRACE;
 
-    if (graphic && channel) {
-        CYPDF_Operator* operator = NULL;
-        for (size_t i = 0; i < graphic->operator_count; ++i) {
-            operator = graphic->operators[i];
-            CYPDF_PrintOperator(channel, operator);
-            if (i == graphic->operator_count - 1) {
-                break;
-            }
-            CYPDF_ChannelPrintNL(channel);
+    CYPDF_Operator* operator = NULL;
+    size_t length = CYPDF_ListLength(graphic->operator_list);
+    for (size_t i = 0; i < length; ++i) {
+        operator = CYPDF_ListAtIndex(graphic->operator_list, i);
+        CYPDF_PrintOperator(channel, operator);
+        if (i == length - 1) {
+            break;
         }
+        CYPDF_ChannelPrintNL(channel);
     }
 }
 
@@ -79,17 +69,13 @@ void CYPDF_GraphicSetPage(CYPDF_Graphic* const graphic, CYPDF_ObjPage* const pag
 }
 
 
-static void CYPDF_GraphicAppend(CYPDF_Graphic* const restrict graphic, CYPDF_Operator* const restrict operator) {
+static void CYPDF_GraphicAppend(CYPDF_Graphic* const graphic, CYPDF_Operator* const operator) {
     CYPDF_TRACE;
 
-    if (graphic && operator) {
-        graphic->operators = CYPDF_realloc(graphic->operators, (graphic->operator_count + 1) * sizeof(CYPDF_Operator*));
-        graphic->operators[graphic->operator_count] = operator;
-        ++graphic->operator_count;
-    }
+    CYPFD_ListAppend(graphic->operator_list, operator);
 }
 
-void CYPDF_GraphicBegin(CYPDF_Graphic* const restrict graphic, const CYPDF_Point start_point) {
+void CYPDF_GraphicBegin(CYPDF_Graphic* const graphic, const CYPDF_Point start_point) {
     CYPDF_TRACE;
 
     if (graphic) {

@@ -110,9 +110,10 @@ static void CYPDF_DocConstructContents(CYPDF_Doc* const pdf) {
         CYPDF_ObjStream* stream = CYPDF_NewStream(pdf->obj_memmgr);
         CYPDF_DocAddObject(pdf, stream);
         channel->stream = stream;
-        CYPDF_PrintGraphic(channel, CYPDF_ListAtIndex(pdf->graphic_list, i));
+        CYPDF_Graphic* graphic = CYPDF_ListAtIndex(pdf->graphic_list, i);
+        CYPDF_PrintGraphic(channel, graphic);
 
-        CYPDF_PageAddContent(((CYPDF_Graphic*)CYPDF_ListAtIndex(pdf->graphic_list, i))->display_page, stream);
+        CYPDF_PageAddContent(graphic->display_page, stream);
     }
 }
 

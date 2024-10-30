@@ -47,10 +47,6 @@ void CYPDF_PrintList(CYPDF_List* const list, CYPDF_Channel* const channel, const
 void CYPFD_ListAppend(CYPDF_List* const list, void* const element) {
     CYPDF_TRACE;
 
-    if (!list) {
-        fprintf(stderr, "List is NULL.\n");
-    }
-    
     if (list->element_count == list->tot_size) {
         Resize(list);
     }

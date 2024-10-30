@@ -6,6 +6,7 @@
 
 #include "cypdf_color.h"
 #include "cypdf_graphics_state.h"
+#include "cypdf_list.h"
 #include "cypdf_memory.h"
 #include "cypdf_operators.h"
 #include "cypdf_pages.h"
@@ -15,15 +16,14 @@
 
 
 typedef struct CYPDF_Graphic {
-    CYPDF_ObjPage*      display_page;
+    CYPDF_ObjPage*  display_page;
 
-    CYPDF_Operator**    operators;
-    size_t              operator_count;
+    CYPDF_List*     operator_list;
 
-    CYPDF_Point         current_point;
-    CYPDF_Point         current_subpath_point;
+    CYPDF_Point     current_point;
+    CYPDF_Point     current_subpath_point;
 
-    CYPDF_MemMgr*       memmgr;
+    CYPDF_MemMgr*   memmgr;
 } CYPDF_Graphic;
 
 
@@ -31,13 +31,13 @@ CYPDF_Graphic* CYPDF_NewGraphic(void);
 
 void CYPDF_FreeGraphic(void* _graphic);
 
-void CYPDF_PrintGraphic(CYPDF_Channel* const restrict channel, const CYPDF_Graphic* const restrict graphic);
+void CYPDF_PrintGraphic(CYPDF_Channel* const channel, const CYPDF_Graphic* const graphic);
 
 
 void CYPDF_GraphicSetPage(CYPDF_Graphic* const graphic, CYPDF_ObjPage* const page);
 
 
-void CYPDF_GraphicBegin(CYPDF_Graphic* const restrict graphic, const CYPDF_Point start_point);
+void CYPDF_GraphicBegin(CYPDF_Graphic* const graphic, const CYPDF_Point start_point);
 
 void CYPDF_GraphicLineseg(CYPDF_Graphic* const restrict graphic, const CYPDF_Point end_point);
 
