@@ -14,7 +14,7 @@
 #include "cypdf_number.h"
 #include "cypdf_operators.h"
 #include "cypdf_print.h"
-#include "cypdf_resources.h"
+#include "cypdf_resource.h"
 #include "cypdf_types.h"
 
 
@@ -311,7 +311,7 @@ void CYPDF_GraphicGFXState(CYPDF_Graphic* const restrict graphic, CYPDF_ObjGFXSt
 
     if (graphic) {
         CYPDF_Operator* gfx_state_op = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_EXTGSTATE);
-        CYPDF_ObjName* gfx_state_name = CYPDF_ResourcesGetName(CYPDF_DictValueAtIndex(graphic->display_page, CYPDF_PAGE_RESOURCES_I), CYPDF_RESOURCE_GFX_STATE_I, gfx_state);
+        CYPDF_ObjName* gfx_state_name = CYPDF_ResourceGetName(CYPDF_DictValueAtIndex(graphic->display_page, CYPDF_PAGE_RESOURCES_I), CYPDF_RESOURCE_GFX_STATE_I, gfx_state);
         CYPDF_OperatorAppendOperand(gfx_state_op, gfx_state_name);
 
         CYPDF_GraphicAppend(graphic, gfx_state_op);
