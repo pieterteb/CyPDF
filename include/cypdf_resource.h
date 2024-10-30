@@ -12,8 +12,8 @@
 
 
 
-#define CYPDF_RESOURCES_GFXSTATE_ENUM   "G"
-#define CYPDF_RESOURCES_XOBJECT_ENUM    "X"
+#define CYPDF_RESOURCE_GFXSTATE_ENUM    "G"
+#define CYPDF_RESOURCE_XOBJECT_ENUM     "X"
 
 
 typedef CYPDF_ObjDict CYPDF_ObjResource;
