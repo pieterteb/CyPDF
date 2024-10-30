@@ -39,7 +39,7 @@ add_executable(CyPDF
     src/cypdf_operators.c
     src/cypdf_pages.c
     src/cypdf_print.c
-    src/cypdf_resources.c
+    src/cypdf_resource.c
     src/cypdf_stream.c
     src/cypdf_string.c
     src/cypdf_time.c

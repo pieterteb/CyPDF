@@ -8,7 +8,7 @@
 #include "cypdf_name.h"
 #include "cypdf_integer.h"
 #include "cypdf_object.h"
-#include "cypdf_resources.h"
+#include "cypdf_resource.h"
 #include "cypdf_stream.h"
 #include "cypdf_types.h"
 
@@ -26,7 +26,7 @@ CYPDF_ObjPage* CYPDF_NewPage(CYPDF_MemMgr* const memmgr, CYPDF_ObjPageNode* cons
 
     CYPDF_DictSetAtIndex(page, CYPDF_TYPE_I, CYPDF_TYPE_K, CYPDF_NewName(page->memmgr, CYPDF_PAGE_TYPE_K));
     CYPDF_DictSetAtIndex(page, CYPDF_PAGE_PARENT_I, CYPDF_PAGE_PARENT_K, parent);
-    CYPDF_DictSetAtIndex(page, CYPDF_PAGE_RESOURCES_I, CYPDF_PAGE_RESOURCES_K, CYPDF_NewResources(page->memmgr));
+    CYPDF_DictSetAtIndex(page, CYPDF_PAGE_RESOURCES_I, CYPDF_PAGE_RESOURCES_K, CYPDF_NewResource(page->memmgr));
     CYPDF_DictSetAtIndex(page, CYPDF_PAGE_MEDIABOX_I, CYPDF_PAGE_MEDIABOX_K, CYPDF_ArrayFromRect(page->memmgr, media_box));
     CYPDF_DictSetAtIndex(page, CYPDF_PAGE_CONTENTS_I, CYPDF_PAGE_CONTENTS_K, CYPDF_NewArray(page->memmgr));
 
@@ -74,7 +74,7 @@ void CYPDF_PageAddContent(CYPDF_ObjPage* const page, CYPDF_ObjStream* const stre
 }
 
 
-void CYPDF_PageSetResources(CYPDF_ObjPage* const page, CYPDF_ObjResources* const resources) {
+void CYPDF_PageSetResources(CYPDF_ObjPage* const page, CYPDF_ObjResource* const resources) {
     CYPDF_TRACE;
 
     if (page) {
