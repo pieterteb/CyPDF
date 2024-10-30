@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "cypdf_operators.h"
+#include "cypdf_list.h"
 #include "cypdf_log.h"
 #include "cypdf_memory.h"
 #include "cypdf_object.h"
@@ -61,11 +62,8 @@ CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type) {
 
     CYPDF_Operator* operator = (CYPDF_Operator*)CYPDF_malloc(sizeof(CYPDF_Operator));
 
-    if (operator) {
-        operator->type = type;
-        operator->operands = NULL;
-        operator->operand_count = 0;
-    }
+    operator->type = type;
+    operator->operand_list = CYPF_NewList(CYPDF_LIST_DEFAULT_BLOCK_SIZE);
 
     return operator;
 }
@@ -73,56 +71,38 @@ CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type) {
 void CYPDF_FreeOperator(CYPDF_Operator* operator) {
     CYPDF_TRACE;
 
-    if (operator) {
-        free(operator->operands);
+    CYPDF_FreeList(operator->operand_list);
 
-        free(operator);
-    }
+    free(operator);
 }
 
-void CYPDF_PrintOperator(CYPDF_Channel* const restrict channel, const CYPDF_Operator* const operator) {
+void CYPDF_PrintOperator(CYPDF_Channel* const channel, const CYPDF_Operator* const operator) {
     CYPDF_TRACE;
 
-    if (operator) {
-        for (size_t i = 0; i < operator->operand_count; ++i) {
-            CYPDF_PrintObjDirect(channel, operator->operands[i]);
-            CYPDF_ChannelPrint(channel, " ");
-        }
-        
-        CYPDF_ChannelPrint(channel, "%s", CYPDF_OperatorGetKey(operator));
+    for (size_t i = 0; i < CYPDF_ListLength(operator->operand_list); ++i) {
+        CYPDF_PrintObjDirect(channel, CYPDF_ListAtIndex(operator->operand_list, i));
+        CYPDF_ChannelPrint(channel, " ");
     }
+    
+    CYPDF_ChannelPrint(channel, "%s", CYPDF_OperatorGetKey(operator));
 }
 
 
 char* CYPDF_OperatorGetKey(const CYPDF_Operator* const operator) {
     CYPDF_TRACE;
 
-    char* name = NULL;
-
-    if (operator) {
-        name = operator_names[operator->type];
-    }
-
-    return name;
+    return operator_names[operator->type];
 }
 
-void CYPDF_OperatorAppendOperand(CYPDF_Operator* const restrict operator, CYPDF_Object* const restrict operand) {
+void CYPDF_OperatorAppendOperand(CYPDF_Operator* const operator, CYPDF_Object* const operand) {
     CYPDF_TRACE;
 
-    if (operator && operand) {
-        operator->operands = CYPDF_realloc(operator->operands, (operator->operand_count + 1) * sizeof(CYPDF_Object*));
-        operator->operands[operator->operand_count] = operand;
-        ++operator->operand_count;
-    }
+    CYPFD_ListAppend(operator->operand_list, operand);
 }
 
 
 bool CYPDF_OperatorIsPainting(const CYPDF_Operator* const restrict operator) {
     CYPDF_TRACE;
 
-    if (operator) {
-        return operator->type >= CYPDF_OPERATOR_PATH_STROKE && operator->type <= CYPDF_OPERATOR_PATH_END;
-    }
-
-    return false;
+    return operator->type >= CYPDF_OPERATOR_PATH_STROKE && operator->type <= CYPDF_OPERATOR_PATH_END;
 }

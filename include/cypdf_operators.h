@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "cypdf_list.h"
 #include "cypdf_types.h"
 
 
@@ -144,9 +145,7 @@ enum CYPDF_OPERATOR_TYPE {
 
 typedef struct CYPDF_Operator {
     enum CYPDF_OPERATOR_TYPE    type;
-
-    CYPDF_Object**              operands;
-    size_t                      operand_count;
+    CYPDF_List*                 operand_list;
 } CYPDF_Operator;
 
 
@@ -154,12 +153,12 @@ CYPDF_Operator* CYPDF_NewOperator(const enum CYPDF_OPERATOR_TYPE type);
 
 void CYPDF_FreeOperator(CYPDF_Operator* operator);
 
-void CYPDF_PrintOperator(CYPDF_Channel* const restrict channel, const CYPDF_Operator* const operator);
+void CYPDF_PrintOperator(CYPDF_Channel* const channel, const CYPDF_Operator* const operator);
 
 
-char* CYPDF_OperatorGetKey(const CYPDF_Operator* const restrict operator);
+char* CYPDF_OperatorGetKey(const CYPDF_Operator* const operator);
 
-void CYPDF_OperatorAppendOperand(CYPDF_Operator* const restrict operator, CYPDF_Object* const restrict operand);
+void CYPDF_OperatorAppendOperand(CYPDF_Operator* const operator, CYPDF_Object* const operand);
 
 
 bool CYPDF_OperatorIsPainting(const CYPDF_Operator* const restrict operator);
