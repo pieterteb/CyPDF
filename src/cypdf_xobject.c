@@ -15,15 +15,17 @@ CYPDF_XObject* CYPDF_NewXObject(CYPDF_MemMgr* const memmgr, const enum CYPDF_XOB
 
     xobject->header.subclass = CYPDF_OBJ_SUBCLASS_XOBJECT;
     CYPDF_DictSetAtIndex(xobject, CYPDF_TYPE_I, CYPDF_TYPE_K, CYPDF_NewName(xobject->memmgr, CYPDF_XOBJECT_TYPE_K));
+    CYPDF_ObjName* subtype = NULL;
     switch  (type)
     {
     case CYPDF_XOBJECT_IMAGE:
-        CYPDF_DictSetAtIndex(xobject, CYPDF_XOBJECT_SUBTYPE_I, CYPDF_XOBJECT_SUBTYPE_K, CYPDF_NewName(xobject->memmgr, CYPDF_XOBJECT_IMAGE_K));
+        subtype = CYPDF_NewName(xobject->memmgr, CYPDF_XOBJECT_IMAGE_K);
         break;
     default:
-        CYPDF_DictSetAtIndex(xobject, CYPDF_XOBJECT_SUBTYPE_I, CYPDF_XOBJECT_SUBTYPE_K, CYPDF_NewName(xobject->memmgr, CYPDF_XOBJECT_FORM_K));
+        subtype = CYPDF_NewName(xobject->memmgr, CYPDF_XOBJECT_FORM_K);
         break;
     }
+    CYPDF_DictSetAtIndex(xobject, CYPDF_XOBJECT_SUBTYPE_I, CYPDF_XOBJECT_SUBTYPE_K, subtype);
 
     return xobject;
 }
