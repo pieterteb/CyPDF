@@ -130,5 +130,12 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 #define CYPDF_GFX_STATE_DASH_PATTERN_I      5
 
 
+/* External Object Dictionary Keywords */
+#define CYPDF_XOBJECT_TYPE_K                "XObject"
+#define CYPDF_XOBJECT_SUBTYPE_K             "Subtype"
+
+#define CYPDF_XOBJECT_SUBTYPE_I             1
+
+
 
 #endif /* CYPDF_DICT_PARAMETERS_H */
