@@ -47,8 +47,8 @@ void CYPDF_ResourceAddGFXState(CYPDF_ObjResource* const resource, CYPDF_ObjGFXSt
         gfx_state_dict = CYPDF_DictValueAtIndex(resource, CYPDF_RESOURCE_GFX_STATE_I);
     }
 
-    char entry[sizeof(CYPDF_RESOURCES_GFXSTATE_ENUM) + 16] = { 0 };
-    sprintf(entry, "%s%zu", CYPDF_RESOURCES_GFXSTATE_ENUM, CYPDF_DictLength(gfx_state_dict));
+    char entry[sizeof(CYPDF_RESOURCE_GFXSTATE_ENUM) + 16] = { 0 };
+    sprintf(entry, "%s%zu", CYPDF_RESOURCE_GFXSTATE_ENUM, CYPDF_DictLength(gfx_state_dict));
     CYPDF_DictAppend(gfx_state_dict, entry, gfx_state);
 }
 
