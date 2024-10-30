@@ -16,10 +16,10 @@ enum CYPDF_XOBJECT_TYPE {
 };
 
 
-typedef CYPDF_ObjDict CYPDF_XObject;
+typedef CYPDF_ObjDict CYPDF_ObjXObject;
 
 
-CYPDF_XObject* CYPDF_NewXObject(CYPDF_MemMgr* const memmgr, const enum CYPDF_XOBJECT_TYPE type);
+CYPDF_ObjXObject* CYPDF_NewXObject(CYPDF_MemMgr* const memmgr, const enum CYPDF_XOBJECT_TYPE type);
 
 
 

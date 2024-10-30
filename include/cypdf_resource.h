@@ -9,6 +9,7 @@
 #include "cypdf_memory.h"
 #include "cypdf_name.h"
 #include "cypdf_types.h"
+#include "cypdf_xobject.h"
 
 
 
@@ -26,6 +27,8 @@ CYPDF_ObjName* CYPDF_ResourceGetName(CYPDF_ObjResource* const resource, const si
 
 
 void CYPDF_ResourceAddGFXState(CYPDF_ObjResource* const resource, CYPDF_ObjGFXState* const gfx_state);
+
+void CYPDF_ResourceAddXObject(CYPDF_ObjResource* const resource, CYPDF_ObjXObject* const xobject);
 
 
 

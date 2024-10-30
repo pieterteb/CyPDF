@@ -8,10 +8,10 @@
 
 
 
-CYPDF_XObject* CYPDF_NewXObject(CYPDF_MemMgr* const memmgr, const enum CYPDF_XOBJECT_TYPE type) {
+CYPDF_ObjXObject* CYPDF_NewXObject(CYPDF_MemMgr* const memmgr, const enum CYPDF_XOBJECT_TYPE type) {
     CYPDF_TRACE;
 
-    CYPDF_XObject* xobject = CYPDF_NewDict(memmgr);
+    CYPDF_ObjXObject* xobject = CYPDF_NewDict(memmgr);
 
     xobject->header.subclass = CYPDF_OBJ_SUBCLASS_XOBJECT;
     CYPDF_DictSetAtIndex(xobject, CYPDF_TYPE_I, CYPDF_TYPE_K, CYPDF_NewName(xobject->memmgr, CYPDF_XOBJECT_TYPE_K));
