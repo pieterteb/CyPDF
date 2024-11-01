@@ -2,6 +2,7 @@
 #define CYPDF_XOBJECT_H
 
 
+#include "cypdf_memory.h"
 #include "cypdf_stream.h"
 
 

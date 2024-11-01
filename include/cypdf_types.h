@@ -7,7 +7,7 @@
 
 
 /* CYPDF_Point struct */
-typedef struct _CYPDF_Point {
+typedef struct CYPDF_Point {
     float x;
     float y;
 } CYPDF_Point;
@@ -16,12 +16,23 @@ typedef struct _CYPDF_Point {
 
 
 /* CYPDF_Rect struct */
-typedef struct _CYPDF_Rect {
+typedef struct CYPDF_Rect {
     CYPDF_Point lower_left;
     CYPDF_Point upper_right;
 } CYPDF_Rect;
 
 #define CYPDF_TO_RECT(x1, y1, x2, y2)       (CYPDF_Rect){ CYPDF_TO_POINT((x1), (y1)), CYPDF_TO_POINT((x2), (y2)) }
+
+
+/* CYPDF_TransMatrix */
+typedef struct CYPDF_TransMatrix {
+    float a;
+    float b;
+    float c;
+    float d;
+    float e;
+    float f;
+} CYPDF_TransMatrix;
 
 
 typedef void CYPDF_Object;
