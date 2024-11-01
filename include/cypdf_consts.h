@@ -75,6 +75,8 @@
 /* Default user space coordinate. */
 #define CYPDF_DEFAULT_POINT         CYPDF_TO_POINT(0, 0)
 
+#define CYPDF_DEFAULT_TRANSMATRIX   CYPDF_TO_TRANSMATRIX(1, 0, 0, 1, 0, 0)
+
 
 /* PI */
 #ifndef M_PI

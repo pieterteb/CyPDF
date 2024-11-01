@@ -2,8 +2,6 @@
 #define CYPDF_IMAGE_H
 
 
-#include <stdbool.h>
-
 #include "cypdf_types.h"
 #include "cypdf_xobject.h"
 
@@ -16,6 +14,9 @@ typedef struct CYPDF_Image {
 
     CYPDF_ObjXObject*   xobject;
 } CYPDF_Image;
+
+
+CYPDF_Image* CYPDF_NewImage(CYPDF_MemMgr* restrict const memmgr, const char path[restrict static 1], const CYPDF_TransMatrix matrix);
 
 
 

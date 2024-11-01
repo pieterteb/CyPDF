@@ -12,7 +12,7 @@ typedef struct CYPDF_Point {
     float y;
 } CYPDF_Point;
 
-#define CYPDF_TO_POINT(x, y)                (CYPDF_Point){ (float)(x), (float)(y) }
+#define CYPDF_TO_POINT(x, y)                    ((CYPDF_Point){ (float)(x), (float)(y) })
 
 
 /* CYPDF_Rect struct */
@@ -21,7 +21,7 @@ typedef struct CYPDF_Rect {
     CYPDF_Point upper_right;
 } CYPDF_Rect;
 
-#define CYPDF_TO_RECT(x1, y1, x2, y2)       (CYPDF_Rect){ CYPDF_TO_POINT((x1), (y1)), CYPDF_TO_POINT((x2), (y2)) }
+#define CYPDF_TO_RECT(x1, y1, x2, y2)           ((CYPDF_Rect){ CYPDF_TO_POINT((x1), (y1)), CYPDF_TO_POINT((x2), (y2)) })
 
 
 /* CYPDF_TransMatrix */
@@ -33,6 +33,8 @@ typedef struct CYPDF_TransMatrix {
     float e;
     float f;
 } CYPDF_TransMatrix;
+
+#define CYPDF_TO_TRANSMATRIX(a, b, c, d, e, f)  ((CYPDF_TransMatrix){ (a), (b), (c), (d), (e), (f) })
 
 
 typedef void CYPDF_Object;
