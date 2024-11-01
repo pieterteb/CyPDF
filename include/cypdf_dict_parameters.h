@@ -136,5 +136,17 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 #define CYPDF_XOBJECT_SUBTYPE_I             CYPDF_STREAM_DECODED_LENGTH_I + 1
 
 
+/* Image-Specific XObject Keywords */
+#define CYPDF_IMAGE_WIDTH_K                 "Width"
+#define CYPDF_IMAGE_HEIGHT_K                "Height"
+#define CYPDF_IMAGE_COLOR_SPACE_K           "ColorSpace"
+#define CYPDF_IMAGE_BITS_PER_COMPONENT_K    "BitsPerComponent"
+
+#define CYPDF_IMAGE_WIDTH_I                 CYPDF_XOBJECT_SUBTYPE_I + 1
+#define CYPDF_IMAGE_HEIGHT_I                CYPDF_IMAGE_WIDTH_I + 1
+#define CYPDF_IMAGE_COLOR_SPACE_I           CYPDF_IMAGE_HEIGHT_I + 1
+#define CYPDF_IMAGE_BITS_PER_COMPONENT_I    CYPDF_IMAGE_COLOR_SPACE_I + 1
+
+
 
 #endif /* CYPDF_DICT_PARAMETERS_H */

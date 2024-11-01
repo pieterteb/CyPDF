@@ -84,6 +84,9 @@ h
 #define CYPDF_OPERATOR_COLOR_STROKING_CMYK_K        "K"
 #define CYPDF_OPERATOR_COLOR_NONSTROKING_CMYK_K     "k"
 
+/* XObject Keywords */
+#define CYPDF_OPERATOR_XOBJECT_K                    "Do"
+
 
 
 enum CYPDF_OPERATOR_TYPE {
@@ -137,6 +140,9 @@ enum CYPDF_OPERATOR_TYPE {
     CYPDF_OPERATOR_COLOR_NONSTROKING_RGB,           /* r g b | Set the nonstroking color space to DeviceRGB and set the color to use for stroking operations. */
     CYPDF_OPERATOR_COLOR_STROKING_CMYK,             /* c m y k | Set the stroking color space to DeviceCMYK and set the color to use for stroking operations. */
     CYPDF_OPERATOR_COLOR_NONSTROKING_CMYK,          /* c m y k | Set the nonstroking color space to DeviceCMYK and set the color to use for stroking operations. */
+
+    /* XObject */
+    CYPDF_OPERATOR_XOBJECT,
 
     CYPDF_OPERATOR_COUNT,
 };

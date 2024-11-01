@@ -7,6 +7,7 @@
 #include "cypdf_dict_parameters.h"
 #include "cypdf_doc.h"
 #include "cypdf_graphics_state.h"
+#include "cypdf_image.h"
 #include "cypdf_integer.h"
 #include "cypdf_log.h"
 #include "cypdf_memory.h"
@@ -453,4 +454,15 @@ void CYPDF_GraphicFillCMYK(CYPDF_Graphic* const restrict graphic, const CYPDF_CM
 
         CYPDF_GraphicAppend(graphic, fill_cmyk);
     }
+}
+
+
+void CYPDF_GraphicImage(CYPDF_Graphic* const graphic, CYPDF_ObjImage* const image, const CYPDF_TransMatrix matrix) {
+    CYPDF_TRACE;
+
+    CYPDF_GraphicTransMatrix(graphic, matrix);
+    CYPDF_Operator* do_image = CYPDF_NewOperator(CYPDF_OPERATOR_XOBJECT);
+    CYPDF_OperatorAppendOperand(do_image, image);
+
+    CYPDF_GraphicAppend(graphic, do_image);
 }

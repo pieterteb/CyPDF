@@ -6,6 +6,7 @@
 
 #include "cypdf_color.h"
 #include "cypdf_graphics_state.h"
+#include "cypdf_image.h"
 #include "cypdf_list.h"
 #include "cypdf_memory.h"
 #include "cypdf_operators.h"
@@ -99,6 +100,9 @@ void CYPDF_GraphicFillRGB(CYPDF_Graphic* const restrict graphic, const CYPDF_RGB
 void CYPDF_GraphicLineCMYK(CYPDF_Graphic* const restrict graphic, const CYPDF_CMYK cmyk);
 
 void CYPDF_GraphicFillCMYK(CYPDF_Graphic* const restrict graphic, const CYPDF_CMYK cmyk);
+
+
+void CYPDF_GraphicImage(CYPDF_Graphic* const graphic, CYPDF_ObjImage* const image, const CYPDF_TransMatrix matrix);
 
 
 

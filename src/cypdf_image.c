@@ -1,21 +1,108 @@
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "cypdf_image.h"
+#include "cypdf_color.h"
+#include "cypdf_dict.h"
+#include "cypdf_dict_parameters.h"
+#include "cypdf_integer.h"
 #include "cypdf_log.h"
 #include "cypdf_memory.h"
-#include "cypdf_types.h"
+#include "cypdf_print.h"
 #include "cypdf_xobject.h"
 
 
 
-CYPDF_Image* CYPDF_NewImage(CYPDF_MemMgr* restrict const memmgr, const char path[restrict static 1], const CYPDF_TransMatrix matrix) {
+static void CYPDF_ImagePNG(CYPDF_ObjImage* const image, FILE* png);
+
+
+CYPDF_ObjImage* CYPDF_NewImage(CYPDF_MemMgr* restrict const memmgr, const char path[restrict static 1]) {
     CYPDF_TRACE;
 
-    CYPDF_Image* image = CYPDF_malloc(sizeof(CYPDF_Image));
+    CYPDF_ObjImage* image = CYPDF_NewXObject(memmgr, CYPDF_XOBJECT_IMAGE);
+    
+    FILE* image_file = fopen(path, "rb");
+    if (!image_file) {
+        fprintf(stderr, "Could not open image file: %s\n", path);
+    }
 
-    strcpy(image->file_path, path);
-    image->trans_matrix = matrix;
-    image->xobject = CYPDF_NewXObject(memmgr, CYPDF_XOBJECT_IMAGE);
+    char* extension = strchr(path, '.') + 1;
+    if (!extension) {
+        fprintf(stderr, "Unimplemented image file type: %s\n", extension);
+    }
+
+    if (strcmp(extension, "png")) {
+        CYPDF_ImagePNG(image, image_file);
+    } else {
+        fprintf(stderr, "Unimplemented image file type: %s\n", extension);
+    }
+
+    fclose(image_file);
 
     return image;
+}
+
+
+static void CYPDF_ImagePNG(CYPDF_ObjImage* const image, FILE* png) {
+    CYPDF_TRACE;
+
+    CYPDF_Channel* image_channel = CYPDF_NewChannel(image, CYPDF_CHANNEL_OBJSTREAM);
+
+    const size_t buff_size = 1024;
+    unsigned char buffer[1024];
+    fread(buffer, sizeof(unsigned char), 8, png);   /* Consume png header bytes. */
+
+    /* Iterate over png chunks. */
+    uint32_t chunk_length = 0;
+    char chunk_type[5] = { 0 };
+
+    /* First chunk is IHDR which contains width, height, bit depth and color type. */
+    fread(&chunk_length, sizeof(uint32_t), 1, png);
+    fread(chunk_type, sizeof(char), 4, png);
+
+    uint32_t width = 0;
+    uint32_t height = 0;
+    unsigned char bit_depth = 0;
+    unsigned char color_type = 0;
+    fread(&width, sizeof(uint32_t), 1, png);
+    fread(&height, sizeof(uint32_t), 1, png);
+    fread(&bit_depth, sizeof(unsigned char), 1, png);
+    fread(&color_type, sizeof(unsigned char), 1, png);
+    CYPDF_DictSetAtIndex(image->dict, CYPDF_IMAGE_WIDTH_I, CYPDF_IMAGE_WIDTH_K, CYPDF_NewInteger(image->dict->memmgr, (int)width));
+    CYPDF_DictSetAtIndex(image->dict, CYPDF_IMAGE_HEIGHT_I, CYPDF_IMAGE_HEIGHT_K, CYPDF_NewInteger(image->dict->memmgr, (int)height));
+    CYPDF_DictSetAtIndex(image->dict, CYPDF_IMAGE_BITS_PER_COMPONENT_I, CYPDF_IMAGE_BITS_PER_COMPONENT_K, CYPDF_NewInteger(image->dict->memmgr, bit_depth));
+
+    CYPDF_ObjName* color_space = NULL;
+    if (color_type & 2) {
+        color_space = CYPDF_NewName(image->dict->memmgr, CYPDF_COLOR_SPACE_DEVGRAY);
+    } else {
+        color_space = CYPDF_NewName(image->dict->memmgr, CYPDF_COLOR_SPACE_DEVGRAY);
+    }
+    CYPDF_DictSetAtIndex(image->dict, CYPDF_IMAGE_COLOR_SPACE_I, CYPDF_IMAGE_COLOR_SPACE_K, color_space);
+    if (color_type & 1 || color_type & 4) {
+        fprintf(stderr, "Can't process alpha or indexed type png's.\n");
+        return;
+    }
+
+    /* Skip excess information and go to image data. */
+    while (strcmp("IDAT", chunk_type)) {
+        fread(&chunk_length, sizeof(uint32_t), 1, png);
+        fread(chunk_type, sizeof(char), 4, png);
+    }
+
+    /* IEND marks the end of the image. */
+    while (strcmp("IEND", chunk_type)) {
+        for (size_t i = 0; i < chunk_length / buff_size; ++i) {
+            fread(buffer, sizeof(unsigned char), buff_size, png);
+            CYPDF_ChannelWrite(image_channel, buffer, sizeof(unsigned char), buff_size);
+        }
+        fread(buffer, sizeof(unsigned char), chunk_length & buff_size, png);
+        CYPDF_ChannelWrite(image_channel, buffer, sizeof(unsigned char), chunk_length & buff_size);
+        fread(&chunk_length, sizeof(uint32_t), 1, png);
+        fread(chunk_type, sizeof(char), 4, png);
+    }
+
+    free(image_channel);
 }
