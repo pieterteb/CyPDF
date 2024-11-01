@@ -23,9 +23,9 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 #define CYPDF_STREAM_DECODED_LENGTH_K       "DL"
 
 #define CYPDF_STREAM_LENGTH_I               0
-#define CYPDF_STREAM_FILTER_I               1
-#define CYPDF_STREAM_DECODE_PARAMETERS_I    2
-#define CYPDF_STREAM_DECODED_LENGTH_I       3
+#define CYPDF_STREAM_FILTER_I               CYPDF_STREAM_LENGTH_I + 1
+#define CYPDF_STREAM_DECODE_PARAMETERS_I    CYPDF_STREAM_FILTER_I + 1
+#define CYPDF_STREAM_DECODED_LENGTH_I       CYPDF_STREAM_DECODE_PARAMETERS_I + 1
 
 
 /* Trailer Dictionary */
@@ -131,10 +131,9 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 
 
 /* External Object Dictionary Keywords */
-#define CYPDF_XOBJECT_TYPE_K                "XObject"
 #define CYPDF_XOBJECT_SUBTYPE_K             "Subtype"
 
-#define CYPDF_XOBJECT_SUBTYPE_I             1
+#define CYPDF_XOBJECT_SUBTYPE_I             CYPDF_STREAM_DECODED_LENGTH_I + 1
 
 
 
