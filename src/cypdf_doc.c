@@ -6,6 +6,7 @@
 #include "cypdf_catalog.h"
 #include "cypdf_consts.h"
 #include "cypdf_dict_parameters.h"
+#include "cypdf_image.h"
 #include "cypdf_list.h"
 #include "cypdf_log.h"
 #include "cypdf_memory.h"
@@ -110,7 +111,19 @@ static void CYPDF_DocConstructContents(CYPDF_Doc* const pdf) {
         CYPDF_ObjStream* stream = CYPDF_NewStream(pdf->obj_memmgr);
         CYPDF_DocAddObject(pdf, stream);
         channel->stream = stream;
+
         CYPDF_Graphic* graphic = CYPDF_ListAtIndex(pdf->graphic_list, i);
+        size_t graphic_length = CYPDF_ListLength(graphic->operator_list);
+        for (size_t j = 0; j < graphic_length; ++j) {
+            CYPDF_Operator* operator = CYPDF_ListAtIndex(graphic->operator_list, j);
+            if (operator->type == CYPDF_OPERATOR_XOBJECT) {
+                CYPDF_ObjResource* resource = CYPDF_DictValueAtIndex(graphic->display_page, CYPDF_PAGE_RESOURCE_I);
+                CYPDF_ObjXObject* xobject = CYPDF_ListAtIndex(operator->operand_list, 0);
+                CYPDF_ResourceAddXObject(resource, xobject);
+                CYPDF_ListSetAtIndex(operator->operand_list, 0, CYPDF_ResourceGetName(resource, CYPDF_RESOURCE_XOBJECT_I, xobject));
+            }
+        }
+
         CYPDF_PrintGraphic(channel, graphic);
 
         CYPDF_PageAddContent(graphic->display_page, stream);
@@ -135,6 +148,15 @@ void CYPDF_DocAddGraphic(CYPDF_Doc* const pdf, CYPDF_ObjPage* const page, CYPDF_
 
     CYPFD_ListAppend(pdf->graphic_list, graphic);
     CYPDF_GraphicSetPage(graphic, page);
+}
+
+CYPDF_ObjImage* CYPDF_DocAddImage(CYPDF_Doc* restrict const pdf, const char image_path[restrict static 1]) {
+    CYPDF_TRACE;
+
+    CYPDF_ObjImage* image = CYPDF_NewImage(pdf->obj_memmgr, image_path);
+    CYPDF_DocAddObject(pdf, image);
+
+    return image;
 }
 
 CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf, CYPDF_Rect dimensions) {

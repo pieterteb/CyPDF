@@ -76,6 +76,15 @@ void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_DocAddGraphic(pdf, page, graphic);
 }
 
+void image(CYPDF_Doc* pdf, CYPDF_ObjPage* page, const char* path) {
+    CYPDF_Graphic* graphic = CYPDF_NewGraphic();
+    CYPDF_ObjImage* image = CYPDF_DocAddImage(pdf, path);
+
+    CYPDF_GraphicImage(graphic, image, CYPDF_DEFAULT_TRANSMATRIX);
+
+    CYPDF_DocAddGraphic(pdf, page, graphic);
+}
+
 
 int main(void) {
     CYPDF_LogInit();
@@ -92,22 +101,15 @@ int main(void) {
     CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
     thick_v(pdf, page3);
 
+    CYPDF_ObjPage* page4 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    image(pdf, page4, "../resources/Pale_Blue_Dot.png");
+
     mkdir("../out", 0700);
 
     CYPDF_PrintDoc(pdf, "../out/test.txt");
     CYPDF_FreeDoc(pdf);
 
     copy_file("../out/test.txt", "../out/test.pdf");
-
-    CYPDF_MemMgr* memmgr = CYPDF_NewMemMgr(CYPDF_FreeObj);
-    CYPDF_ObjImage* test = CYPDF_NewImage(memmgr, "../resources/Pale_Blue_Dot.png");
-    test->header.indirect = true;
-    FILE* test_file = fopen("../out/test2.txt", "wb");
-    CYPDF_Channel* test_channel = CYPDF_NewChannel(test_file, CYPDF_CHANNEL_FILE);
-    CYPDF_PrintObjDef(test_channel, test);
-    free(test_channel);
-    fclose(test_file);
-    CYPDF_DestroyMemMgr(memmgr);
 
     return 0;
 }
