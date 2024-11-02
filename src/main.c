@@ -1,4 +1,6 @@
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef __unix__
     #include <sys/stat.h>
 #elif defined(_WIN64) || defined(_WIN32)
@@ -96,6 +98,16 @@ int main(void) {
     CYPDF_FreeDoc(pdf);
 
     copy_file("../out/test.txt", "../out/test.pdf");
+
+    CYPDF_MemMgr* memmgr = CYPDF_NewMemMgr(CYPDF_FreeObj);
+    CYPDF_ObjImage* test = CYPDF_NewImage(memmgr, "../resources/Pale_Blue_Dot.png");
+    test->header.indirect = true;
+    FILE* test_file = fopen("../out/test2.txt", "wb");
+    CYPDF_Channel* test_channel = CYPDF_NewChannel(test_file, CYPDF_CHANNEL_FILE);
+    CYPDF_PrintObjDef(test_channel, test);
+    free(test_channel);
+    fclose(test_file);
+    CYPDF_DestroyMemMgr(memmgr);
 
     return 0;
 }
