@@ -80,7 +80,8 @@ void image(CYPDF_Doc* pdf, CYPDF_ObjPage* page, const char* path) {
     CYPDF_Graphic* graphic = CYPDF_NewGraphic();
     CYPDF_ObjImage* image = CYPDF_DocAddImage(pdf, path);
 
-    CYPDF_GraphicImage(graphic, image, CYPDF_DEFAULT_TRANSMATRIX);
+    CYPDF_TransMatrix mat = CYPDF_DEFAULT_TRANSMATRIX;
+    CYPDF_GraphicImage(graphic, image, *CYPDF_TransMatrixTranslate(&mat, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_A4_HEIGHT / 2)));
 
     CYPDF_DocAddGraphic(pdf, page, graphic);
 }

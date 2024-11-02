@@ -5,6 +5,7 @@
 #include "cypdf_doc.h"
 #include "cypdf_consts.h"
 #include "cypdf_log.h"
+#include "cypdf_utils.h"
 
 
 
