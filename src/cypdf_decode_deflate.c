@@ -1,6 +1,6 @@
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "cypdf_decode_deflate.h"
@@ -39,6 +39,8 @@ static void AppendByte(CYPDF_Inflate* const inflate, const unsigned char byte);
 
 
 unsigned char* CYPDF_DecodeInflate(const unsigned char* restrict const source, const size_t len, size_t* restrict const inflated_len) {
+    CYPDF_TRACE;
+
     if (!source) {
         return NULL;
     }
@@ -108,6 +110,9 @@ static void BlockFixed(CYPDF_Inflate* const inflate) {
             ProcessLZ77(inflate, code, dist_alphabet, dist_code_lens);
         }
     }
+
+    free(lit_alphabet);
+    free(dist_alphabet);
 }
 
 static void BlockUncompressed(CYPDF_Inflate* const inflate) {
