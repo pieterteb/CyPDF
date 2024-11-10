@@ -78,28 +78,36 @@ void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_DocAddGraphic(pdf, page, graphic);
 }
 
-
+#include "cypdf_decode_deflate.h"
 int main(void) {
-    CYPDF_LogInit();
+    // CYPDF_LogInit();
 
-    CYPDF_Doc* pdf = CYPDF_NewDoc();
+    // CYPDF_Doc* pdf = CYPDF_NewDoc();
 
-    CYPDF_ObjPage* page1 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    first_n_polygons(pdf, page1, 10);
+    // CYPDF_ObjPage* page1 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    // first_n_polygons(pdf, page1, 10);
 
-    /* Draws an approximation of a circle using two Bézier curves. */
-    CYPDF_ObjPage* page2 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    bezier_circle(pdf, page2);
+    // /* Draws an approximation of a circle using two Bézier curves. */
+    // CYPDF_ObjPage* page2 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    // bezier_circle(pdf, page2);
 
-    CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    thick_v(pdf, page3);
+    // CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    // thick_v(pdf, page3);
 
-    mkdir("../out", 0700);
+    // mkdir("../out", 0700);
 
-    CYPDF_PrintDoc(pdf, "../out/test.txt");
-    CYPDF_FreeDoc(pdf);
+    // CYPDF_PrintDoc(pdf, "../out/test.txt");
+    // CYPDF_FreeDoc(pdf);
 
-    copy_file("../out/test.txt", "../out/test.pdf");
+    // copy_file("../out/test.txt", "../out/test.pdf");
+    unsigned char compressed[] = { 179, 19, 32, 66, 0 };    /* Deflated byte array of "hihih". */
+    size_t decompressed_size = 0;
+    unsigned char* decompressed = CYPDF_DecodeInflate(compressed, 5, &decompressed_size);
+
+    for (size_t i = 0; i < decompressed_size; ++i) {
+        printf("%c\tbyte %zu\n", decompressed[i], i + 1);
+    }
+    free(decompressed);
 
     return 0;
 }
