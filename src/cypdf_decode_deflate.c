@@ -20,7 +20,9 @@ typedef struct CYPDF_Inflate {
 } CYPDF_Inflate;
 
 
-static void DecompressedAppend(CYPDF_Inflate* restrict const inflate, const unsigned char* restrict const source, const size_t length);
+static void BlockUncompressed(CYPDF_Inflate* const inflate);
+
+static void AppendByte(CYPDF_Inflate* const inflate, const unsigned char byte);
 
 static uint16_t* BuildHuffmanTree(const size_t* const code_length, const size_t code_count, size_t* const tree_size);
 
@@ -62,12 +64,13 @@ unsigned char* CYPDF_DecodeDeflate(const unsigned char* const source, const size
 }
 
 static void BlockUncompressed(CYPDF_Inflate* const inflate) {
+    /* Go to next byte boundary. */
     if (inflate->bit_pos != 0x80) {
         ConsumeByte(inflate);
     }
 
     size_t length = ConsumeByte(inflate);
-    ConsumeByte(inflate);                   /* Consume NLEN byte. */
+    ConsumeByte(inflate);                           /* Consume NLEN byte. */
     for (size_t i = 0; i < length; ++i) {
         AppendByte(inflate, ConsumeByte(inflate));
     }
