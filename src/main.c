@@ -113,24 +113,24 @@ int main(void) {
 
     // copy_file("../out/test.txt", "../out/test.pdf");
     
-    FILE* fp1 = fopen("../compressed", "rb");
+    // FILE* fp1 = fopen("../compressed", "rb");
 
-    size_t compressed_size = 0;
-    unsigned char* compressed = zlib_file_to_bytes(fp1, &compressed_size);
+    // size_t compressed_size = 0;
+    // unsigned char* compressed = zlib_file_to_bytes(fp1, &compressed_size);
 
-    fclose(fp1);
+    // fclose(fp1);
 
-    size_t decompressed_size = 0;
-    unsigned char* decompressed = CYPDF_DecodeInflate(compressed, compressed_size, &decompressed_size);
-    free(compressed);
+    // size_t decompressed_size = 0;
+    // unsigned char* decompressed = CYPDF_DecodeInflate(compressed, compressed_size, &decompressed_size);
+    // free(compressed);
 
-    FILE* fp2 = fopen("../uncompressed", "w");
-    for (size_t i = 0; i < decompressed_size; ++i) {
-        fputc(decompressed[i], fp2);
-    }
-    free(decompressed);
+    // FILE* fp2 = fopen("../uncompressed", "w");
+    // for (size_t i = 0; i < decompressed_size; ++i) {
+    //     fputc(decompressed[i], fp2);
+    // }
+    // free(decompressed);
 
-    fclose(fp2);
+    // fclose(fp2);
 
     return 0;
 }
