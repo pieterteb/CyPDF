@@ -8,7 +8,7 @@
 
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
     #define CYPDF_LITTLE_ENDIAN
-#elif defined(__BYTE_ORDER__) && __BYTE_ORDER == __ORDER_BIG_ENDIAN__
+#elif defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     #define CYPDF_BIG_ENDIAN
 #else
     #error "Unable to determine endianness."
