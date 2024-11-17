@@ -27,6 +27,18 @@ void copy_file(const char* source_path, const char* dest_path) {
     fclose(dest);
 }
 
+unsigned char* zlib_file_to_bytes(FILE* fp, size_t* size) {
+    fseek(fp, 0, SEEK_END);
+    *size = (size_t)ftell(fp) - 6;
+
+    fseek(fp, 2, SEEK_SET);
+
+    unsigned char* bytes = malloc(*size * sizeof(unsigned char));
+    fread(bytes, sizeof(unsigned char), *size, fp);
+
+    return bytes;
+}
+
 void first_n_polygons(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
     for (size_t i = 3; i < n + 3; ++i) {
         float centerx = CYPDF_A4_WIDTH / 2;
@@ -101,16 +113,24 @@ int main(void) {
 
     // copy_file("../out/test.txt", "../out/test.pdf");
     
-    
-    unsigned char compressed[] = { 211, 19, 32, 66, 0 };    /* Deflated byte array of "hihih". */
-    //unsigned char compressed[] = { 128, 64, 0, 191, 255, 104, 105 };  /* Deflated byte array of "hi". */
-    size_t decompressed_size = 0;
-    unsigned char* decompressed = CYPDF_DecodeInflate(compressed, 5, &decompressed_size);
+    FILE* fp1 = fopen("../compressed", "rb");
 
+    size_t compressed_size = 0;
+    unsigned char* compressed = zlib_file_to_bytes(fp1, &compressed_size);
+
+    fclose(fp1);
+
+    size_t decompressed_size = 0;
+    unsigned char* decompressed = CYPDF_DecodeInflate(compressed, compressed_size, &decompressed_size);
+    free(compressed);
+
+    FILE* fp2 = fopen("../uncompressed", "w");
     for (size_t i = 0; i < decompressed_size; ++i) {
-        printf("%c\tbyte %zu\n", decompressed[i], i + 1);
+        fputc(decompressed[i], fp2);
     }
     free(decompressed);
+
+    fclose(fp2);
 
     return 0;
 }
