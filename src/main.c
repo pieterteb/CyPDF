@@ -100,7 +100,10 @@ int main(void) {
     // CYPDF_FreeDoc(pdf);
 
     // copy_file("../out/test.txt", "../out/test.pdf");
-    unsigned char compressed[] = { 179, 19, 32, 66, 0 };    /* Deflated byte array of "hihih". */
+    
+    
+    unsigned char compressed[] = { 211, 19, 32, 66, 0 };    /* Deflated byte array of "hihih". */
+    //unsigned char compressed[] = { 128, 64, 0, 191, 255, 104, 105 };  /* Deflated byte array of "hi". */
     size_t decompressed_size = 0;
     unsigned char* decompressed = CYPDF_DecodeInflate(compressed, 5, &decompressed_size);
 
