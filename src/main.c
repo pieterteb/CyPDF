@@ -90,47 +90,60 @@ void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_DocAddGraphic(pdf, page, graphic);
 }
 
+int are_files_identical(const char *file1, const char *file2) {
+    FILE *f1 = fopen(file1, "rb");
+    FILE *f2 = fopen(file2, "rb");
+
+    if (f1 == NULL || f2 == NULL) {
+        if (f1) fclose(f1);
+        if (f2) fclose(f2);
+        perror("Error opening file");
+        return 0;
+    }
+
+    int ch1, ch2;
+    while ((ch1 = fgetc(f1)) != EOF && (ch2 = fgetc(f2)) != EOF) {
+        if (ch1 != ch2) {
+            fclose(f1);
+            fclose(f2);
+            return 0; // Files differ
+        }
+    }
+
+    // Check if both files reached EOF
+    if (fgetc(f1) != EOF || fgetc(f2) != EOF) {
+        fclose(f1);
+        fclose(f2);
+        return 0; // One file has extra content
+    }
+
+    fclose(f1);
+    fclose(f2);
+    return 1; // Files are identical
+}
+
 #include "cypdf_decode_deflate.h"
 int main(void) {
-    // CYPDF_LogInit();
+    CYPDF_LogInit();
 
-    // CYPDF_Doc* pdf = CYPDF_NewDoc();
+    CYPDF_Doc* pdf = CYPDF_NewDoc();
 
-    // CYPDF_ObjPage* page1 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    // first_n_polygons(pdf, page1, 10);
+    CYPDF_ObjPage* page1 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    first_n_polygons(pdf, page1, 10);
 
-    // /* Draws an approximation of a circle using two Bézier curves. */
-    // CYPDF_ObjPage* page2 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    // bezier_circle(pdf, page2);
+    /* Draws an approximation of a circle using two Bézier curves. */
+    CYPDF_ObjPage* page2 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    bezier_circle(pdf, page2);
 
-    // CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    // thick_v(pdf, page3);
+    CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    thick_v(pdf, page3);
 
-    // mkdir("../out", 0700);
+    mkdir("../out", 0700);
 
-    // CYPDF_PrintDoc(pdf, "../out/test.txt");
-    // CYPDF_FreeDoc(pdf);
+    CYPDF_PrintDoc(pdf, "../out/test.txt");
+    CYPDF_FreeDoc(pdf);
 
-    // copy_file("../out/test.txt", "../out/test.pdf");
-    
-    // FILE* fp1 = fopen("../compressed", "rb");
-
-    // size_t compressed_size = 0;
-    // unsigned char* compressed = zlib_file_to_bytes(fp1, &compressed_size);
-
-    // fclose(fp1);
-
-    // size_t decompressed_size = 0;
-    // unsigned char* decompressed = CYPDF_DecodeInflate(compressed, compressed_size, &decompressed_size);
-    // free(compressed);
-
-    // FILE* fp2 = fopen("../uncompressed", "w");
-    // for (size_t i = 0; i < decompressed_size; ++i) {
-    //     fputc(decompressed[i], fp2);
-    // }
-    // free(decompressed);
-
-    // fclose(fp2);
+    copy_file("../out/test.txt", "../out/test.pdf");
 
     return 0;
 }
