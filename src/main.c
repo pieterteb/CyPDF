@@ -27,17 +27,17 @@ void copy_file(const char* source_path, const char* dest_path) {
     fclose(dest);
 }
 
-unsigned char* zlib_file_to_bytes(FILE* fp, size_t* size) {
-    fseek(fp, 0, SEEK_END);
-    *size = (size_t)ftell(fp) - 6;
+// unsigned char* zlib_file_to_bytes(FILE* fp, size_t* size) {
+//     fseek(fp, 0, SEEK_END);
+//     *size = (size_t)ftell(fp) - 6;
 
-    fseek(fp, 2, SEEK_SET);
+//     fseek(fp, 2, SEEK_SET);
 
-    unsigned char* bytes = malloc(*size * sizeof(unsigned char));
-    fread(bytes, sizeof(unsigned char), *size, fp);
+//     unsigned char* bytes = malloc(*size * sizeof(unsigned char));
+//     fread(bytes, sizeof(unsigned char), *size, fp);
 
-    return bytes;
-}
+//     return bytes;
+// }
 
 void first_n_polygons(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
     for (size_t i = 3; i < n + 3; ++i) {
@@ -90,39 +90,7 @@ void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_DocAddGraphic(pdf, page, graphic);
 }
 
-int are_files_identical(const char *file1, const char *file2) {
-    FILE *f1 = fopen(file1, "rb");
-    FILE *f2 = fopen(file2, "rb");
 
-    if (f1 == NULL || f2 == NULL) {
-        if (f1) fclose(f1);
-        if (f2) fclose(f2);
-        perror("Error opening file");
-        return 0;
-    }
-
-    int ch1, ch2;
-    while ((ch1 = fgetc(f1)) != EOF && (ch2 = fgetc(f2)) != EOF) {
-        if (ch1 != ch2) {
-            fclose(f1);
-            fclose(f2);
-            return 0; // Files differ
-        }
-    }
-
-    // Check if both files reached EOF
-    if (fgetc(f1) != EOF || fgetc(f2) != EOF) {
-        fclose(f1);
-        fclose(f2);
-        return 0; // One file has extra content
-    }
-
-    fclose(f1);
-    fclose(f2);
-    return 1; // Files are identical
-}
-
-#include "cypdf_decode_deflate.h"
 int main(void) {
     CYPDF_LogInit();
 
