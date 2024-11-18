@@ -25,6 +25,18 @@ void copy_file(const char* source_path, const char* dest_path) {
     fclose(dest);
 }
 
+// unsigned char* zlib_file_to_bytes(FILE* fp, size_t* size) {
+//     fseek(fp, 0, SEEK_END);
+//     *size = (size_t)ftell(fp) - 6;
+
+//     fseek(fp, 2, SEEK_SET);
+
+//     unsigned char* bytes = malloc(*size * sizeof(unsigned char));
+//     fread(bytes, sizeof(unsigned char), *size, fp);
+
+//     return bytes;
+// }
+
 void first_n_polygons(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
     for (size_t i = 3; i < n + 3; ++i) {
         float centerx = CYPDF_A4_WIDTH / 2;
