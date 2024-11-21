@@ -16,11 +16,11 @@
 
 
 
-static void CYPDF_PNGProcessIHDR(CYPDF_ObjImage* const image, FILE* png);
+static void PNGProcessIHDR(CYPDF_ObjImage* const image, FILE* png);
 
-static void CYPDF_PNGProcessData(CYPDF_Channel* const image_channel, FILE* restrict png, const size_t buff_size, unsigned char buffer[restrict buff_size]);
+static void PNGProcessIDAT(CYPDF_Channel* const image_channel, FILE* restrict png, const size_t buff_size, unsigned char buffer[restrict buff_size]);
 
-static void CYPDF_ImagePNG(CYPDF_ObjImage* const image, FILE* png);
+static void ImagePNG(CYPDF_ObjImage* const image, FILE* png);
 
 
 CYPDF_ObjImage* CYPDF_NewImage(CYPDF_MemMgr* restrict const memmgr, const char path[restrict static 1]) {
@@ -39,7 +39,7 @@ CYPDF_ObjImage* CYPDF_NewImage(CYPDF_MemMgr* restrict const memmgr, const char p
     }
 
     if (!strcmp(extension, "png")) {
-        CYPDF_ImagePNG(image, image_file);
+        ImagePNG(image, image_file);
     } else {
         fprintf(stderr, "Unimplemented image file type: %s\n", extension);
     }
@@ -50,7 +50,7 @@ CYPDF_ObjImage* CYPDF_NewImage(CYPDF_MemMgr* restrict const memmgr, const char p
 }
 
 
-static void CYPDF_PNGProcessIHDR(CYPDF_ObjImage* const image, FILE* png) {
+static void PNGProcessIHDR(CYPDF_ObjImage* const image, FILE* png) {
     CYPDF_TRACE;
 
     uint32_t chunk_length = 0;
@@ -90,7 +90,7 @@ static void CYPDF_PNGProcessIHDR(CYPDF_ObjImage* const image, FILE* png) {
     }
 }
 
-static void CYPDF_PNGProcessData(CYPDF_Channel* const image_channel, FILE* restrict png, const size_t buff_size, unsigned char buffer[restrict buff_size]) {
+static void PNGProcessIDAT(CYPDF_Channel* const image_channel, FILE* restrict png, const size_t buff_size, unsigned char buffer[restrict buff_size]) {
     /* Skip excess information and go to image data. Actual image data is contained by IDAT chunks. */
     uint32_t chunk_length = 0;
     char chunk_type[5] = { 0 };
@@ -120,12 +120,12 @@ static void CYPDF_PNGProcessData(CYPDF_Channel* const image_channel, FILE* restr
     }
 }
 
-static void CYPDF_ImagePNG(CYPDF_ObjImage* const image, FILE* png) {
+static void ImagePNG(CYPDF_ObjImage* const image, FILE* png) {
     /* PNG Chunk Format:
     
         Length   |   Chunk Type  |    Chunk Data   |   CRC
         ------------------------------------------------------
-        4 bytes  |   4 bytes     |    Length bytes |   4 bytes
+        4 bytes  |    4 bytes    |   Length bytes  |   4 bytes
     
     */
     CYPDF_TRACE;
@@ -137,8 +137,8 @@ static void CYPDF_ImagePNG(CYPDF_ObjImage* const image, FILE* png) {
     fread(buffer, sizeof(unsigned char), 8, png);   /* Consume png header bytes. */
 
     /* First chunk is IHDR which contains width, height, bit depth and color type. */
-    CYPDF_PNGProcessIHDR(image, png);
-    CYPDF_PNGProcessData(image_channel, png, buff_size, buffer);
+    PNGProcessIHDR(image, png);
+    PNGProcessIDAT(image_channel, png, buff_size, buffer);
 
     free(image_channel);
 }

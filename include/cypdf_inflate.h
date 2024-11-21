@@ -14,7 +14,9 @@ https://datatracker.ietf.org/doc/html/rfc1951#section-7
 #define CYPDF_DEFLATE_UNKNOWN_CODE          0xFFFF
 
 
-unsigned char* CYPDF_DecodeInflate(const unsigned char* restrict const source, const size_t size, size_t* restrict const decompressed_size);
+unsigned char* CYPDF_ZLibUncompress(const unsigned char* restrict const source, const size_t length, size_t* restrict const inflated_length);
+
+unsigned char* CYPDF_Inflate(const unsigned char* restrict const source, const size_t length, size_t* restrict const inflated_length);
 
 
 

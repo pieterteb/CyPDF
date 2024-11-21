@@ -3,64 +3,70 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "cypdf_decode_deflate.h"
+#include "cypdf_inflate.h"
 #include "cypdf_log.h"
 #include "cypdf_memory.h"
 
 
 
-typedef struct CYPDF_Inflate {
+typedef struct CYPDF_BitStream {
     const unsigned char*    bytes;
-    size_t                  len;
+    size_t                  length;
     size_t                  byte_pos;
     unsigned char           bit_pos;
 
-    unsigned char*          inflated;
-    size_t                  inflated_len;
-    size_t                  inflated_size;
-} CYPDF_Inflate;
+    unsigned char*          uncompressed;
+    size_t                  uncompressed_length;
+    size_t                  uncompressed_size;
+} CYPDF_BitStream;
 
 
-static void BlockDynamic(CYPDF_Inflate* const inflate);
+static void BlockDynamic(CYPDF_BitStream* const inflate);
 
-static void BlockFixed(CYPDF_Inflate* const inflate);
+static void BlockFixed(CYPDF_BitStream* const inflate);
 
-static void BlockUncompressed(CYPDF_Inflate* const inflate);
+static void BlockUncompressed(CYPDF_BitStream* const inflate);
 
 static uint16_t* HuffmanAlphabet(const size_t* const code_lens, const size_t code_count, size_t* const tree_size);
 
-static void ProcessCompressed(CYPDF_Inflate* const inflate, const uint16_t* const lit_alphabet, const size_t lit_size, const size_t* const lit_code_lens, const uint16_t* const dist_alphabet, const size_t dist_size, const size_t* const dist_code_lens);
+static void ProcessCompressed(CYPDF_BitStream* const inflate, const uint16_t* const lit_alphabet, const size_t lit_size, const size_t* const lit_code_lens, const uint16_t* const dist_alphabet, const size_t dist_size, const size_t* const dist_code_lens);
 
-static void ProcessLZ77(CYPDF_Inflate* const inflate, uint16_t value, const uint16_t* const dist_alphabet, const size_t dist_size, const size_t* const dist_code_lens);
+static void ProcessLZ77(CYPDF_BitStream* const inflate, uint16_t value, const uint16_t* const dist_alphabet, const size_t dist_size, const size_t* const dist_code_lens);
 
-static bool ConsumeBit(CYPDF_Inflate* const inflate);
+static bool ConsumeBit(CYPDF_BitStream* const inflate);
 
-static void UnconsumeBit(CYPDF_Inflate* const inflate);
+static void UnconsumeBit(CYPDF_BitStream* const inflate);
 
-static unsigned char ConsumeByte(CYPDF_Inflate* const inflate);
+static unsigned char ConsumeByte(CYPDF_BitStream* const inflate);
 
-static size_t ConsumeNumeric(CYPDF_Inflate* const inflate, const size_t bit_count);
+static size_t ConsumeNumeric(CYPDF_BitStream* const inflate, const size_t bit_count);
 
-static uint16_t ConsumeCode(CYPDF_Inflate* const inflate, const uint16_t* const alphabet, const size_t alphabet_size, const size_t* code_lens);
+static uint16_t ConsumeCode(CYPDF_BitStream* const inflate, const uint16_t* const alphabet, const size_t alphabet_size, const size_t* code_lens);
 
-static void AppendByte(CYPDF_Inflate* const inflate, const unsigned char byte);
+static void AppendByte(CYPDF_BitStream* const inflate, const unsigned char byte);
 
 
-unsigned char* CYPDF_DecodeInflate(const unsigned char* restrict const source, const size_t len, size_t* restrict const inflated_len) {
+unsigned char* CYPDF_ZLibUncompress(const unsigned char* restrict const source, const size_t length, size_t* restrict const inflated_length) {
+    CYPDF_TRACE;
+
+    return CYPDF_Inflate(source + 2, length - 6, inflated_length);
+}
+
+unsigned char* CYPDF_Inflate(const unsigned char* restrict const source, const size_t length, size_t* restrict const inflated_length) {
     CYPDF_TRACE;
 
     if (!source) {
         return NULL;
     }
 
-    CYPDF_Inflate inflate = {
+    CYPDF_BitStream inflate = {
         .bytes = source,
-        .len = len,
+        .length = length,
         .byte_pos = (size_t)0,
         .bit_pos = 0x01,
-        .inflated = CYPDF_malloc(1024 * sizeof(unsigned char)),
-        .inflated_len = 0,
-        .inflated_size = 1024
+        .uncompressed = CYPDF_malloc(1024 * sizeof(unsigned char)),
+        .uncompressed_length = 0,
+        .uncompressed_size = 1024
     };
 
     /* Process blocks. */
@@ -85,13 +91,13 @@ unsigned char* CYPDF_DecodeInflate(const unsigned char* restrict const source, c
         }
     } while (!final_block);
 
-    inflate.inflated = CYPDF_realloc(inflate.inflated, inflate.inflated_len * sizeof(unsigned char));
+    inflate.uncompressed = CYPDF_realloc(inflate.uncompressed, inflate.uncompressed_length * sizeof(unsigned char));
 
-    *inflated_len = inflate.inflated_len;
-    return inflate.inflated;
+    *inflated_length = inflate.uncompressed_length;
+    return inflate.uncompressed;
 }
 
-static void BlockDynamic(CYPDF_Inflate* const inflate) {
+static void BlockDynamic(CYPDF_BitStream* const inflate) {
     static size_t code_len_len_order[19] = {
         16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
     };
@@ -156,7 +162,7 @@ static void BlockDynamic(CYPDF_Inflate* const inflate) {
     free(dist_alphabet);
 }
 
-static void BlockFixed(CYPDF_Inflate* const inflate) {
+static void BlockFixed(CYPDF_BitStream* const inflate) {
     size_t lit_code_lens[288];
     size_t i = 0;
     for (; i < 144; ++i) {
@@ -187,7 +193,7 @@ static void BlockFixed(CYPDF_Inflate* const inflate) {
     free(dist_alphabet);
 }
 
-static void BlockUncompressed(CYPDF_Inflate* const inflate) {
+static void BlockUncompressed(CYPDF_BitStream* const inflate) {
     /* Go to next byte boundary. */
     if (inflate->bit_pos != 0x01) {
         ConsumeByte(inflate);
@@ -244,7 +250,7 @@ static uint16_t* HuffmanAlphabet(const size_t* const code_lens, const size_t cod
     return alphabet;
 }
 
-static void ProcessCompressed(CYPDF_Inflate* const inflate, const uint16_t* const lit_alphabet, const size_t lit_size, const size_t* const lit_code_lens, const uint16_t* const dist_alphabet, const size_t dist_size, const size_t* const dist_code_lens) {
+static void ProcessCompressed(CYPDF_BitStream* const inflate, const uint16_t* const lit_alphabet, const size_t lit_size, const size_t* const lit_code_lens, const uint16_t* const dist_alphabet, const size_t dist_size, const size_t* const dist_code_lens) {
     uint16_t value = 0;
     while (value != 256) {     /* 256 indicates end of block */
         value = ConsumeCode(inflate, lit_alphabet, lit_size, lit_code_lens);
@@ -260,7 +266,7 @@ static void ProcessCompressed(CYPDF_Inflate* const inflate, const uint16_t* cons
     }
 }
 
-static void ProcessLZ77(CYPDF_Inflate* const inflate, uint16_t value, const uint16_t* const dist_alphabet, const size_t dist_size, const size_t* const dist_code_lens) {
+static void ProcessLZ77(CYPDF_BitStream* const inflate, uint16_t value, const uint16_t* const dist_alphabet, const size_t dist_size, const size_t* const dist_code_lens) {
     const unsigned char len_bits[31] = {
         0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0
     };
@@ -285,11 +291,11 @@ static void ProcessLZ77(CYPDF_Inflate* const inflate, uint16_t value, const uint
     uint16_t lz77_dist = (uint16_t)ConsumeNumeric(inflate, dist_bits[dist_code]) + dist_base[dist_code];
 
     for (size_t i = 0; i < lz77_len; ++i) {
-        AppendByte(inflate, inflate->inflated[inflate->inflated_len - lz77_dist]);
+        AppendByte(inflate, inflate->uncompressed[inflate->uncompressed_length - lz77_dist]);
     }
 }
 
-static bool ConsumeBit(CYPDF_Inflate* const inflate) {
+static bool ConsumeBit(CYPDF_BitStream* const inflate) {
     bool bit = inflate->bytes[inflate->byte_pos] & inflate->bit_pos;
 
     inflate->bit_pos <<= 1;
@@ -301,7 +307,7 @@ static bool ConsumeBit(CYPDF_Inflate* const inflate) {
     return bit;
 }
 
-static void UnconsumeBit(CYPDF_Inflate* const inflate) {
+static void UnconsumeBit(CYPDF_BitStream* const inflate) {
     inflate->bit_pos >>= 1;
     if (!inflate->bit_pos) {
         inflate->bit_pos = 0x80;
@@ -309,13 +315,13 @@ static void UnconsumeBit(CYPDF_Inflate* const inflate) {
     }
 }
 
-static unsigned char ConsumeByte(CYPDF_Inflate* const inflate) {
+static unsigned char ConsumeByte(CYPDF_BitStream* const inflate) {
     inflate->bit_pos = 0x01;
 
     return inflate->bytes[inflate->byte_pos++];
 }
 
-static size_t ConsumeNumeric(CYPDF_Inflate* const inflate, const size_t bit_count) {
+static size_t ConsumeNumeric(CYPDF_BitStream* const inflate, const size_t bit_count) {
     size_t numeric = 0;
     for (size_t i = 0; i < bit_count; ++i) {
         numeric |= ConsumeBit(inflate) << i;
@@ -324,7 +330,7 @@ static size_t ConsumeNumeric(CYPDF_Inflate* const inflate, const size_t bit_coun
     return numeric;
 }
 
-static uint16_t ConsumeCode(CYPDF_Inflate* const inflate, const uint16_t* const alphabet, const size_t alphabet_size, const size_t* code_lens) {
+static uint16_t ConsumeCode(CYPDF_BitStream* const inflate, const uint16_t* const alphabet, const size_t alphabet_size, const size_t* code_lens) {
     uint16_t code = 0;
     size_t code_len = 0;
     do {
@@ -339,11 +345,11 @@ static uint16_t ConsumeCode(CYPDF_Inflate* const inflate, const uint16_t* const 
     return alphabet[code];
 }
 
-static void AppendByte(CYPDF_Inflate* const inflate, const unsigned char byte) {
-    if (inflate->inflated_len == inflate->inflated_size) {
-        inflate->inflated_size *= 2;
-        inflate->inflated = CYPDF_realloc(inflate->inflated, inflate->inflated_size * sizeof(unsigned char));
+static void AppendByte(CYPDF_BitStream* const inflate, const unsigned char byte) {
+    if (inflate->uncompressed_length == inflate->uncompressed_size) {
+        inflate->uncompressed_size *= 2;
+        inflate->uncompressed = CYPDF_realloc(inflate->uncompressed, inflate->uncompressed_size * sizeof(unsigned char));
     }
 
-    inflate->inflated[inflate->inflated_len++] = byte;
+    inflate->uncompressed[inflate->uncompressed_length++] = byte;
 }

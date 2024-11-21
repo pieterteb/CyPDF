@@ -23,12 +23,12 @@ add_executable(CyPDF
     src/cypdf_array.c
     src/cypdf_bool.c
     src/cypdf_catalog.c
-    src/cypdf_decode_deflate.c
     src/cypdf_dict.c
     src/cypdf_doc.c
     src/cypdf_graphics_state.c
     src/cypdf_graphics.c
     src/cypdf_image.c
+    src/cypdf_inflate.c
     src/cypdf_info.c
     src/cypdf_integer.c
     src/cypdf_list.c
