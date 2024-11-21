@@ -42,6 +42,7 @@ add_executable(CyPDF
     src/cypdf_resource.c
     src/cypdf_stream.c
     src/cypdf_string.c
+    src/cypdf_text.c
     src/cypdf_time.c
     src/cypdf_trailer.c
     src/cypdf_xobject.c
