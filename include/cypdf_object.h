@@ -24,6 +24,7 @@ enum CYPDF_OBJ_CLASS {
     CYPDF_OBJ_CLASS_ARRAY,
     CYPDF_OBJ_CLASS_DICT,
     CYPDF_OBJ_CLASS_STREAM,        /* A stream is always an indirect object. */
+    CYPDF_OBJ_CLASS_PAGE
 };
 
 enum CYPDF_OBJ_SUBCLASS {

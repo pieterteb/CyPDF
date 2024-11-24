@@ -11,6 +11,7 @@
 #include "cypdf_name.h"
 #include "cypdf_null.h"
 #include "cypdf_number.h"
+#include "cypdf_pages.h"
 #include "cypdf_print.h"
 #include "cypdf_stream.h"
 #include "cypdf_string.h"
@@ -37,6 +38,9 @@ void CYPDF_FreeObj(CYPDF_Object* obj) {
             break;
         case CYPDF_OBJ_CLASS_STREAM:
             free_func = CYPDF_FREE_STREAM;
+            break;
+        case CYPDF_OBJ_CLASS_PAGE:
+            free_func = CYPDF_FREE_PAGE;
             break;
         default:
             free_func = CYPDF_FREE_NULL;
@@ -78,6 +82,9 @@ void CYPDF_PrintObjDirect(CYPDF_Channel* const restrict channel, const CYPDF_Obj
             break;
         case CYPDF_OBJ_CLASS_STREAM:
             print_func = CYPDF_PRINT_STREAM;
+            break;
+        case CYPDF_OBJ_CLASS_PAGE:
+            print_func = CYPDF_PRINT_PAGE;
             break;
         default:
             print_func = CYPDF_PRINT_NULL;

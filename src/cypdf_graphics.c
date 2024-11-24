@@ -200,12 +200,12 @@ void CYPDF_GraphicTransMatrix(CYPDF_Graphic* const restrict graphic, const CYPDF
 
     if (graphic) {
         CYPDF_Operator* transform_matrix = CYPDF_NewOperator(CYPDF_STATE_MATRIX);
-        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.a));
-        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.b));
-        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.c));
-        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.d));
-        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.e));
-        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.f));
+        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.a));
+        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.b));
+        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.c));
+        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.d));
+        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.e));
+        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.f));
 
         CYPDF_GraphicAppend(graphic, transform_matrix);
     }

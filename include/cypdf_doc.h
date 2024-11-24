@@ -20,7 +20,7 @@ typedef struct CYPDF_Doc {
     CYPDF_ObjInfo*      info;
     
     CYPDF_List*         obj_list;       /* Indirect objects. */
-    CYPDF_List*         graphic_list;
+    CYPDF_List*         page_list;
 
     CYPDF_MemMgr*       obj_memmgr;
     CYPDF_MemMgr*       graphic_memmgr;
@@ -35,12 +35,6 @@ void CYPDF_FreeDoc(CYPDF_Doc* pdf);
 
 void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict static 1]);
 
-
-void CYPDF_DocAddObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
-
-void CYPDF_DocAddGraphic(CYPDF_Doc* const pdf, CYPDF_ObjPage* const page, CYPDF_Graphic* const graphic);
-
-CYPDF_ObjImage* CYPDF_DocAddImage(CYPDF_Doc* restrict const pdf, const char image_path[restrict static 1]);
 
 CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf, CYPDF_Rect dimensions);
 

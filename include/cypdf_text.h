@@ -2,6 +2,7 @@
 #define CYPDF_TEXT_H
 
 
+#include "cypdf_array.h"
 #include "cypdf_graphics.h"
 #include "cypdf_operators.h"
 #include "cypdf_types.h"

@@ -37,7 +37,7 @@ void copy_file(const char* source_path, const char* dest_path) {
 //     return bytes;
 // }
 
-void first_n_polygons(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
+void first_n_polygons(CYPDF_ObjPage* page, size_t n) {
     for (size_t i = 3; i < n + 3; ++i) {
         float centerx = CYPDF_A4_WIDTH / 2;
         float centery = CYPDF_A4_HEIGHT / 2;
@@ -58,11 +58,11 @@ void first_n_polygons(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
             CYPDF_GraphicPaint(graphic, CYPDF_PATH_CLOSE_STROKE);
         }
         
-        CYPDF_DocAddGraphic(pdf, page, graphic);
+        CYPDF_PageAddGraphic(page, graphic);
     }
 }
 
-void bezier_circle(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
+void bezier_circle(CYPDF_ObjPage* page) {
     CYPDF_Graphic* graphic = CYPDF_NewGraphic();
 
     CYPDF_GraphicBegin(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
@@ -70,10 +70,10 @@ void bezier_circle(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_GraphicCBezier(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
     CYPDF_GraphicPaint(graphic, CYPDF_PATH_STROKE);
 
-    CYPDF_DocAddGraphic(pdf, page, graphic);
+    CYPDF_PageAddGraphic(page, graphic);
 }
 
-void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
+void thick_v(CYPDF_ObjPage* page) {
     CYPDF_Graphic* graphic = CYPDF_NewGraphic();
 
     CYPDF_GraphicBegin(graphic, CYPDF_TO_POINT(0, CYPDF_A4_HEIGHT));
@@ -85,19 +85,8 @@ void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_GraphicPaint(graphic, CYPDF_PATH_CLOSE_STROKE);
     CYPDF_GraphicRestore(graphic);
 
-    CYPDF_DocAddGraphic(pdf, page, graphic);
+    CYPDF_PageAddGraphic(page, graphic);
 }
-
-void image(CYPDF_Doc* pdf, CYPDF_ObjPage* page, const char* path) {
-    CYPDF_Graphic* graphic = CYPDF_NewGraphic();
-    CYPDF_ObjImage* image = CYPDF_DocAddImage(pdf, path);
-
-    CYPDF_TransMatrix mat = CYPDF_DEFAULT_TRANSMATRIX;
-    CYPDF_GraphicImage(graphic, image, *CYPDF_TransMatrixTranslate(&mat, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_A4_HEIGHT / 2)));
-
-    CYPDF_DocAddGraphic(pdf, page, graphic);
-}
-
 
 int main(void) {
     CYPDF_LogInit();
@@ -105,17 +94,14 @@ int main(void) {
     CYPDF_Doc* pdf = CYPDF_NewDoc();
 
     CYPDF_ObjPage* page1 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    first_n_polygons(pdf, page1, 10);
+    first_n_polygons(page1, 10);
 
     /* Draws an approximation of a circle using two Bézier curves. */
     CYPDF_ObjPage* page2 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    bezier_circle(pdf, page2);
+    bezier_circle(page2);
 
     CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    thick_v(pdf, page3);
-
-    CYPDF_ObjPage* page4 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
-    image(pdf, page4, "../resources/Pale_Blue_Dot.png");
+    thick_v(page3);
 
     mkdir("../out", 0700);
 

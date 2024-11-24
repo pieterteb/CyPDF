@@ -9,7 +9,6 @@
 #include "cypdf_list.h"
 #include "cypdf_memory.h"
 #include "cypdf_operators.h"
-#include "cypdf_pages.h"
 #include "cypdf_print.h"
 #include "cypdf_types.h"
 
@@ -27,9 +26,6 @@ CYPDF_Graphic* CYPDF_NewGraphic(void);
 void CYPDF_FreeGraphic(void* _graphic);
 
 void CYPDF_PrintGraphic(CYPDF_Channel* const channel, const CYPDF_Graphic* const graphic);
-
-
-void CYPDF_GraphicSetPage(CYPDF_Graphic* const graphic, CYPDF_ObjPage* const page);
 
 
 void CYPDF_GraphicBegin(CYPDF_Graphic* const graphic, const CYPDF_Point start_point);
@@ -94,9 +90,6 @@ void CYPDF_GraphicFillRGB(CYPDF_Graphic* const restrict graphic, const CYPDF_RGB
 void CYPDF_GraphicLineCMYK(CYPDF_Graphic* const restrict graphic, const CYPDF_CMYK cmyk);
 
 void CYPDF_GraphicFillCMYK(CYPDF_Graphic* const restrict graphic, const CYPDF_CMYK cmyk);
-
-
-void CYPDF_GraphicImage(CYPDF_Graphic* const graphic, CYPDF_ObjImage* const image, const CYPDF_TransMatrix matrix);
 
 
 

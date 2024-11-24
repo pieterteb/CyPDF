@@ -6,7 +6,6 @@
 #include "cypdf_catalog.h"
 #include "cypdf_consts.h"
 #include "cypdf_dict_parameters.h"
-#include "cypdf_image.h"
 #include "cypdf_list.h"
 #include "cypdf_log.h"
 #include "cypdf_memory.h"
@@ -24,6 +23,8 @@
 
 static void CYPDF_DocConstructContents(CYPDF_Doc* const pdf);
 
+static void CYPDF_DocAddObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
+
 
 CYPDF_Doc* CYPDF_NewDoc(void) {
     CYPDF_TRACE;
@@ -35,7 +36,7 @@ CYPDF_Doc* CYPDF_NewDoc(void) {
         pdf->graphic_memmgr = CYPDF_NewMemMgr(CYPDF_FreeGraphic);
 
         pdf->obj_list = CYPF_NewList(100);
-        pdf->graphic_list = CYPF_NewList(100);
+        pdf->page_list = CYPF_NewList(10);
         pdf->offsets = NULL;
 
         pdf->page_root = CYPDF_NewPageNode(pdf->obj_memmgr, NULL);   /* Page root. */
@@ -61,7 +62,7 @@ void CYPDF_FreeDoc(CYPDF_Doc* pdf) {
         CYPDF_DestroyMemMgr(pdf->graphic_memmgr);
 
         CYPDF_FreeList(pdf->obj_list);
-        CYPDF_FreeList(pdf->graphic_list);
+        CYPDF_FreeList(pdf->page_list);
         free(pdf->offsets);
 
         free(pdf);
@@ -104,34 +105,28 @@ void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict
 static void CYPDF_DocConstructContents(CYPDF_Doc* const pdf) {
     CYPDF_TRACE;
 
-    CYPDF_List* graphic_list = pdf->graphic_list;
+    CYPDF_List* page_list = pdf->page_list;
 
+    CYPDF_ObjPage* page = NULL;
     CYPDF_Channel* channel = CYPDF_NewChannel(NULL, CYPDF_CHANNEL_OBJSTREAM);
-    for (size_t i = 0; i < graphic_list->element_count; ++i) {
+    for (size_t i = 0; i < page_list->element_count; ++i) {
+        page = page_list->elements[i];
+
         CYPDF_ObjStream* stream = CYPDF_NewStream(pdf->obj_memmgr);
         CYPDF_DocAddObject(pdf, stream);
         channel->stream = stream;
 
-        CYPDF_Graphic* graphic = CYPDF_ListAtIndex(pdf->graphic_list, i);
-        size_t graphic_length = CYPDF_ListLength(graphic->operator_list);
-        for (size_t j = 0; j < graphic_length; ++j) {
-            CYPDF_Operator* operator = CYPDF_ListAtIndex(graphic->operator_list, j);
-            if (operator->type == CYPDF_OPERATOR_XOBJECT) {
-                CYPDF_ObjResource* resource = CYPDF_DictValueAtIndex(graphic->display_page, CYPDF_PAGE_RESOURCE_I);
-                CYPDF_ObjXObject* xobject = CYPDF_ListAtIndex(operator->operand_list, 0);
-                CYPDF_ResourceAddXObject(resource, xobject);
-                CYPDF_ListSetAtIndex(operator->operand_list, 0, CYPDF_ResourceGetName(resource, CYPDF_RESOURCE_XOBJECT_I, xobject));
-            }
+        CYPDF_List* graphic_list = page->graphic_list;
+        for (size_t j = 0; j < graphic_list->element_count; ++j) {
+            CYPDF_PrintGraphic(channel, graphic_list->elements[j]);
         }
 
-        CYPDF_PrintGraphic(channel, graphic);
-
-        CYPDF_PageAddContent(graphic->display_page, stream);
+        CYPDF_PageAddContent(page, stream);
     }
 }
 
 
-void CYPDF_DocAddObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj) {
+static void CYPDF_DocAddObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj) {
     CYPDF_TRACE;
 
     if (pdf) {
@@ -143,28 +138,13 @@ void CYPDF_DocAddObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restr
     }
 }
 
-void CYPDF_DocAddGraphic(CYPDF_Doc* const pdf, CYPDF_ObjPage* const page, CYPDF_Graphic* const graphic) {
-    CYPDF_TRACE;
-
-    CYPFD_ListAppend(pdf->graphic_list, graphic);
-    CYPDF_GraphicSetPage(graphic, page);
-}
-
-CYPDF_ObjImage* CYPDF_DocAddImage(CYPDF_Doc* restrict const pdf, const char image_path[restrict static 1]) {
-    CYPDF_TRACE;
-
-    CYPDF_ObjImage* image = CYPDF_NewImage(pdf->obj_memmgr, image_path);
-    CYPDF_DocAddObject(pdf, image);
-
-    return image;
-}
-
 CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf, CYPDF_Rect dimensions) {
     CYPDF_TRACE;
 
     if (pdf) {
         CYPDF_ObjPage* page =  CYPDF_NewPage(pdf->obj_memmgr, pdf->page_root, dimensions);
         CYPDF_DocAddObject(pdf, page);
+        CYPFD_ListAppend(pdf->page_list, page);
 
         return page;
     }
