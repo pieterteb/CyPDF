@@ -27,6 +27,8 @@ add_executable(CyPDF
     src/cypdf_doc.c
     src/cypdf_graphics_state.c
     src/cypdf_graphics.c
+    src/cypdf_image.c
+    src/cypdf_inflate.c
     src/cypdf_info.c
     src/cypdf_integer.c
     src/cypdf_list.c
@@ -45,6 +47,7 @@ add_executable(CyPDF
     src/cypdf_text.c
     src/cypdf_time.c
     src/cypdf_trailer.c
+    src/cypdf_utils.c
     src/cypdf_xobject.c
     src/cypdf_xref.c
     src/md5.c

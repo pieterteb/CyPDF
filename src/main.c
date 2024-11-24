@@ -1,4 +1,6 @@
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef __unix__
     #include <sys/stat.h>
 #elif defined(_WIN64) || defined(_WIN32)
@@ -22,6 +24,18 @@ void copy_file(const char* source_path, const char* dest_path) {
     fclose(source);
     fclose(dest);
 }
+
+// unsigned char* zlib_file_to_bytes(FILE* fp, size_t* size) {
+//     fseek(fp, 0, SEEK_END);
+//     *size = (size_t)ftell(fp) - 6;
+
+//     fseek(fp, 2, SEEK_SET);
+
+//     unsigned char* bytes = malloc(*size * sizeof(unsigned char));
+//     fread(bytes, sizeof(unsigned char), *size, fp);
+
+//     return bytes;
+// }
 
 void first_n_polygons(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
     for (size_t i = 3; i < n + 3; ++i) {
@@ -74,6 +88,16 @@ void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_DocAddGraphic(pdf, page, graphic);
 }
 
+void image(CYPDF_Doc* pdf, CYPDF_ObjPage* page, const char* path) {
+    CYPDF_Graphic* graphic = CYPDF_NewGraphic();
+    CYPDF_ObjImage* image = CYPDF_DocAddImage(pdf, path);
+
+    CYPDF_TransMatrix mat = CYPDF_DEFAULT_TRANSMATRIX;
+    CYPDF_GraphicImage(graphic, image, *CYPDF_TransMatrixTranslate(&mat, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_A4_HEIGHT / 2)));
+
+    CYPDF_DocAddGraphic(pdf, page, graphic);
+}
+
 
 int main(void) {
     CYPDF_LogInit();
@@ -89,6 +113,9 @@ int main(void) {
 
     CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
     thick_v(pdf, page3);
+
+    CYPDF_ObjPage* page4 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
+    image(pdf, page4, "../resources/Pale_Blue_Dot.png");
 
     mkdir("../out", 0700);
 

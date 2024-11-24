@@ -7,6 +7,7 @@
 #include "cypdf_dict_parameters.h"
 #include "cypdf_doc.h"
 #include "cypdf_graphics_state.h"
+#include "cypdf_image.h"
 #include "cypdf_integer.h"
 #include "cypdf_log.h"
 #include "cypdf_memory.h"
@@ -195,17 +196,17 @@ void CYPDF_GraphicRestore(CYPDF_Graphic* const restrict graphic) {
     }
 }
 
-void CYPDF_GraphicTransformMatrix(CYPDF_Graphic* const restrict graphic, const float a, const float b, const float c, const float d, const float e, const float f) {
+void CYPDF_GraphicTransMatrix(CYPDF_Graphic* const restrict graphic, const CYPDF_TransMatrix cm) {
     CYPDF_TRACE;
 
     if (graphic) {
-        CYPDF_Operator* transform_matrix = CYPDF_NewOperator(CYPDF_STATE_MATRIX);
-        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, a));
-        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, b));
-        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, c));
-        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, d));
-        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, e));
-        CYPDF_OperatorAppend(transform_matrix, CYPDF_NewNumber(graphic->memmgr, f));
+        CYPDF_Operator* transform_matrix = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_MATRIX);
+        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.a));
+        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.b));
+        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.c));
+        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.d));
+        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.e));
+        CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.f));
 
         CYPDF_GraphicAppend(graphic, transform_matrix);
     }
@@ -435,4 +436,15 @@ void CYPDF_GraphicFillCMYK(CYPDF_Graphic* const restrict graphic, const CYPDF_CM
 
         CYPDF_GraphicAppend(graphic, fill_cmyk);
     }
+}
+
+
+void CYPDF_GraphicImage(CYPDF_Graphic* const graphic, CYPDF_ObjImage* const image, const CYPDF_TransMatrix matrix) {
+    CYPDF_TRACE;
+
+    CYPDF_GraphicTransMatrix(graphic, matrix);
+    CYPDF_Operator* do_image = CYPDF_NewOperator(CYPDF_OPERATOR_XOBJECT);
+    CYPDF_OperatorAppendOperand(do_image, image);
+
+    CYPDF_GraphicAppend(graphic, do_image);
 }

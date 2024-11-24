@@ -3,24 +3,24 @@
 
 
 
-/* Color space names */
+/* Color Space Keywords */
 
 /* DEVICE */
-#define CYPDF_COLOR_SPACE_DEVGRAY_N     "DeviceGray"
-#define CYPDF_COLOR_SPACE_DEVRGB_N      "DeviceRGB"
-#define CYPDF_COLOR_SPACE_DEVCMYK_N     "DeviceCMYK"
+#define CYPDF_COLOR_SPACE_DEVGRAY_K     "DeviceGray"
+#define CYPDF_COLOR_SPACE_DEVRGB_K      "DeviceRGB"
+#define CYPDF_COLOR_SPACE_DEVCMYK_K     "DeviceCMYK"
 
 /* CIE-BASED */
-#define CYPDF_COLOR_SPACE_CIEGRAY_N     "CalGray"
-#define CYPDF_COLOR_SPACE_CIERGB_N      "CalRGB"
-#define CYPDF_COLOR_SPACE_CIELAB_N      "Lab"
-#define CYPDF_COLOR_SPACE_CIEICC_N      "ICCBased"
+#define CYPDF_COLOR_SPACE_CIEGRAY_K     "CalGray"
+#define CYPDF_COLOR_SPACE_CIERGB_K      "CalRGB"
+#define CYPDF_COLOR_SPACE_CIELAB_K      "Lab"
+#define CYPDF_COLOR_SPACE_CIEICC_K      "ICCBased"
 
 /* SPECIAL */
-#define CYPDF_COLOR_SPACE_INDEXED_N     "Indexed"
-#define CYPDF_COLOR_SPACE_PATTERN_N     "Pattern"
-#define CYPDF_COLOR_SPACE_SEPARATION_N  "Separation"
-#define CYPDF_COLOR_SPACE_DEVICEN_N     "DeviceN"
+#define CYPDF_COLOR_SPACE_INDEXED_K     "Indexed"
+#define CYPDF_COLOR_SPACE_PATTERN_K     "Pattern"
+#define CYPDF_COLOR_SPACE_SEPARATION_K  "Separation"
+#define CYPDF_COLOR_SPACE_DEVICEN_K     "DeviceN"
 
 
 enum CYPDF_COLOR_SPACE_TYPE {

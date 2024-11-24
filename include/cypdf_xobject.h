@@ -2,7 +2,8 @@
 #define CYPDF_XOBJECT_H
 
 
-#include "cypdf_dict.h"
+#include "cypdf_memory.h"
+#include "cypdf_stream.h"
 
 
 
@@ -16,7 +17,7 @@ enum CYPDF_XOBJECT_TYPE {
 };
 
 
-typedef CYPDF_ObjDict CYPDF_ObjXObject;
+typedef CYPDF_ObjStream CYPDF_ObjXObject;
 
 
 CYPDF_ObjXObject* CYPDF_NewXObject(CYPDF_MemMgr* const memmgr, const enum CYPDF_XOBJECT_TYPE type);

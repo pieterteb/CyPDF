@@ -23,9 +23,9 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 #define CYPDF_STREAM_DECODED_LENGTH_K       "DL"
 
 #define CYPDF_STREAM_LENGTH_I               0
-#define CYPDF_STREAM_FILTER_I               1
-#define CYPDF_STREAM_DECODE_PARAMETERS_I    2
-#define CYPDF_STREAM_DECODED_LENGTH_I       3
+#define CYPDF_STREAM_FILTER_I               CYPDF_STREAM_LENGTH_I + 1
+#define CYPDF_STREAM_DECODE_PARAMETERS_I    CYPDF_STREAM_FILTER_I + 1
+#define CYPDF_STREAM_DECODED_LENGTH_I       CYPDF_STREAM_DECODE_PARAMETERS_I + 1
 
 
 /* Trailer Dictionary */
@@ -74,12 +74,12 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 /* Page Dictionary Keywords */
 #define CYPDF_PAGE_TYPE_K                   "Page"
 #define CYPDF_PAGE_PARENT_K                 "Parent"
-#define CYPDF_PAGE_RESOURCES_K              "Resources"
+#define CYPDF_PAGE_RESOURCE_K               "Resources"
 #define CYPDF_PAGE_MEDIABOX_K               "MediaBox"
 #define CYPDF_PAGE_CONTENTS_K               "Contents"
 
 #define CYPDF_PAGE_PARENT_I                 1
-#define CYPDF_PAGE_RESOURCES_I              2
+#define CYPDF_PAGE_RESOURCE_I               2
 #define CYPDF_PAGE_MEDIABOX_I               3
 #define CYPDF_PAGE_CONTENTS_I               4
 
@@ -106,13 +106,13 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 #define CYPDF_RESOURCE_PROPERTIES_K         "Properties"
 
 #define CYPDF_RESOURCE_GFX_STATE_I          0
-#define CYPDF_RESOURCE_COLOR_SPACE_I        1
-#define CYPDF_RESOURCE_PATTERN_I            2
-#define CYPDF_RESOURCE_SHADING_I            3
-#define CYPDF_RESOURCE_XOBJECT_I            4
-#define CYPDF_RESOURCE_FONT_I               5
-#define CYPDF_RESOURCE_PROCEDURE_SET_I      6
-#define CYPDF_RESOURCE_PROPERTIES_I         7
+#define CYPDF_RESOURCE_COLOR_SPACE_I        CYPDF_RESOURCE_GFX_STATE_I + 1
+#define CYPDF_RESOURCE_PATTERN_I            CYPDF_RESOURCE_COLOR_SPACE_I + 1
+#define CYPDF_RESOURCE_SHADING_I            CYPDF_RESOURCE_PATTERN_I + 1
+#define CYPDF_RESOURCE_XOBJECT_I            CYPDF_RESOURCE_SHADING_I + 1
+#define CYPDF_RESOURCE_FONT_I               CYPDF_RESOURCE_XOBJECT_I + 1
+#define CYPDF_RESOURCE_PROCEDURE_SET_I      CYPDF_RESOURCE_FONT_I + 1
+#define CYPDF_RESOURCE_PROPERTIES_I         CYPDF_RESOURCE_PROCEDURE_SET_I + 1
 
 
 /* Graphics State Parameter Dictionary Keywords */
@@ -131,10 +131,21 @@ This header file contains all dictionary parameter keywords and indices. Keyword
 
 
 /* External Object Dictionary Keywords */
-#define CYPDF_XOBJECT_TYPE_K                "XObject"
 #define CYPDF_XOBJECT_SUBTYPE_K             "Subtype"
 
-#define CYPDF_XOBJECT_SUBTYPE_I             1
+#define CYPDF_XOBJECT_SUBTYPE_I             CYPDF_STREAM_DECODED_LENGTH_I + 1
+
+
+/* Image-Specific XObject Keywords */
+#define CYPDF_IMAGE_WIDTH_K                 "Width"
+#define CYPDF_IMAGE_HEIGHT_K                "Height"
+#define CYPDF_IMAGE_COLOR_SPACE_K           "ColorSpace"
+#define CYPDF_IMAGE_BITS_PER_COMPONENT_K    "BitsPerComponent"
+
+#define CYPDF_IMAGE_WIDTH_I                 CYPDF_XOBJECT_SUBTYPE_I + 1
+#define CYPDF_IMAGE_HEIGHT_I                CYPDF_IMAGE_WIDTH_I + 1
+#define CYPDF_IMAGE_COLOR_SPACE_I           CYPDF_IMAGE_HEIGHT_I + 1
+#define CYPDF_IMAGE_BITS_PER_COMPONENT_I    CYPDF_IMAGE_COLOR_SPACE_I + 1
 
 
 

@@ -6,6 +6,7 @@
 
 #include "cypdf_catalog.h"
 #include "cypdf_graphics.h"
+#include "cypdf_image.h"
 #include "cypdf_info.h"
 #include "cypdf_list.h"
 #include "cypdf_memory.h"
@@ -39,6 +40,8 @@ void CYPDF_PrintDoc(CYPDF_Doc* const restrict pdf, const char file_path[restrict
 void CYPDF_DocAddObject(CYPDF_Doc* const restrict pdf, CYPDF_Object* const restrict obj);
 
 void CYPDF_DocAddGraphic(CYPDF_Doc* const pdf, CYPDF_ObjPage* const page, CYPDF_Graphic* const graphic);
+
+CYPDF_ObjImage* CYPDF_DocAddImage(CYPDF_Doc* restrict const pdf, const char image_path[restrict static 1]);
 
 CYPDF_ObjPage* CYPDF_AppendPage(CYPDF_Doc* const restrict pdf, CYPDF_Rect dimensions);
 
