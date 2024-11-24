@@ -16,12 +16,7 @@
 
 
 typedef struct CYPDF_Graphic {
-    CYPDF_ObjPage*  display_page;
-
     CYPDF_List*     operator_list;
-
-    CYPDF_Point     current_point;
-    CYPDF_Point     current_subpath_point;
 
     CYPDF_MemMgr*   memmgr;
 } CYPDF_Graphic;

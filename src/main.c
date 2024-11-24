@@ -38,10 +38,10 @@ void first_n_polygons(CYPDF_Doc* pdf, CYPDF_ObjPage* page, size_t n) {
         if (i == 5) {
             CYPDF_GraphicSave(graphic);
             CYPDF_GraphicFillRGB(graphic, (CYPDF_RGB){ 0.0, 1.0, 0.0 });
-            CYPDF_GraphicPaint(graphic, CYPDF_OPERATOR_PATH_CLOSE_NWNRFILL_STROKE);
+            CYPDF_GraphicPaint(graphic, CYPDF_PATH_CLOSE_NWFILL_STROKE);
             CYPDF_GraphicRestore(graphic);
         } else {
-            CYPDF_GraphicPaint(graphic, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+            CYPDF_GraphicPaint(graphic, CYPDF_PATH_CLOSE_STROKE);
         }
         
         CYPDF_DocAddGraphic(pdf, page, graphic);
@@ -54,7 +54,7 @@ void bezier_circle(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_GraphicBegin(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
     CYPDF_GraphicCBezier(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 + 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
     CYPDF_GraphicCBezier(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 - CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2 - 4 * CYPDF_MM_TO_UU(50) / 3), CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2 + CYPDF_MM_TO_UU(50), CYPDF_A4_HEIGHT / 2));
-    CYPDF_GraphicPaint(graphic, CYPDF_OPERATOR_PATH_STROKE);
+    CYPDF_GraphicPaint(graphic, CYPDF_PATH_STROKE);
 
     CYPDF_DocAddGraphic(pdf, page, graphic);
 }
@@ -68,7 +68,7 @@ void thick_v(CYPDF_Doc* pdf, CYPDF_ObjPage* page) {
     CYPDF_GraphicLineseg(graphic, CYPDF_TO_POINT(CYPDF_A4_WIDTH / 2, CYPDF_MM_TO_UU(10)));
     CYPDF_GraphicSave(graphic);
     CYPDF_GraphicLineWidth(graphic, 20.0);
-    CYPDF_GraphicPaint(graphic, CYPDF_OPERATOR_PATH_CLOSE_STROKE);
+    CYPDF_GraphicPaint(graphic, CYPDF_PATH_CLOSE_STROKE);
     CYPDF_GraphicRestore(graphic);
 
     CYPDF_DocAddGraphic(pdf, page, graphic);
