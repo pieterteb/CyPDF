@@ -11,7 +11,7 @@
 
 
 /*
-This header file defines all graphic operators in PDF. Not all of them are necessarily implemented. The comments following the operator codes are of the form:
+This header file defines graphic operators in PDF. The comments following the operator codes are of the form:
 
 <operands> | <description>
 
@@ -84,6 +84,29 @@ h
 #define CYPDF_OPERATOR_COLOR_STROKING_CMYK_K        "K"
 #define CYPDF_OPERATOR_COLOR_NONSTROKING_CMYK_K     "k"
 
+/* Text Operators */
+#define CYPDF_OP_TEXT_BEGIN                         "BT"
+#define CYPDF_OP_TEXT_END                           "ET"
+#define CYPDF_OP_TEXT_CHAR_SPACE                    "Tc"
+#define CYPDF_OP_TEXT_WORD_SPACE                    "Tw"
+#define CYPDF_OP_TEXT_SCALE                         "Tz"
+#define CYPDF_OP_TEXT_LEADING                       "TL"
+#define CYPDF_OP_TEXT_FONT                          "Tf"
+#define CYPDF_OP_TEXT_RENDER                        "Tr"
+#define CYPDF_OP_TEXT_RISE                          "Ts"
+
+/* Text Positioning Operators */
+#define CYPDF_OP_TEXT_OFFSET                        "Td"
+#define CYPDF_OP_TEXT_OFFSET_PERSISTENT             "TD"
+#define CYPDF_OP_TEXT_MATRIX                        "Tm"
+#define CYPDF_OP_TEXT_NEXT_LINE                     "T*"
+
+/* Text Showing Operators */
+#define CYPDF_OP_TEXT_SHOW                          "Tj"
+#define CYPDF_OP_TEXT_SHOW_NEXT_LINE                "\'"
+#define CYPDF_OP_TEXT_MOD_SHOW_NEXT_LINE            "\""
+#define CYPDF_OP_TEXT_SHOW_MULT                     "TJ"
+
 
 
 enum CYPDF_OPERATOR_TYPE {
@@ -138,13 +161,35 @@ enum CYPDF_OPERATOR_TYPE {
     CYPDF_OPERATOR_COLOR_STROKING_CMYK,             /* c m y k | Set the stroking color space to DeviceCMYK and set the color to use for stroking operations. */
     CYPDF_OPERATOR_COLOR_NONSTROKING_CMYK,          /* c m y k | Set the nonstroking color space to DeviceCMYK and set the color to use for stroking operations. */
 
-    CYPDF_OPERATOR_COUNT,
+    /* Text */
+    CYPDF_TEXT_BEGIN,                               /* -- | Begin a text object, initializing the text matrix, T_m, and the text line matrix, T_lm, to the identity matrix. Text objects cannot be nested; a second BT cannot appear before an ET. */
+    CYPDF_TEXT_END,                                 /* -- | End a text object, discarding the text matrix. */
+    CYPDF_TEXT_CHAR_SPACE,                          /* charSpace | Set the character spacing, T_c, to charSpace, which is a number expressed in unscaled text space units. */
+    CYPDF_TEXT_WORD_SPACE,                          /* wordSpace | Set the word spacing, T_w, to wordSpace, which is a number expressed in unscaled text space units. */
+    CYPDF_TEXT_SCALE,                               /* scale | Set the horizontal scaling, T_h, to (scale ÷ 100). scale is a number specifying the percentage of the normal width. */
+    CYPDF_TEXT_LEADING,                             /* leading | Set the text leading, T_l, to leading, which is a number expressed in unscaled text space units. */
+    CYPDF_TEXT_FONT,                                /* font size | Set the text font, T_f, to font and the text font size, T_fs, to size. font is the name of a font resource in the Font subdictionary of the current resource dictionary; size is a number representing a scale factor. */
+    CYPDF_TEXT_RENDER,                              /* render | Set the text rendering mode, T_mode , to render, which is an integer. */
+    CYPDF_TEXT_RISE,                                /* rise | Set the text rise, T_rise, to rise, which is a number expressed in unscaled text space units. */
+
+    CYPDF_TEXT_OFFSET,                              /* t_x t_y | Move to the start of the next line, offset from the start of the current line by (t_x, t_y). t_x and t_y are numbers expressed in unscaled text space units. */
+    CYPDF_TEXT_OFFSET_PERSISTENT,                   /* t_x t_y | Move to the start of the next line, offset from the start of the current line by (t_x, t_y). As a side effect, this operator sets the leading parameter in the text state. */
+    CYPDF_TEXT_MATRIX,                              /* a b c d e f | Set the text matrix, T_m, and the text line matrix, T_lm. */
+    CYPDF_TEXT_NEXT_LINE,                           /* -- | Move to the start of the next line. */
+
+    CYPDF_TEXT_SHOW,                                /* string | Show a text string. */
+    CYPDF_TEXT_SHOW_NEXT_LINE,                      /* string | Move to the next line and show a text string. */
+    CYPDF_TEXT_MOD_SHOW_NEXT_LINE,                  /* a_w a_c string | Move to the next line and show a text string, using a_w as the word spacing and a_c as the character spacing (setting the corresponding parameters in the text state). */
+    CYPDF_TEXT_SHOW_MULT,                           /* array | Show one or more text strings, allowing individual glyph positioning. */
+
+    CYPDF_OPERATOR_COUNT
 };
 
 
 
 typedef struct CYPDF_Operator {
     enum CYPDF_OPERATOR_TYPE    type;
+
     CYPDF_List*                 operand_list;
 } CYPDF_Operator;
 
