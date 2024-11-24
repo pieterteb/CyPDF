@@ -7,7 +7,6 @@
 #include "cypdf_dict_parameters.h"
 #include "cypdf_doc.h"
 #include "cypdf_graphics_state.h"
-#include "cypdf_image.h"
 #include "cypdf_integer.h"
 #include "cypdf_log.h"
 #include "cypdf_memory.h"
@@ -200,7 +199,7 @@ void CYPDF_GraphicTransMatrix(CYPDF_Graphic* const restrict graphic, const CYPDF
     CYPDF_TRACE;
 
     if (graphic) {
-        CYPDF_Operator* transform_matrix = CYPDF_NewOperator(CYPDF_OPERATOR_GFX_STATE_MATRIX);
+        CYPDF_Operator* transform_matrix = CYPDF_NewOperator(CYPDF_STATE_MATRIX);
         CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.a));
         CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.b));
         CYPDF_OperatorAppendOperand(transform_matrix, CYPDF_NewNumber(graphic->memmgr, cm.c));
@@ -436,15 +435,4 @@ void CYPDF_GraphicFillCMYK(CYPDF_Graphic* const restrict graphic, const CYPDF_CM
 
         CYPDF_GraphicAppend(graphic, fill_cmyk);
     }
-}
-
-
-void CYPDF_GraphicImage(CYPDF_Graphic* const graphic, CYPDF_ObjImage* const image, const CYPDF_TransMatrix matrix) {
-    CYPDF_TRACE;
-
-    CYPDF_GraphicTransMatrix(graphic, matrix);
-    CYPDF_Operator* do_image = CYPDF_NewOperator(CYPDF_OPERATOR_XOBJECT);
-    CYPDF_OperatorAppendOperand(do_image, image);
-
-    CYPDF_GraphicAppend(graphic, do_image);
 }

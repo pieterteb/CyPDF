@@ -4,6 +4,7 @@
 
 #include "cypdf_graphics.h"
 #include "cypdf_operators.h"
+#include "cypdf_types.h"
 
 
 
@@ -37,6 +38,18 @@ void CYPDF_TextRise(CYPDF_Text* const text, const float rise);
 void CYPDF_TextOffset(CYPDF_Text* const text, const float x_offset, const float y_offset);
 
 void CYPDF_TextOffsetPersistent(CYPDF_Text* const text, const float x_offset, const float y_offset);
+
+void CYPDF_TextMatrix(CYPDF_Text* const text, const CYPDF_TransMatrix tm);
+
+void CYPDF_TextNextLine(CYPDF_Text* const text);
+
+void CYPDF_TextShow(CYPDF_Text* const restrict text, const char* restrict string);
+
+void CYPDF_TextShowNextLine(CYPDF_Text* const restrict text, const char* restrict string);
+
+void CYPDF_TextModShowNextLine(CYPDF_Text* const restrict text, const float word_space, const float char_space, const char* restrict string);
+
+void CYPDF_TextShowMult(CYPDF_Text* const text, CYPDF_ObjArray* const array);
 
 
 

@@ -174,7 +174,7 @@ enum CYPDF_OPERATOR_TYPE {
 
     CYPDF_TEXT_OFFSET,                  /* t_x t_y | Move to the start of the next line, offset from the start of the current line by (t_x, t_y). t_x and t_y are numbers expressed in unscaled text space units. */
     CYPDF_TEXT_OFFSET_PERSISTENT,       /* t_x t_y | Move to the start of the next line, offset from the start of the current line by (t_x, t_y). As a side effect, this operator sets the leading parameter in the text state. */
-    CYPDF_TEXT_MATRIX,                  /* a b c d e f | Set the text matrix, T_m, and the text line matrix, T_lm. */
+    CYPDF_TEXT_MATRIX,                  /* a b c d e f | Set the text matrix, T_m, and the text line matrix, T_lm. The operands are all numbers. */
     CYPDF_TEXT_NEXT_LINE,               /* -- | Move to the start of the next line. */
 
     CYPDF_TEXT_SHOW,                    /* string | Show a text string. */

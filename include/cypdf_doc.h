@@ -6,7 +6,6 @@
 
 #include "cypdf_catalog.h"
 #include "cypdf_graphics.h"
-#include "cypdf_image.h"
 #include "cypdf_info.h"
 #include "cypdf_list.h"
 #include "cypdf_memory.h"

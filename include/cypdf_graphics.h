@@ -6,7 +6,6 @@
 
 #include "cypdf_color.h"
 #include "cypdf_graphics_state.h"
-#include "cypdf_image.h"
 #include "cypdf_list.h"
 #include "cypdf_memory.h"
 #include "cypdf_operators.h"
