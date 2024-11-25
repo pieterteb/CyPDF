@@ -23,7 +23,6 @@ typedef struct CYPDF_Doc {
     CYPDF_List*         page_list;
 
     CYPDF_MemMgr*       obj_memmgr;
-    CYPDF_MemMgr*       graphic_memmgr;
 
     size_t*             offsets;        /* Byte offsets of the objects in obj_list. */
 } CYPDF_Doc;

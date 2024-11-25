@@ -33,7 +33,6 @@ CYPDF_Doc* CYPDF_NewDoc(void) {
 
     if (pdf) {
         pdf->obj_memmgr = CYPDF_NewMemMgr(CYPDF_FreeObj);
-        pdf->graphic_memmgr = CYPDF_NewMemMgr(CYPDF_FreeGraphic);
 
         pdf->obj_list = CYPF_NewList(100);
         pdf->page_list = CYPF_NewList(10);
@@ -59,7 +58,6 @@ void CYPDF_FreeDoc(CYPDF_Doc* pdf) {
 
     if (pdf) {
         CYPDF_DestroyMemMgr(pdf->obj_memmgr);
-        CYPDF_DestroyMemMgr(pdf->graphic_memmgr);
 
         CYPDF_FreeList(pdf->obj_list);
         CYPDF_FreeList(pdf->page_list);
@@ -119,6 +117,10 @@ static void CYPDF_DocConstructContents(CYPDF_Doc* const pdf) {
         CYPDF_List* graphic_list = page->graphic_list;
         for (size_t j = 0; j < graphic_list->element_count; ++j) {
             CYPDF_PrintGraphic(channel, graphic_list->elements[j]);
+            if (j == graphic_list->element_count - 1) {
+                break;
+            }
+            CYPDF_ChannelPrintNL(channel);
         }
 
         CYPDF_PageAddContent(page, stream);
