@@ -89,6 +89,8 @@ void thick_v(CYPDF_ObjPage* page) {
 }
 
 int main(void) {
+    mkdir("../out", 0700);
+
     CYPDF_LogInit();
 
     CYPDF_Doc* pdf = CYPDF_NewDoc();
@@ -102,8 +104,6 @@ int main(void) {
 
     CYPDF_ObjPage* page3 = CYPDF_AppendPage(pdf, CYPDF_A4_MEDIABOX);
     thick_v(page3);
-
-    mkdir("../out", 0700);
 
     CYPDF_PrintDoc(pdf, "../out/test.txt");
     CYPDF_FreeDoc(pdf);
