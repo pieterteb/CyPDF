@@ -1,22 +1,92 @@
-#include <stdbool.h>
-#include <stdint.h>
-
 #include "cypdf_object.h"
-#include "cypdf_array.h"
-#include "cypdf_bool.h"
-#include "cypdf_consts.h"
-#include "cypdf_dict.h"
-#include "cypdf_integer.h"
-#include "cypdf_log.h"
-#include "cypdf_name.h"
-#include "cypdf_null.h"
-#include "cypdf_number.h"
-#include "cypdf_pages.h"
-#include "cypdf_print.h"
-#include "cypdf_stream.h"
-#include "cypdf_string.h"
-#include "cypdf_types.h"
 
+#include <assert.h>
+#include <stdbool.h>
+
+#include "cypdf_limits.h"
+
+
+void CYPDF_object_set_indirect(CYPDF_Object* object) {
+    assert(object != NULL);
+
+    CYPDF_ObjectHeader* header = (CYPDF_ObjectHeader*)object;
+    *header |= CYPDF_OBJECT_INDIRECT;
+}
+
+void CYPDF_object_set_object_number(CYPDF_Object* object, unsigned object_number) {
+    assert(object != NULL);
+    assert(object_number <= CYPDF_OBJECT_NUMBER_MAX);
+
+    CYPDF_ObjectHeader* header = (CYPDF_ObjectHeader*)object;
+
+    assert(!(*header & CYPDF_OBJECT_NUMBER));
+
+    *header |= object_number << 1;
+}
+
+void CYPDF_object_set_generation_number(CYPDF_Object* object, unsigned generation_number) {
+    assert(object != NULL);
+    assert(generation_number <= CYPDF_GENERATION_NUMBER_MAX);
+
+    CYPDF_ObjectHeader* header = (CYPDF_ObjectHeader*)object;
+
+    assert(!(*header & CYPDF_GENERATION_NUMBER));
+
+    *header |= generation_number << 24;
+}
+
+void CYPDF_object_set_class(CYPDF_Object* object, enum CYPDF_ObjectClass object_class) {
+    assert(object != NULL);
+    assert(CYPDF_OBJECT_CLASS_DEFAULT <= object_class && object_class < CYPDF_OBJECT_CLASS_COUNT);
+
+    CYPDF_ObjectHeader* header = (CYPDF_ObjectHeader*)object;
+
+    assert(!(*header & CYPDF_OBJECT_CLASS));
+
+    *header |= object_class << 40;
+}
+
+void CYPDF_object_set_subclass(CYPDF_Object* object, enum CYPDF_ObjectSubclass object_subclass) {
+    assert(object != NULL);
+    assert(CYPDF_OBJECT_SUBCLASS_DEFAULT <= object_subclass && object_subclass < CYPDF_OBJECT_SUBCLASS_COUNT);
+
+    CYPDF_ObjectHeader* header = (CYPDF_ObjectHeader*)object;
+
+    assert(!(*header & CYPDF_OBJECT_SUBCLASS));
+
+    *header |= object_subclass << 46;
+}
+
+
+bool CYPDF_object_is_indirect(CYPDF_Object* object) {
+    assert(object != NULL);
+
+    return *(CYPDF_ObjectHeader*)object & CYPDF_OBJECT_INDIRECT;
+}
+
+unsigned CYPDF_object_get_object_number(CYPDF_Object* object) {
+    assert(object != NULL);
+
+    return (*(CYPDF_ObjectHeader*)object & CYPDF_OBJECT_NUMBER) >> 1;
+}
+
+unsigned CYPDF_object_get_generation_number(CYPDF_Object* object) {
+    assert(object != NULL);
+
+    return (*(CYPDF_ObjectHeader*)object & CYPDF_GENERATION_NUMBER) >> 24;
+}
+
+enum CYPDF_ObjectClass CYPDF_object_get_object_class(CYPDF_Object* object) {
+    assert(object != NULL);
+
+    return (*(CYPDF_ObjectHeader*)object & CYPDF_OBJECT_CLASS) >> 40;
+}
+
+enum CYPDF_ObjectSubclass CYPDF_object_get_object_subclass(CYPDF_Object* object) {
+    assert(object != NULL);
+
+    return (*(CYPDF_ObjectHeader*)object & CYPDF_OBJECT_SUBCLASS) >> 46;
+}
 
 
 void CYPDF_FreeObj(CYPDF_Object* obj) {
