@@ -1,0 +1,14 @@
+#ifndef CYPDF_ERROR_H
+#define CYPDF_ERROR_H
+
+
+
+enum CYPDF_Error {
+    CYPDF_SUCCESS = 0,
+    CYPDF_NO_MEMORY,
+    CYPDF_INVALID_OBJECT_NUMBER,
+};
+
+
+
+#endif /* CYPDF_ERROR_H */
