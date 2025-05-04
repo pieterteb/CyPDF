@@ -187,9 +187,51 @@ typedef struct CYPDF_ObjectString {
     unsigned                    byte_count;
 } CYPDF_ObjectString;
 
-CYPDF_ObjectString* CPYDF_object_string_new(bool indirect, enum CYPDF_StringType string_type, enum CYPDF_StringFormat string_format, const uint8_t* bytes, unsigned byte_count);
+CYPDF_ObjectString* CPYDF_object_string_new(bool indirect, enum CYPDF_StringType string_type, enum CYPDF_StringFormat string_format, const uint8_t* bytes, unsigned byte_count); /* Copies at most CYPDF_STRING_LENGTH_MAX bytes from bytes to the string object. */
 void CYPDF_object_string_free(CYPDF_ObjectString* object_string);
 void CYPDF_object_string_print(FILE* file_stream, CYPDF_ObjectString* object_string);
+
+
+/* 
+ * Struct describing name object.
+ * 
+ *      header:         as described above,
+ *      value:          string containing non-delimeter and non-white-space characters.
+ * 
+ */
+typedef struct CYPDF_ObjectName {
+    CYPDF_ObjectHeader          header;
+
+    char*                       value;
+} CYPDF_ObjectName;
+
+CYPDF_ObjectName* CYPDF_object_name_new(bool indirect, const char* restrict value); /* Copies at most CYPDF_NAME_LENGTH_MAX characters from value to the name object. */
+void CYPDF_object_name_free(CYPDF_ObjectName* object_name);
+void CYPDF_object_name_print(FILE* file_stream, CYPDF_ObjectName* object_name);
+
+
+/* 
+ * Struct describing array object.
+ * 
+ *      header:         as described above,
+ *      objects:        array of objects,
+ *      object_count:   number of objects in objects,
+ *      size:           size in bytes of allocated memory.
+ * 
+ */
+typedef struct CYPDF_ObjectArray {
+    CYPDF_ObjectHeader          header;
+
+    CYPDF_Object**              objects;
+    size_t                      object_count;
+    size_t                      size;
+} CYPDF_ObjectArray;
+
+CYPDF_ObjectArray* CYPDF_object_array_new(bool indirect);
+void CYPDF_object_array_free(CYPDF_ObjectArray* object_array);
+void CYPDF_obj_array_print(FILE* file_stream, CYPDF_ObjectArray* object_array);
+
+void CYPDF_object_array_append(CYPDF_ObjectArray* object_array, CYPDF_Object* object);
 
 
 /* Object header setters. */

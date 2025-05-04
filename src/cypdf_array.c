@@ -1,116 +1,63 @@
+#include "cypdf_object.h"
+
+#include <assert.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-#include "cypdf_array.h"
-#include "cypdf_integer.h"
-#include "cypdf_list.h"
-#include "cypdf_log.h"
-#include "cypdf_memory.h"
-#include "cypdf_number.h"
-#include "cypdf_object.h"
-#include "cypdf_print.h"
-#include "cypdf_types.h"
 
 
+CYPDF_ObjectArray* CYPDF_object_array_new(bool indirect) {
+    CYPDF_ObjectArray* object_array = calloc(1, sizeof(*object_array));
 
-CYPDF_ObjArray* CYPDF_NewArray(CYPDF_MemMgr* const restrict memmgr) {
-    CYPDF_TRACE;
-
-    CYPDF_ObjArray* array = (CYPDF_ObjArray*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjArray));
-
-    if (array) {
-        array->header.class = CYPDF_OBJ_CLASS_ARRAY;
-
-        array->obj_list = CYPF_NewList(CYPDF_LIST_DEFAULT_BLOCK_SIZE);
-
-        array->memmgr = CYPDF_NewMemMgr(CYPDF_FreeObj);
+    if (object_array) {
+        if (indirect)
+            CYPDF_object_set_indirect(object_array);
+        CYPDF_object_set_class(object_array, CYPDF_OBJECT_CLASS_ARRAY);
     }
 
-    return array;
+    return object_array;
 }
 
-void CYPDF_FreeArray(CYPDF_Object* obj) {
-    CYPDF_TRACE;
+void CYPDF_object_array_free(CYPDF_ObjectArray* object_array) {
+    assert(object_array != NULL);
 
-    if (obj) {
-        CYPDF_ObjArray* array = (CYPDF_ObjArray*)obj;
+    free(object_array->objects);
+    free(object_array);
+}
+
+void CYPDF_obj_array_print(FILE* file_stream, CYPDF_ObjectArray* object_array) {
+    assert(file_stream != NULL);
+    assert(object_array != NULL);
+
+    fputc('[', file_stream);
+    for (size_t i = 0; i < object_array->object_count; ++i) {
+        if (CYPDF_object_is_indirect(object_array->objects[i]))
+            CYPDF_object_print_reference(object_array->objects[i]);
+        else
+            CYPDF_object_print_direct(object_array->objects[i]);
+
+        if (i + 1 == object_array->object_count)
+            break;
         
-        CYPDF_DestroyMemMgr(array->memmgr);
-        CYPDF_FreeList(array->obj_list);
-
-        free(array);
+        fputc(' ', file_stream);
     }
+    fputc(']', file_stream);
 }
 
-void CYPDF_PrintArray(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
-    CYPDF_TRACE;
 
-    if (channel && obj) {
-        CYPDF_ObjArray* array = (CYPDF_ObjArray*)obj;
+void CYPDF_object_array_append(CYPDF_ObjectArray* object_array, CYPDF_Object* object) {
+    assert(object_array != NULL);
+    assert(object != NULL);
 
-        CYPDF_ChannelPrint(channel, "[");
-        CYPDF_List* obj_list = array->obj_list;
-        size_t array_length = CYPDF_ArrayLength(array);
-        for (size_t i = 0; i < array_length; ++i) {
-            if (CYPDF_ObjIsIndirect(obj_list->elements[i])) {
-                CYPDF_PrintObjRef(channel, obj_list->elements[i]);
-            } else {
-                CYPDF_PrintObjDirect(channel, obj_list->elements[i]);
-            }
-            if (i + 1 == array_length) {
-                break;
-            }
-            CYPDF_ChannelPrint(channel, " ");
-        }
-        CYPDF_ChannelPrint(channel, "]");
+    if (object_array->object_count == object_array->size) {
+        object_array->objects = realloc(object_array->objects, (object_array->size + 1) * sizeof(*object_array->objects));
+        
+        if (!object_array->objects)
+            return;
+        else
+            ++object_array->size;
     }
-}
-
-
-void CYPDF_ArrayAppend(CYPDF_ObjArray* const restrict array, CYPDF_Object* const restrict obj) {
-    CYPDF_TRACE;
-
-    if (array && obj) {
-        CYPFD_ListAppend(array->obj_list, obj);
-    }
-}
-
-CYPDF_ObjArray* CYPDF_ArrayFromRect(CYPDF_MemMgr* const restrict memmgr, const CYPDF_Rect rect) {
-    CYPDF_TRACE;
-
-    CYPDF_ObjArray* array = CYPDF_NewArray(memmgr);
-
-    if (array) {
-        CYPDF_ArrayAppend(array, CYPDF_NewNumber(array->memmgr, rect.lower_left.x));
-        CYPDF_ArrayAppend(array, CYPDF_NewNumber(array->memmgr, rect.lower_left.y));
-        CYPDF_ArrayAppend(array, CYPDF_NewNumber(array->memmgr, rect.upper_right.x));
-        CYPDF_ArrayAppend(array, CYPDF_NewNumber(array->memmgr, rect.upper_right.y));
-    }
-
-    return array;
-}
-
-CYPDF_ObjArray* CYPDF_ArrayFromIntArray(CYPDF_MemMgr* const restrict memmgr, const int* const arr, const size_t count) {
-    CYPDF_TRACE;
-
-    CYPDF_ObjArray* array = CYPDF_NewArray(memmgr);
-
-    if (array) {
-        for (size_t i = 0; i < count; ++i) {
-            CYPDF_ArrayAppend(array, CYPDF_NewInteger(array->memmgr, arr[i]));
-        }
-    }
-
-    return array;
-}
-
-CYPDF_Object* CYPDF_ArrayAtIndex(CYPDF_ObjArray* const array, const size_t index) {
-    CYPDF_TRACE;
-
-    return CYPDF_ListAtIndex(array->obj_list, index);
-}
-
-size_t CYPDF_ArrayLength(CYPDF_ObjArray* const array) {
-    CYPDF_TRACE;
-
-    return CYPDF_ListLength(array->obj_list);
+    object_array->objects[object_array->object_count] = object;
+    ++object_array->object_count;
 }
