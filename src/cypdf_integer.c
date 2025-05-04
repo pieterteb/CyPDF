@@ -1,51 +1,39 @@
-#include "cypdf_integer.h"
-#include "cypdf_log.h"
-#include "cypdf_memory.h"
 #include "cypdf_object.h"
-#include "cypdf_print.h"
-#include "cypdf_types.h"
+
+#include <assert.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "cypdf_limits.h"
 
 
+CYPDF_ObjectInteger* CYPDF_object_integer_new(bool indirect, int32_t value) {
+    static_assert(INT32_MAX == CYPDF_INTEGER_MAX && INT32_MIN == CYPDF_INTEGER_MIN);
 
-CYPDF_ObjInteger* CYPDF_NewInteger(CYPDF_MemMgr* const restrict memmgr, const int value) {
-    CYPDF_TRACE;
+    CYPDF_ObjectInteger* object_integer = calloc(1, sizeof(*object_integer));
 
-    CYPDF_ObjInteger* integer = (CYPDF_ObjInteger*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjInteger));
+    if (object_integer) {
+        if (indirect)
+            CYPDF_object_set_indirect(object_integer);
+        CYPDF_object_set_class(object_integer, CYPDF_OBJECT_CLASS_INTEGER);
 
-    if (integer) {
-        integer->header.class = CYPDF_OBJ_CLASS_INTEGER;
-
-        integer->value = value;
+        object_integer->value = value;
     }
 
-    return integer;
+    return object_integer;
 }
 
-void CYPDF_PrintInteger(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
-    CYPDF_TRACE;
+void CYPDF_object_integer_free(CYPDF_ObjectInteger* object_integer) {
+    assert(object_integer != NULL);
 
-    if (channel && obj) {
-        CYPDF_ObjInteger* integer = (CYPDF_ObjInteger*)obj;
-
-        CYPDF_ChannelPrint(channel, "%d", integer->value);
-    }
+    free(object_integer);
 }
 
+void CYPDF_object_integer_print(FILE* file_stream, CYPDF_ObjectInteger* object_integer) {
+    assert(file_stream != NULL);
+    assert(object_integer != NULL);
 
-void CYPDF_IntegerSetValue(CYPDF_ObjInteger* const restrict integer, const int value) {
-    CYPDF_TRACE;
-
-    if (integer) {
-        integer->value = value;
-    }
-}
-
-int CYPDF_IntegerGetValue(const CYPDF_ObjInteger* const restrict integer) {
-    CYPDF_TRACE;
-
-    if (integer) {
-        return integer->value;
-    }
-
-    return 0;
+    fprintf(file_stream, "%d", object_integer->value);
 }

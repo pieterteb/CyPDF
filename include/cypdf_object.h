@@ -95,12 +95,31 @@ void CYPDF_object_null_print(FILE* file_stream, CYPDF_ObjectNull* object_null __
 
 
 /* 
- * Struct describing null object.
+ * Struct describing integer object.
+ * 
+ *      value: integer value of the object
+ * 
  */
 typedef struct CYPDF_ObjectInteger {
     CYPDF_ObjectHeader          header;
     int32_t                     value;
 } CYPDF_ObjectInteger;
+
+CYPDF_ObjectInteger* CYPDF_object_integer_new(bool indirect, int32_t value);
+void CYPDF_object_integer_free(CYPDF_ObjectInteger* object_integer);
+void CYPDF_object_integer_print(FILE* file_stream, CYPDF_ObjectInteger* object_integer);
+
+
+/* 
+ * Struct describing real object.
+ * 
+ *      value: floating point value of the object
+ * 
+ */
+typedef struct CYPDF_ObjectReal {
+    CYPDF_ObjectHeader          header;
+    float                       value;
+} CYPDF_ObjectReal;
 
 
 /* Object header setters. */
