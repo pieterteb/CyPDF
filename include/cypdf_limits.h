@@ -2,16 +2,18 @@
 #define CYPDF_LIMITS_H
 
 
+#include <float.h>
+#include <limits.h>
+
+
 
 /* PDF implementation limits for integer values. */
-#define CYPDF_INTEGER_MAX                           2147483647
-#define CYPDF_INTEGER_MIN                           -2147483648
+#define CYPDF_INTEGER_MAX                           INT32_MAX
+#define CYPDF_INTEGER_MIN                           INT32_MIN
 
 /* PDF implementation limits for real values. */
-#define CYPDF_REAL_BIG_MAX                          3.4028235E38
-#define CYPDF_REAL_BIG_MIN                          -CYPDF_REAL_BIG_MAX
-#define CYPDF_REAL_SMALL_MAX                        1.17549435e-38
-#define CYPDF_REAL_SMALL_MIN                        -CYPDF_REAL_SMALL_MAX
+#define CYPDF_REAL_MAX                              FLT_MAX
+#define CYPDF_REAL_MIN                              FLT_MIN
 
 /* PDF implementation limit for significant digits of the fractional part of a real value. */
 #define CYPDF_REAL_FRACTIONAL_DIGITS_MAX            5
