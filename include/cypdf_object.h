@@ -18,7 +18,7 @@ enum CYPDF_ObjectClass {
     CYPDF_OBJECT_CLASS_NULL = 0,
     CYPDF_OBJECT_CLASS_BOOL,
     CYPDF_OBJECT_CLASS_INTEGER,
-    CYPDF_OBJECT_CLASS_NUMBER,
+    CYPDF_OBJECT_CLASS_REAL,
     CYPDF_OBJECT_CLASS_STRING,
     CYPDF_OBJECT_CLASS_NAME,
     CYPDF_OBJECT_CLASS_ARRAY,
@@ -66,18 +66,18 @@ typedef uint64_t CYPDF_ObjectHeader;
  * Bits not explicitly described contain zeroes:
  * 
  *  Direct Object:
- *              Bit 0:      0                   (!CYPDF_OBJECT_INDIRECT)
- *              Bit 1-23:   0                   (CYPDF_OBJECT_NUMBER)
- *              Bit 24-39:  0                   (CYPDF_GENERATION_NUMBER)
- *              Bit 40-45:  object_class        (CYPDF_OBJECT_CLASS)
- *              Bit 46-51:  object_subclass     (CYPDF_OBJECT_SUBCLASS)
+ *              Bit 0:      0,                  (!CYPDF_OBJECT_INDIRECT)
+ *              Bit 1-23:   0,                  (CYPDF_OBJECT_NUMBER)
+ *              Bit 24-39:  0,                  (CYPDF_GENERATION_NUMBER)
+ *              Bit 40-45:  object_class,       (CYPDF_OBJECT_CLASS)
+ *              Bit 46-51:  object_subclass.    (CYPDF_OBJECT_SUBCLASS)
  * 
  *  Indirect Object:
- *              Bit 0:      1                   (CYPDF_OBJECT_INDIRECT)
- *              Bit 1-23:   object_number       (CYPDF_OBJECT_NUMBER)
- *              Bit 24-39:  generation_number   (CYPDF_GENERATION_NUMBER)
- *              Bit 40-45:  object_class        (CYPDF_OBJECT_CLASS)
- *              Bit 46-51:  object_subclass     (CYPDF_OBJECT_SUBCLASS)
+ *              Bit 0:      1,                  (CYPDF_OBJECT_INDIRECT)
+ *              Bit 1-23:   object_number,      (CYPDF_OBJECT_NUMBER)
+ *              Bit 24-39:  generation_number,  (CYPDF_GENERATION_NUMBER)
+ *              Bit 40-45:  object_class,       (CYPDF_OBJECT_CLASS)
+ *              Bit 46-51:  object_subclass.    (CYPDF_OBJECT_SUBCLASS)
  * 
  */
 
@@ -95,9 +95,27 @@ void CYPDF_object_null_print(FILE* file_stream, CYPDF_ObjectNull* object_null __
 
 
 /* 
+ * Struct describing bool object.
+ * 
+ *      header: as described above,
+ *      value:  boolean value of the object.
+ * 
+ */
+typedef struct CYPDF_ObjectBool {
+    CYPDF_ObjectHeader          header;
+    bool                        value;
+} CYPDF_ObjectBool;
+
+CYPDF_ObjectBool* CYPDF_object_bool_new(bool indirect, bool value);
+void CYPDF_object_bool_free(CYPDF_ObjectBool* object_bool);
+void CYPDF_object_bool_print(FILE* file_stream, CYPDF_ObjectBool* object_bool);
+
+
+/* 
  * Struct describing integer object.
  * 
- *      value: integer value of the object
+ *      header: as described above,
+ *      value:  integer value of the object.
  * 
  */
 typedef struct CYPDF_ObjectInteger {
@@ -113,13 +131,18 @@ void CYPDF_object_integer_print(FILE* file_stream, CYPDF_ObjectInteger* object_i
 /* 
  * Struct describing real object.
  * 
- *      value: floating point value of the object
+ *      header: as described above,
+ *      value:  floating point value of the object.
  * 
  */
 typedef struct CYPDF_ObjectReal {
     CYPDF_ObjectHeader          header;
     float                       value;
 } CYPDF_ObjectReal;
+
+CYPDF_ObjectReal* CYPDF_object_real_new(bool indirect, float value);
+void CYPDF_object_real_free(CYPDF_ObjectReal* object_real);
+void CYPDF_object_real_print(FILE* file_stream, CYPDF_ObjectReal* object_real);
 
 
 /* Object header setters. */
@@ -144,17 +167,6 @@ void CYPDF_PrintObjDirect(CYPDF_Channel* const restrict channel, const CYPDF_Obj
 void CYPDF_PrintObjDef(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
 
 void CYPDF_PrintObjRef(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj);
-
-
-bool CYPDF_ObjIsIndirect(const CYPDF_Object* const obj);
-
-enum CYPDF_OBJ_CLASS CYPDF_ObjGetClass(const CYPDF_Object* const obj);
-
-enum CYPDF_OBJ_SUBCLASS CYPDF_ObjGetSubclass(const CYPDF_Object* const obj);
-
-uint32_t CYPDF_ObjGetObjNum(const CYPDF_Object* const obj);
-
-uint16_t CYPDF_ObjGetObjGen(const CYPDF_Object* const obj);
 
 
 
