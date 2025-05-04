@@ -89,6 +89,10 @@ typedef struct CYPDF_ObjectNull {
     CYPDF_ObjectHeader          header;
 } CYPDF_ObjectNull;
 
+CYPDF_ObjectNull* CYPDF_object_null_new(bool indirect);
+void CYPDF_object_null_free(CYPDF_ObjectNull* object_null);
+void CYPDF_object_null_print(FILE* file_stream, CYPDF_ObjectNull* object_null __attribute_maybe_unused__);
+
 
 /* 
  * Struct describing null object.

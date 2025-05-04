@@ -1,37 +1,32 @@
+#include "cypdf_object.h"
+
+#include <assert.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
-#include "cypdf_null.h"
-#include "cypdf_log.h"
-#include "cypdf_memory.h"
-#include "cypdf_object.h"
-#include "cypdf_types.h"
 
 
+CYPDF_ObjectNull* CYPDF_object_null_new(bool indirect) {
+    CYPDF_ObjectNull* object_null = calloc(1, sizeof(*object_null));
 
-CYPDF_ObjNull* CYPDF_NewNull(CYPDF_MemMgr* const restrict memmgr) {
-    CYPDF_TRACE;
-
-    CYPDF_ObjNull* null = (CYPDF_ObjNull*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjNull));
-
-    if (null) {
-        null->header.class = CYPDF_OBJ_CLASS_NULL;
+    if (object_null) {
+        if (indirect)
+            CYPDF_object_set_indirect(object_null);
+        CYPDF_object_set_class(object_null, CYPDF_OBJECT_CLASS_NULL);
     }
 
-    return null;
+    return object_null;
 }
 
-void CYPDF_FreeNull(CYPDF_Object* obj) {
-    CYPDF_TRACE;
+void CYPDF_object_null_free(CYPDF_ObjectNull* object_null) {
+    assert(object_null != NULL);
 
-    if (obj) {
-        CYPDF_ObjNull* null = (CYPDF_ObjNull*)obj;
-
-        free(null);
-    }
+    free(object_null);
 }
 
-void CYPDF_PrintNull(CYPDF_Channel* const restrict channel, const CYPDF_Object* const restrict obj __attribute_maybe_unused__) {
-    CYPDF_TRACE;
+void CYPDF_object_null_print(FILE* file_stream, CYPDF_ObjectNull* object_null __attribute_maybe_unused__) {
+    assert(file_stream != NULL);
+    assert(object_null != NULL);
 
-    CYPDF_ChannelPrint(channel, "null");
+    fprintf(file_stream, "null");
 }
