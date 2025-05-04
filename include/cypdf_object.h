@@ -97,12 +97,13 @@ void CYPDF_object_null_print(FILE* file_stream, CYPDF_ObjectNull* object_null __
 /* 
  * Struct describing bool object.
  * 
- *      header: as described above,
- *      value:  boolean value of the object.
+ *      header:         as described above,
+ *      value:          boolean value of the object.
  * 
  */
 typedef struct CYPDF_ObjectBool {
     CYPDF_ObjectHeader          header;
+
     bool                        value;
 } CYPDF_ObjectBool;
 
@@ -114,12 +115,13 @@ void CYPDF_object_bool_print(FILE* file_stream, CYPDF_ObjectBool* object_bool);
 /* 
  * Struct describing integer object.
  * 
- *      header: as described above,
- *      value:  integer value of the object.
+ *      header:         as described above,
+ *      value:          integer value of the object.
  * 
  */
 typedef struct CYPDF_ObjectInteger {
     CYPDF_ObjectHeader          header;
+
     int32_t                     value;
 } CYPDF_ObjectInteger;
 
@@ -131,18 +133,63 @@ void CYPDF_object_integer_print(FILE* file_stream, CYPDF_ObjectInteger* object_i
 /* 
  * Struct describing real object.
  * 
- *      header: as described above,
- *      value:  floating point value of the object.
+ *      header:         as described above,
+ *      value:          floating point value of the object.
  * 
  */
 typedef struct CYPDF_ObjectReal {
     CYPDF_ObjectHeader          header;
+
     float                       value;
 } CYPDF_ObjectReal;
 
 CYPDF_ObjectReal* CYPDF_object_real_new(bool indirect, float value);
 void CYPDF_object_real_free(CYPDF_ObjectReal* object_real);
 void CYPDF_object_real_print(FILE* file_stream, CYPDF_ObjectReal* object_real);
+
+
+enum CYPDF_StringType {
+    CYPDF_STRING_TYPE_ASCII_STRING = 0, /* UTF-16BE encoded string with a leading byte order marker. */
+    CYPDF_STRING_TYPE_BYTE_STRING,      /* Used for binary data represented as a series of 8-bit bytes, where each byte can be any value representable in 8 bits. */
+    CYPDF_STRING_TYPE_UTF_16BE_ENCODED, /* Used for characters that are represented in a single byte using ASCII encoding. */
+    CYPDF_STRING_TYPE_PDF_DOC_ENCODED,  /* Used for characters and glyphs that are represented in a single byte, using PDFDocEncoding. */
+
+    CYPDF_STRING_TYPE_COUNT,
+};
+
+#define CYPDF_STRING_TYPE_DEFAULT               CYPDF_STRING_TYPE_ASCII_STRING
+
+enum CYPDF_StringFormat {
+    CYPDF_STRING_FORMAT_LITERAL = 0,
+    CYPDF_STRING_FORMAT_HEXADECIMAL,
+
+    CYPDF_STRING_FORMAT_COUNT,
+};
+
+#define CYPDF_STRING_FORMAT_DEFAULT             CYPDF_STRING_FORMAT_LITERAL
+
+/* 
+ * Struct describing string object.
+ * 
+ *      header:         as described above,
+ *      type:           type of string; determines how the string is interpreted,
+ *      format:         determines how the string will be printed internally,
+ *      bytes:          array of bytes,
+ *      byte_count:     number of bytes in bytes.
+ * 
+ */
+typedef struct CYPDF_ObjectString {
+    CYPDF_ObjectHeader          header;
+
+    enum CYPDF_StringType       type;
+    enum CYPDF_StringFormat     format;
+    uint8_t*                    bytes;
+    unsigned                    byte_count;
+} CYPDF_ObjectString;
+
+CYPDF_ObjectString* CPYDF_object_string_new(bool indirect, enum CYPDF_StringType string_type, enum CYPDF_StringFormat string_format, const uint8_t* bytes, unsigned byte_count);
+void CYPDF_object_string_free(CYPDF_ObjectString* object_string);
+void CYPDF_object_string_print(FILE* file_stream, CYPDF_ObjectString* object_string);
 
 
 /* Object header setters. */

@@ -1,67 +1,75 @@
+#include "cypdf_object.h"
+
+#include <assert.h>
+#include <stdbool.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
-#include "cypdf_string.h"
-#include "cypdf_log.h"
-#include "cypdf_memory.h"
-#include "cypdf_object.h"
-#include "cypdf_print.h"
-#include "cypdf_types.h"
+#include "cypdf_limits.h"
 
 
 
-CYPDF_ObjString* CPYDF_NewString(CYPDF_MemMgr* const restrict memmgr, const enum CYPDF_STRING_TYPE type, const char* restrict value) {
-    CYPDF_TRACE;
+CYPDF_ObjectString* CPYDF_object_string_new(bool indirect, enum CYPDF_StringType string_type, enum CYPDF_StringFormat string_format, const uint8_t* bytes, unsigned byte_count) {
+    CYPDF_ObjectString* object_string = calloc(1, sizeof(*object_string));
 
-    CYPDF_ObjString* string = (CYPDF_ObjString*)CYPDF_GetMem(memmgr, sizeof(CYPDF_ObjString));
+    if (object_string) {
+        if (indirect)
+            CYPDF_object_set_indirect(object_string);
+        CYPDF_object_set_class(object_string, CYPDF_OBJECT_CLASS_STRING);
 
-    if (string) {
-        string->header.class = CYPDF_OBJ_CLASS_STRING;
+        assert(CYPDF_STRING_TYPE_DEFAULT <= object_string->type && object_string->type < CYPDF_STRING_TYPE_COUNT);
+        assert(CYPDF_STRING_FORMAT_DEFAULT <= object_string->format && object_string->format < CYPDF_STRING_FORMAT_COUNT);
 
-        string->type = type;
-        string->value = CYPDF_malloc(strlen(value) + 1);
-        strcpy(string->value, value);
-    }
+        object_string->type = string_type;
+        object_string->format = string_format;
+        if (byte_count) {
+            assert(bytes != NULL);
 
-    return string;
-}
+            byte_count = CYPDF_STRING_LENGTH_MAX < byte_count ? CYPDF_STRING_LENGTH_MAX : byte_count;
+            object_string->bytes = malloc(byte_count);
 
-void CYPDF_FreeString(CYPDF_Object* obj) {
-    CYPDF_TRACE;
-
-    if (obj) {
-        CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
-
-        free(string->value);
-        free(string);
-    }
-}
-
-void CYPDF_PrintString(CYPDF_Channel* const restrict channel, const CYPDF_Object* const obj) {
-    CYPDF_TRACE;
-
-    if (channel && obj) {
-        CYPDF_ObjString* string = (CYPDF_ObjString*)obj;
-
-        switch (string->type)
-        {
-        case CYPDF_STRTYPE_BYTE:
-            CYPDF_ChannelPrint(channel, "<%s>", string->value);
-            break;
-        default:
-            CYPDF_ChannelPrint(channel, "(%s)", string->value);
-            break;
+            if (object_string->bytes) {
+                memcpy(object_string->bytes, bytes, byte_count);
+                object_string->byte_count = byte_count;
+            } else {
+                free(object_string);
+                return NULL;
+            }
         }
-    }    
-}
-
-
-char* CYPDF_StringGet(const CYPDF_ObjString* const restrict string) {
-    CYPDF_TRACE;
-
-    if (string) {
-        return string->value;
     }
 
-    return NULL;
+    return object_string;
+}
+
+void CYPDF_object_string_free(CYPDF_ObjectString* object_string) {
+    assert(object_string != NULL);
+
+    free(object_string->bytes);
+    free(object_string);
+}
+
+void CYPDF_object_string_print(FILE* file_stream, CYPDF_ObjectString* object_string) {
+    assert(file_stream != NULL);
+    assert(object_string != NULL);
+
+    assert(CYPDF_STRING_TYPE_DEFAULT <= object_string->type && object_string->type < CYPDF_STRING_TYPE_COUNT);
+    assert(CYPDF_STRING_FORMAT_DEFAULT <= object_string->format && object_string->format < CYPDF_STRING_FORMAT_COUNT);
+
+    uint8_t left_bracket = 0;
+    uint8_t right_bracket = 0;
+    switch (object_string->format) {
+        case CYPDF_STRING_FORMAT_LITERAL:
+            left_bracket = '<';
+            right_bracket = '>';
+        default:
+            left_bracket = '(';
+            right_bracket = ')';
+            break;
+    }
+
+    fputc(left_bracket, file_stream);
+    fwrite(object_string->bytes, sizeof(object_string->bytes[0]), object_string->byte_count, file_stream);
+    fputc(right_bracket, file_stream);
 }
